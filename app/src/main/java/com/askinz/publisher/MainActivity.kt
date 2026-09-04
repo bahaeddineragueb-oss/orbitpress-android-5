@@ -153,6 +153,7 @@ private class NativeBridge(private val activity: Activity, private val webView: 
       .put("cloudflareAccountId", saved.optString("cloudflareAccountId"))
       .put("cloudflareModel", saved.optString("cloudflareModel", "@cf/black-forest-labs/flux-1-schnell"))
       .put("pinterestBoardId", saved.optString("pinterestBoardId"))
+      .put("pinterestPublishingMode", saved.optString("pinterestPublishingMode", "manual_review"))
       .put("profilePrompts", saved.optJSONObject("profilePrompts") ?: JSONObject())
       .put("articleApiConfigured", saved.optString("articleApiKey").isNotBlank())
       .put("wordpressConfigured", saved.optString("wordpressAppPassword").isNotBlank())
@@ -628,7 +629,12 @@ private class NativeBridge(private val activity: Activity, private val webView: 
     val published = JSONObject(http("$root/wp-json/wp/v2/posts", "POST", wordpressHeaders(settings) + mapOf("Content-Type" to "application/json"), post.toString().toByteArray()))
     val pinterestToken = settings.optString("pinterestAccessToken").trim()
     val pinterestBoardId = request.optString("pinterestBoardId").trim().ifBlank { settings.optString("pinterestBoardId").trim() }
-    val pinterestResult = if (pinterestToken.isNotBlank() && pinterestBoardId.isNotBlank()) {
+    val pinterestMode = settings.optString("pinterestPublishingMode", "manual_review").trim().ifBlank { "manual_review" }
+    val pinterestResult = if (pinterestMode == "disabled") {
+      JSONObject().put("published", false).put("skipped", true)
+    } else if (pinterestMode == "manual_review") {
+      JSONObject().put("published", false).put("manualReview", true).put("composerUrl", share)
+    } else if (pinterestToken.isNotBlank() && pinterestBoardId.isNotBlank()) {
       try {
         val pinBody = JSONObject()
           .put("board_id", pinterestBoardId)
