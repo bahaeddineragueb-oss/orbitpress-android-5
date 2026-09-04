@@ -59,6 +59,7 @@ object DraftContract {
     }
     val pinterestSource = raw.optJSONObject("pinterest")
     val pinterestTitle = pinterestSource?.optString("title")?.trim()?.take(100).orEmpty().ifBlank { title.take(100) }
+    val pinterestDescription = pinterestSource?.optString("description")?.trim()?.take(800).orEmpty().ifBlank { raw.optString("metaDescription").trim().take(800) }
     val pinterestAltText = pinterestSource?.optString("altText")?.trim()?.take(320).orEmpty().ifBlank { title.take(320) }
     val category = selectedCategory.trim().ifBlank { raw.optString("categoryName").trim() }.take(120)
 
@@ -73,8 +74,9 @@ object DraftContract {
       .put("internalLinks", normalizeInternalLinks(raw.optJSONArray("internalLinks")))
       .put("recipe", recipe)
       .put("recipes", recipes)
-      .put("pinterest", JSONObject().put("title", pinterestTitle).put("altText", pinterestAltText))
+      .put("pinterest", JSONObject().put("title", pinterestTitle).put("description", pinterestDescription).put("altText", pinterestAltText))
       .put("pinterestTitle", pinterestTitle)
+      .put("pinterestDescription", pinterestDescription)
       .put("pinterestAltText", pinterestAltText)
       .put("generationStatus", "ready")
       .put("createdAt", System.currentTimeMillis())

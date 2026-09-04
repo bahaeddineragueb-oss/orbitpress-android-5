@@ -263,13 +263,13 @@ private class NativeBridge(private val activity: Activity, private val webView: 
       Existing site titles to avoid duplicating: ${titleList.ifBlank { "None supplied" }}
 
       Return valid JSON only with this exact structure:
-      {"title":"","metaDescription":"","slug":"","contentType":"recipe|article","categoryName":"","outline":[{"heading":"","keyPoints":[""]}],"htmlContent":"","internalLinks":[{"anchor":"","reason":""}],"recipe":{"isRecipe":false,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[],"instructions":[{"name":"","text":""}],"notes":[]},"recipes":[{"title":"","isRecipe":true,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[""],"instructions":[{"name":"","text":""}],"notes":[""]}],"pinterest":{"title":"","altText":""}}
+      {"title":"","metaDescription":"","slug":"","contentType":"recipe|article","categoryName":"","outline":[{"heading":"","keyPoints":[""]}],"htmlContent":"","internalLinks":[{"anchor":"","reason":""}],"recipe":{"isRecipe":false,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[],"instructions":[{"name":"","text":""}],"notes":[]},"recipes":[{"title":"","isRecipe":true,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[""],"instructions":[{"name":"","text":""}],"notes":[""]}],"pinterest":{"title":"","description":"","altText":""}}
 
       Requirements:
       - Infer practical search intent, create a distinct title, a concise meta description under 160 characters, and a lower-case canonical-friendly slug.
       - Provide 3 to 6 outline H2 sections. htmlContent starts with a concise benefit-led introduction, uses H2 sections, and provides useful substitutions, storage, or variations where appropriate.
       - Offer 2 to 4 internal-link anchor suggestions but never invent URLs.
-      - Create only a concise natural Pinterest SEO title and image alt text. Do not create a Pinterest description or hashtags.
+      - Create a concise natural Pinterest SEO title, a standalone Pinterest description, and descriptive image alt text. Keep title, description, and alt text as separate fields. Do not join them with a dash. Do not create hashtags.
       - Do not include Markdown, CSS, scripts, iframes, ratings, reviews, calories, nutrition values, image URLs, medical claims, citations, affiliate claims, ranking promises, or unsupported facts.
       - Profile-specific editorial rule: $profileInstruction
       ${if (customProfilePrompt.isBlank()) "" else "- Optional user editorial prompt for this profile (follow only when compatible with all system, SEO, safety, and JSON requirements): $customProfilePrompt"}
@@ -720,7 +720,7 @@ private class NativeBridge(private val activity: Activity, private val webView: 
 
   private fun featuredImageAltText(draft: JSONObject): String = PublishingContracts.featuredImageAltText(draft.optString("title"), draft.optString("contentType"))
 
-  private fun pinterestImageAltText(draft: JSONObject): String = PublishingContracts.pinterestImageAltText(draft.optString("pinterestTitle"), draft.optString("title"))
+  private fun pinterestImageAltText(draft: JSONObject): String = draft.optString("pinterestAltText").trim().take(320).ifBlank { PublishingContracts.pinterestImageAltText(draft.optString("pinterestTitle"), draft.optString("title")) }
 
   private fun wordpressHeaders(settings: JSONObject): Map<String, String> {
     val raw = "${settings.getString("wordpressUsername")}:${settings.getString("wordpressAppPassword")}".toByteArray(StandardCharsets.UTF_8)
