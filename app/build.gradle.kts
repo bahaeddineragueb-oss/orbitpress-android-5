@@ -8,7 +8,7 @@ android {
   compileSdk = 35
 
   defaultConfig {
-    applicationId = "com.askinz.publisher"
+    applicationId = "com.askinz.publisher.v5"
     minSdk = 26
     targetSdk = 35
     versionCode = 9
