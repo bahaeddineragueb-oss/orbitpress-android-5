@@ -89,7 +89,7 @@ function orbitpress_pin_meta_box_html($post) {
     $key = '_orbitpress_pinterest_'.$field[0]; $value = get_post_meta($post->ID, $key, true);
     echo '<p><label><strong>'.esc_html($field[1]).'</strong><br><textarea style="width:100%" rows="'.($field[2] / 100).'" maxlength="'.$field[2].'" name="'.$key.'">'.esc_textarea($value).'</textarea></label></p>';
   }
-  echo '<p><button type="submit" class="button" name="orbitpress_pin_fix" value="1">Fix Pinterest metadata</button></p>';
+  echo '<p><button type="submit" class="button" name="orbitpress_pin_fix" value="1">Fix Pinterest + Yoast SEO</button></p>';
   echo '<p class="description">Fills missing fields from this article without changing its content. Use Update to save.</p>';
 }
 function orbitpress_pin_fallback_values($post_id) {
@@ -141,9 +141,9 @@ function orbitpress_pin_tools_page() {
       if ($changed) $fixed++;
     }
   }
-  echo '<div class="wrap"><h1>OrbitPress Pinterest Fix</h1><p>Repairs missing Pinterest metadata for published articles. It does not publish Pins or alter article content.</p>';
-  if (isset($_POST['orbitpress_fix_all'])) echo '<div class="notice notice-success"><p>Fixed metadata for '.intval($fixed).' article(s).</p></div>';
-  echo '<form method="post">'; wp_nonce_field('orbitpress_fix_all'); echo '<p><button class="button button-primary" name="orbitpress_fix_all" value="1">Fix all missing Pinterest metadata</button></p></form></div>';
+  echo '<div class="wrap"><h1>OrbitPress Pinterest Fix</h1><p>Repairs missing Pinterest and Yoast SEO metadata for published articles. It does not publish Pins or alter article content.</p>';
+  if (isset($_POST['orbitpress_fix_all']) || isset($_POST['orbitpress_fix_yoast'])) echo '<div class="notice notice-success"><p>Fixed Pinterest and Yoast metadata for '.intval($fixed).' article(s).</p></div>';
+  echo '<form method="post">'; wp_nonce_field('orbitpress_fix_all'); echo '<p><button class="button button-primary" name="orbitpress_fix_all" value="1">Fix all missing Pinterest + Yoast metadata</button></p></form></div>';
 }
 function orbitpress_pin_tools_menu() { add_management_page('OrbitPress Pinterest Fix', 'OrbitPress Pinterest Fix', 'edit_posts', 'orbitpress-pinterest-fix', 'orbitpress_pin_tools_page'); }
 add_action('admin_menu', 'orbitpress_pin_tools_menu');
