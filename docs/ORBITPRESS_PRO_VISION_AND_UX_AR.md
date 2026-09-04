@@ -240,3 +240,192 @@ Save this section
 7. مكان Article Prompts وTemplates وBackups.
 
 بعد اعتماد هذه العناصر، ينفذ التطوير على مراحل صغيرة قابلة للاختبار، مع الحفاظ على التحديثات فوق النسخة الحالية.
+
+
+## 8. OrbitPress Pro كتطبيق عام متعدد المجالات
+
+OrbitPress Pro يجب أن يكون تطبيق نشر عام، وليس تطبيقًا خاصًا بالطعام أو الوصفات أو مجال واحد. يبدأ المستخدم باختيار المجال أو إنشاء Profile مخصص، ثم يحدد نوع المحتوى المطلوب، مثل مقال معلوماتي، دليل عملي، مراجعة، مقارنة، قائمة، How-to، دراسة حالة، مقال محلي، أو محتوى متخصص.
+
+لا يجوز أن تظهر لغة Food أو Recipe كافتراضية في الواجهة العامة. يمكن الاحتفاظ بقوالب الطعام ضمن قوالب اختيارية، مثل أي مجال آخر، دون أن تفرض بنية الوصفة على المقالات العامة.
+
+### المجالات المقترحة
+
+يدعم النظام Profiles عامة مثل:
+
+- Business and entrepreneurship.
+- Technology.
+- Health and wellness مع قواعد السلامة وعدم تقديم ادعاءات طبية غير موثقة.
+- Finance مع قواعد واضحة لعدم تقديم استشارات مالية شخصية أو وعود.
+- Travel.
+- Home and lifestyle.
+- Gardening.
+- Education.
+- Food and recipes.
+- Custom professional profile.
+
+يملك كل Profile قواعده التحريرية وSchema المناسب ونوع القارئ وبنية المقال، لكن جميعها تستخدم محرك SEO العام نفسه.
+
+## 9. Professional Article Prompt Engine
+
+لا يعتمد النظام على Prompt بسيط من نوع اكتب مقالًا عن الكلمة المفتاحية. يجب أن يعمل Prompt Engine كـ Editorial Brief احترافي يحدد قبل التوليد:
+
+- Search intent.
+- Audience.
+- User problem.
+- Content type.
+- Desired outcome.
+- Information depth.
+- Required sections.
+- Primary and secondary keywords.
+- Editorial tone.
+- Evidence and source policy.
+- Internal linking policy.
+- Image requirements.
+- Schema requirements.
+- SEO title and meta description constraints.
+- Readability target.
+- Prohibited claims.
+
+### أسلوب المقال
+
+الهدف هو إنتاج كتابة طبيعية، دقيقة، مفيدة، ومتنوعة الأسلوب، تشبه عمل محرر وخبير SEO محترف. يحقق ذلك عبر:
+
+- بدء المقال بإجابة واضحة بدل مقدمة عامة.
+- اختلاف أطوال الجمل والفقرات بصورة طبيعية.
+- استخدام أمثلة عملية وسياق حقيقي عندما تتوفر معلومات موثوقة.
+- تجنب العبارات النمطية المتكررة مثل In today’s fast-paced world وWhether you are a beginner أو This comprehensive guide.
+- عدم تكرار العناوين والانتقالات بنفس الصيغة.
+- استخدام لغة مباشرة وصوت نشط.
+- إضافة حدود الموضوع والاستثناءات والمفاضلات.
+- عدم اختلاق الخبرة أو التجارب أو الأرقام أو المصادر.
+- عدم استخدام حشو الكلمات المفتاحية.
+- عدم استخدام لغة تسويقية مبالغ فيها أو وعود غير قابلة للإثبات.
+- عدم إضافة علامات أو ادعاءات تهدف إلى خداع أدوات التقييم.
+
+> المعيار هو جودة تحريرية حقيقية وقيمة للقارئ، وليس محاولة التحايل على أدوات الكشف. لا يمكن ضمان نتيجة أي أداة للكشف عن النصوص المولدة، لكن يمكن جعل النص مفيدًا وطبيعيًا ومهنيًا وقابلًا للتحرير البشري.
+
+### مراحل التوليد المقترحة
+
+يعمل المحرك داخليًا على مراحل:
+
+1. تحليل الكلمة المفتاحية ونية البحث.
+2. إنشاء Editorial Brief.
+3. إنشاء Outline منطقي.
+4. إنشاء مسودة أولى منظمة.
+5. فحص SEO والقراءة والادعاءات والتكرار.
+6. إصلاح المشكلات المحددة فقط.
+7. عرض النتيجة في Review قبل الحفظ أو النشر.
+
+المستخدم لا يحتاج إلى رؤية التعقيد الداخلي، لكنه يرى الملخص والمشكلات والتعديلات المقترحة.
+
+## 10. SEO شامل لكل مجال
+
+يجب أن يطلب النظام ويقيس:
+
+- Primary focus keyphrase.
+- Secondary keywords and synonyms.
+- Search intent match.
+- SEO title ضمن العرض المناسب.
+- Meta description ضمن الطول المناسب وتحتوي على الكلمة المفتاحية طبيعيًا.
+- Canonical-friendly slug.
+- الكلمة المفتاحية في المقدمة عند ملاءمتها.
+- الكلمة المفتاحية أو مرادفاتها في H2/H3.
+- كثافة طبيعية دون حشو.
+- روابط داخلية حقيقية.
+- روابط خارجية موثوقة عند الحاجة.
+- Alt Text وصفي للصور.
+- Featured image وSocial image.
+- Article أو HowTo أو FAQ أو Recipe Schema حسب نوع المقال، دون إضافة Schema غير مناسب.
+- Open Graph وTwitter metadata.
+- Readability، طول الفقرات، الجمل، والانتقالات.
+- أسئلة المستخدم ذات الصلة وFAQ عندما تكون مفيدة فعلًا.
+
+يجب أن يعرض محرك SEO سبب كل توصية، ولا يغير النص تلقائيًا إلا بعد موافقة المستخدم أو اختيار وضع Apply.
+
+## 11. Image Generation UX البسيط
+
+لا نريد شاشة إعدادات مليئة بعشرات الحقول. تكون واجهة الصور بسيطة:
+
+```text
+Image source
+( ) Manual images
+( ) OpenAI
+( ) Cloudflare Workers AI
+```
+
+### Manual images
+
+عند اختيار Manual images، تظهر فقط:
+
+- Choose featured image.
+- Choose Pinterest image.
+- Optional article images.
+
+ولا تظهر أي حقول API.
+
+### OpenAI
+
+عند اختيار OpenAI، تظهر فقط الحقول الخاصة به:
+
+- OpenAI-compatible Base URL عند الحاجة.
+- Model.
+- API key.
+- Save OpenAI settings.
+
+تختفي حقول Cloudflare تمامًا.
+
+### Cloudflare Workers AI
+
+عند اختيار Cloudflare Workers AI، تظهر فقط:
+
+- Cloudflare Account ID.
+- Cloudflare model.
+- Cloudflare API token.
+- Save Cloudflare settings.
+
+تختفي حقول OpenAI تمامًا.
+
+### قواعد التفاعل
+
+- التبديل بين المزودين لا يحذف الإعدادات المحفوظة للمزود الآخر، لكنه يخفيها.
+- كل مزود يملك زر حفظ مستقل.
+- لا يتم استدعاء API إلا عند اختيار المزود والضغط على Generate image.
+- Manual images لا تحتاج أي API أو مفتاح.
+- يظهر اختبار الاتصال أو التوليد فقط عند الحاجة.
+- تعرض الواجهة نسبة الصورة المطلوبة، مثل 2:3 لـ Pinterest، قبل اختيار أو توليد الصورة.
+
+## 12. الشكل العام للتطبيق العام
+
+يجب أن تستخدم الواجهة لغة محايدة:
+
+```text
+Create article
+Article type
+Content profile
+SEO review
+Images
+Publishing
+```
+
+بدل ربط الواجهة بالطعام أو الوصفات. تظهر القوالب المتخصصة داخل Content Profiles وTemplates، ولا تفرض نفسها على المستخدم.
+
+## 13. قرار المنتج
+
+OrbitPress Pro هو:
+
+```text
+General-purpose professional publishing desk
++ Editorial brief engine
++ SEO audit and optimization
++ WordPress and Pinterest publishing
++ Simple conditional image providers
+```
+
+وليس:
+
+```text
+Food-only generator
++ Generic AI text box
++ Crowded settings form
++ Uncontrolled one-click publishing
+```
