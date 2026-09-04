@@ -15,6 +15,14 @@ android {
     versionName = "5.0.0"
   }
 
+  buildTypes {
+    getByName("release") {
+      // Public test build: use the CI-generated debug key so Android can install it.
+      // Production distribution should replace this with a private release keystore.
+      signingConfig = signingConfigs.getByName("debug")
+    }
+  }
+
   buildFeatures { buildConfig = true }
 
   compileOptions {
