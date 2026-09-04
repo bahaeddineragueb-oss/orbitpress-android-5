@@ -1,0 +1,53 @@
+# مصدر OrbitPress 5.0.0
+
+هذه الحزمة هي **مصدر تطبيق Android** وليست APK فقط. يمكنك فتحها وتعديل Kotlin وHTML/CSS/JavaScript ثم تشغيلها خارج Manus باستخدام Android Studio.
+
+## المتطلبات
+
+استخدم Android Studio حديثًا مع Android SDK Platform 35 وBuild Tools مناسبة، وJDK 17. المشروع يستخدم Android Gradle Plugin 8.10.2. لا تحتاج إلى Manus أو إلى الموقع التجريبي لتشغيل التطبيق محليًا.
+
+## فتح المشروع
+
+افتح Android Studio، اختر **Open**، ثم اختر المجلد الذي يحتوي على `settings.gradle.kts`. انتظر انتهاء Gradle Sync. إذا طلب Android Studio تحديد JDK، اختر JDK 17. لا تنسخ ملف `local.properties` من جهاز آخر؛ Android Studio ينشئه تلقائيًا ويضع فيه مسار SDK المحلي.
+
+## أهم أماكن التعديل
+
+| المسار | الوظيفة |
+|---|---|
+| `app/src/main/java/com/askinz/publisher/MainActivity.kt` | جسر Android، التخزين المشفر، طلبات Article API وWordPress، والتنسيق العام |
+| `app/src/main/assets/index.html` | واجهة WebView، Content Studio، Review، Settings، CSS وJavaScript |
+| `app/src/main/java/com/askinz/publisher/DraftContract.kt` | تطبيع المسودات وHTML وبيانات الوصفات وJSON-LD |
+| `app/src/main/java/com/askinz/publisher/LongFormCompletenessContract.kt` | فحص اكتمال المقالات الطويلة متعددة الوصفات |
+| `app/src/main/java/com/askinz/publisher/ProviderCompatibilityContract.kt` | توافق Article API وJSON Schema وحدود الإخراج وfallback |
+| `app/src/test/` | اختبارات Kotlin المحلية للعقود وسلوك النشر والحماية |
+
+## التشغيل والبناء
+
+من Android Studio شغّل التطبيق على Emulator أو هاتف Android مفعّل عليه USB debugging. أو من الطرفية داخل المشروع نفّذ:
+
+```bash
+gradle :app:testDebugUnitTest
+gradle :app:assembleRelease
+```
+
+قد تحتاج إلى استخدام مسار Gradle المثبت على جهازك بدل الأمر `gradle`. سيظهر APK الناتج داخل `app/build/outputs/apk/release/`.
+
+## Profiles العامة والنيشات
+
+من Content Studio اختر Profile قبل إضافة الكلمات. يتوفر Food & Recipes مع كل أدوات الوصفات الأصلية، إضافة إلى Gardening وHome Decor وCustom article. Profiles غير الغذائية تنتج مقالات عامة بهيكل SEO المشترك، وتبقي حقول الوصفات فارغة ولا تعرض منطق الوصفات كنوع محتوى. يمكن إضافة Profiles أخرى لاحقًا من نفس المسار دون تغيير WordPress publishing serializer.
+
+في Profile الطعام، يطلب التطبيق من Article API صراحة عدم إنشاء مشروبات كحولية أو مشروبات روحية أو نبيذ أو بيرة أو كحول للطبخ أو لحم خنزير أو مشتقاته، واستبدال الطلب المحرم ببديل حلال مفيد عند الحاجة. هذه قاعدة توليد إضافية ولا تحذف SEO أو فحوص الصور أو النشر اليدوي.
+
+## الإعداد داخل التطبيق
+
+أدخل عنوان Article API المتوافق مع OpenAI، اسم النموذج، مفتاح API، ثم عنوان WordPress واسم المستخدم وApplication Password. تُحفظ الأسرار في تخزين Android مشفر لكل موقع، ولا توجد مفاتيح حقيقية داخل هذه الحزمة.
+
+لا ينفذ التطبيق نشرًا في الخلفية عندما يكون مغلقًا. التحديث والمزامنة والتوليد ورفع الصور والنشر إجراءات يطلقها المستخدم صراحة. صورة Pinterest يجب أن تكون JPEG أو PNG أو WebP بنسبة عمودية exact 2:3، بينما يتحقق مسار WordPress من نوع البايت الحقيقي قبل الرفع.
+
+## ما تم استبعاده عمدًا
+
+تم استبعاد `local.properties` و`.gradle` وملفات `build` وملفات التوقيع والمفاتيح وأي أسرار وAPKات كبيرة من نسخة المصدر. كما أن مفتاح توقيع الإصدار الموجود على جهاز البناء ليس جزءًا من الحزمة. استخدم مفتاح توقيعك الخاص عند توزيع نسخة إنتاجية.
+
+## ملاحظة مهمة
+
+هذه الحزمة مخصصة للتعديل المحلي. إذا غيّرت Serializer أو SEO أو HTML المنشور، أعد تشغيل اختبارات Gradle قبل تثبيت النسخة على الهاتف، لأن هذه الأجزاء مرتبطة بعقود النشر الأصلية.

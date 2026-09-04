@@ -1,0 +1,15 @@
+*.iml
+.gradle/
+local.properties
+.idea/
+.DS_Store
+build/
+app/build/
+.externalNativeBuild/
+.cxx/
+*.keystore
+*.jks
+.env
+
+# Local review artifacts
+/tmp/
