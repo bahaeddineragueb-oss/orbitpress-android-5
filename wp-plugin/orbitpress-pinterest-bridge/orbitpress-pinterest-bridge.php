@@ -68,12 +68,12 @@ function orbitpress_pin_head_tags() {
     'og:title' => $title, 'og:description' => $description, 'og:image' => $image,
     'og:url' => $url, 'og:type' => 'article',
   ] as $property => $content) {
-    if ($content) printf('<meta property="%s" content="%s" />\n', esc_attr($property), esc_attr($content));
+    if ($content) printf("<meta property=\"%s\" content=\"%s\" />\n", esc_attr($property), esc_attr($content));
   }
-  printf('<meta name="twitter:card" content="summary_large_image" />\n');
-  printf('<meta name="twitter:title" content="%s" />\n', esc_attr($title));
-  printf('<meta name="twitter:description" content="%s" />\n', esc_attr($description));
-  if ($image) printf('<meta name="twitter:image" content="%s" />\n', esc_attr($image));
+  printf("<meta name=\"twitter:card\" content=\"summary_large_image\" />\n");
+  printf("<meta name=\"twitter:title\" content=\"%s\" />\n", esc_attr($title));
+  printf("<meta name=\"twitter:description\" content=\"%s\" />\n", esc_attr($description));
+  if ($image) printf("<meta name=\"twitter:image\" content=\"%s\" />\n", esc_attr($image));
 }
 add_action('wp_head', 'orbitpress_pin_head_tags', 5);
 
