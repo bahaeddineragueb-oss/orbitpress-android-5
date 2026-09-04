@@ -39,6 +39,9 @@ function orbitpress_pin_rest_routes() {
         '_orbitpress_pinterest_description' => sanitize_textarea_field($request->get_param('description')),
         '_orbitpress_pinterest_alt_text' => sanitize_text_field($request->get_param('alt_text')),
         '_orbitpress_pinterest_image' => esc_url_raw($request->get_param('image')),
+        '_yoast_wpseo_focuskw' => sanitize_text_field($request->get_param('focus_keyphrase')),
+        '_yoast_wpseo_title' => sanitize_text_field($request->get_param('seo_title')),
+        '_yoast_wpseo_metadesc' => sanitize_textarea_field($request->get_param('seo_description')),
       ];
       foreach ($values as $key => $value) update_post_meta($post_id, $key, $value);
       return rest_ensure_response(['ok' => true, 'post_id' => $post_id, 'meta' => $values]);
@@ -47,6 +50,7 @@ function orbitpress_pin_rest_routes() {
       'post_id' => ['required' => true, 'sanitize_callback' => 'absint'],
       'title' => ['required' => true], 'description' => ['required' => true],
       'alt_text' => ['required' => true], 'image' => ['required' => true],
+      'focus_keyphrase' => ['required' => false], 'seo_title' => ['required' => false], 'seo_description' => ['required' => false],
     ],
   ]);
 }

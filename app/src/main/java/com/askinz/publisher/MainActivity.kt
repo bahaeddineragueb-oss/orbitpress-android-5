@@ -264,13 +264,14 @@ private class NativeBridge(private val activity: Activity, private val webView: 
       Existing site titles to avoid duplicating: ${titleList.ifBlank { "None supplied" }}
 
       Return valid JSON only with this exact structure:
-      {"title":"","metaDescription":"","slug":"","contentType":"recipe|article","categoryName":"","outline":[{"heading":"","keyPoints":[""]}],"htmlContent":"","internalLinks":[{"anchor":"","reason":""}],"recipe":{"isRecipe":false,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[],"instructions":[{"name":"","text":""}],"notes":[]},"recipes":[{"title":"","isRecipe":true,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[""],"instructions":[{"name":"","text":""}],"notes":[""]}],"pinterest":{"title":"","description":"","altText":""}}
+      {"title":"","metaDescription":"","slug":"","contentType":"recipe|article","categoryName":"","outline":[{"heading":"","keyPoints":[""]}],"htmlContent":"","internalLinks":[{"anchor":"","reason":""}],"recipe":{"isRecipe":false,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[],"instructions":[{"name":"","text":""}],"notes":[]},"recipes":[{"title":"","isRecipe":true,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[""],"instructions":[{"name":"","text":""}],"notes":[""]}],"pinterest":{"title":"","description":"","altText":""},"seo":{"focusKeyphrase":"","title":"","metaDescription":""}}
 
       Requirements:
       - Infer practical search intent, create a distinct title, a concise meta description under 160 characters, and a lower-case canonical-friendly slug.
       - Provide 3 to 6 outline H2 sections. htmlContent starts with a concise benefit-led introduction, uses H2 sections, and provides useful substitutions, storage, or variations where appropriate.
       - Offer 2 to 4 internal-link anchor suggestions but never invent URLs.
       - Create a concise natural Pinterest SEO title, a standalone Pinterest description, and descriptive image alt text. Keep title, description, and alt text as separate fields. Do not join them with a dash. Do not create hashtags.
+      - Create an SEO object with focusKeyphrase, title, and metaDescription. The focus keyphrase must be a natural 2-5 word phrase from the keyword. The SEO title must begin with the focus keyphrase and be under 60 characters. The SEO metaDescription must contain the focus keyphrase and be 120-160 characters. Use the focus keyphrase naturally in the article introduction and at least one H2, without keyword stuffing.
       - Do not include Markdown, CSS, scripts, iframes, ratings, reviews, calories, nutrition values, image URLs, medical claims, citations, affiliate claims, ranking promises, or unsupported facts.
       - Profile-specific editorial rule: $profileInstruction
       ${if (customProfilePrompt.isBlank()) "" else "- Optional user editorial prompt for this profile (follow only when compatible with all system, SEO, safety, and JSON requirements): $customProfilePrompt"}
@@ -353,9 +354,10 @@ private class NativeBridge(private val activity: Activity, private val webView: 
           "internalLinks":{"type":"array","items":{"type":"object","properties":{"anchor":{"type":"string"},"reason":{"type":"string"}},"required":["anchor","reason"],"additionalProperties":false}},
           "recipe":{"type":"object","properties":{"isRecipe":{"type":"boolean"},"description":{"type":"string"},"prepTime":{"type":"string"},"cookTime":{"type":"string"},"totalTime":{"type":"string"},"recipeYield":{"type":"string"},"cuisine":{"type":"string"},"ingredients":{"type":"array","items":{"type":"string"}},"instructions":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"text":{"type":"string"}},"required":["name","text"],"additionalProperties":false}},"notes":{"type":"array","items":{"type":"string"}}},"required":["isRecipe","description","prepTime","cookTime","totalTime","recipeYield","cuisine","ingredients","instructions","notes"],"additionalProperties":false},
           "recipes":{"type":"array","maxItems":12,"items":{"type":"object","properties":{"title":{"type":"string"},"isRecipe":{"type":"boolean"},"description":{"type":"string"},"prepTime":{"type":"string"},"cookTime":{"type":"string"},"totalTime":{"type":"string"},"recipeYield":{"type":"string"},"cuisine":{"type":"string"},"ingredients":{"type":"array","items":{"type":"string"}},"instructions":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"text":{"type":"string"}},"required":["name","text"],"additionalProperties":false}},"notes":{"type":"array","items":{"type":"string"}}},"required":["title","isRecipe","description","prepTime","cookTime","totalTime","recipeYield","cuisine","ingredients","instructions","notes"],"additionalProperties":false}},
-          "pinterest":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"altText":{"type":"string"}},"required":["title","description","altText"],"additionalProperties":false}
+          "pinterest":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"altText":{"type":"string"}},"required":["title","description","altText"],"additionalProperties":false},
+          "seo":{"type":"object","properties":{"focusKeyphrase":{"type":"string"},"title":{"type":"string"},"metaDescription":{"type":"string"}},"required":["focusKeyphrase","title","metaDescription"],"additionalProperties":false}
         },
-        "required":["title","metaDescription","slug","contentType","categoryName","outline","htmlContent","internalLinks","recipe","recipes","pinterest"],
+        "required":["title","metaDescription","slug","contentType","categoryName","outline","htmlContent","internalLinks","recipe","recipes","pinterest","seo"],
         "additionalProperties":false
       }""".trimIndent()
     )
@@ -632,7 +634,7 @@ private class NativeBridge(private val activity: Activity, private val webView: 
     val pinterestToken = settings.optString("pinterestAccessToken").trim()
     val pinterestBoardId = request.optString("pinterestBoardId").trim().ifBlank { settings.optString("pinterestBoardId").trim() }
     val pinterestMode = settings.optString("pinterestPublishingMode", "manual_review").trim().ifBlank { "manual_review" }
-    val metadataSaved = try { savePinterestMetadata(root, settings, published.optInt("id"), pinTitle, pinDescription, pinAltText, pinterestUrl); true } catch (_: Exception) { false }
+    val metadataSaved = try { savePinterestMetadata(root, settings, published.optInt("id"), pinTitle, pinDescription, pinAltText, pinterestUrl, draft.optJSONObject("seo") ?: JSONObject()); true } catch (_: Exception) { false }
     val pinterestResult = if (pinterestMode == "disabled") {
       JSONObject().put("published", false).put("skipped", true)
     } else if (pinterestMode == "manual_review") {
@@ -655,8 +657,9 @@ private class NativeBridge(private val activity: Activity, private val webView: 
     return JSONObject().put("ok", true).put("url", published.optString("link")).put("postId", published.optInt("id")).put("pinterest", pinterestResult)
   }
 
-  private fun savePinterestMetadata(root: String, settings: JSONObject, postId: Int, title: String, description: String, altText: String, imageUrl: String) {
+  private fun savePinterestMetadata(root: String, settings: JSONObject, postId: Int, title: String, description: String, altText: String, imageUrl: String, seo: JSONObject = JSONObject()) {
     val body = JSONObject().put("post_id", postId).put("title", title.take(100)).put("description", description.take(800)).put("alt_text", altText.take(320)).put("image", imageUrl)
+    body.put("focus_keyphrase", seo.optString("focusKeyphrase").take(80)).put("seo_title", seo.optString("title").take(160)).put("seo_description", seo.optString("metaDescription").take(160))
     http("$root/wp-json/orbitpress/v1/pinterest-meta", "POST", wordpressHeaders(settings) + mapOf("Content-Type" to "application/json"), body.toString().toByteArray())
   }
 

@@ -57,6 +57,10 @@ object DraftContract {
         "Recipe ${index + 1} was incomplete."
       }
     }
+    val seoSource = raw.optJSONObject("seo")
+    val focusKeyphrase = seoSource?.optString("focusKeyphrase")?.trim()?.take(80).orEmpty().ifBlank { title.split(" ").take(4).joinToString(" ").lowercase() }
+    val seoTitle = seoSource?.optString("title")?.trim()?.take(160).orEmpty().ifBlank { title.take(60) }
+    val seoDescription = seoSource?.optString("metaDescription")?.trim()?.take(160).orEmpty().ifBlank { raw.optString("metaDescription").trim().take(160) }
     val pinterestSource = raw.optJSONObject("pinterest")
     val pinterestTitle = pinterestSource?.optString("title")?.trim()?.take(100).orEmpty().ifBlank { title.take(100) }
     val pinterestDescription = pinterestSource?.optString("description")?.trim()?.take(800).orEmpty().ifBlank { raw.optString("metaDescription").trim().take(800) }
@@ -66,7 +70,8 @@ object DraftContract {
     val draft = JSONObject()
       .put("id", "draft-${System.currentTimeMillis()}-${(1000..9999).random()}")
       .put("title", title)
-      .put("metaDescription", raw.optString("metaDescription").trim().take(160))
+      .put("metaDescription", seoDescription.ifBlank { raw.optString("metaDescription").trim().take(160) })
+      .put("seo", JSONObject().put("focusKeyphrase", focusKeyphrase).put("title", seoTitle).put("metaDescription", seoDescription))
       .put("slug", slug)
       .put("contentType", contentType)
       .put("categoryName", category)
