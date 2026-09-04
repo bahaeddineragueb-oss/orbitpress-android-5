@@ -630,10 +630,11 @@ private class NativeBridge(private val activity: Activity, private val webView: 
     val pinterestToken = settings.optString("pinterestAccessToken").trim()
     val pinterestBoardId = request.optString("pinterestBoardId").trim().ifBlank { settings.optString("pinterestBoardId").trim() }
     val pinterestMode = settings.optString("pinterestPublishingMode", "manual_review").trim().ifBlank { "manual_review" }
+    val metadataSaved = try { savePinterestMetadata(root, settings, published.optInt("id"), pinTitle, pinDescription, pinAltText, pinterestUrl); true } catch (_: Exception) { false }
     val pinterestResult = if (pinterestMode == "disabled") {
       JSONObject().put("published", false).put("skipped", true)
     } else if (pinterestMode == "manual_review") {
-      JSONObject().put("published", false).put("manualReview", true).put("composerUrl", share)
+      JSONObject().put("published", false).put("manualReview", true).put("metadataSaved", metadataSaved).put("composerUrl", share)
     } else if (pinterestToken.isNotBlank() && pinterestBoardId.isNotBlank()) {
       try {
         val pinBody = JSONObject()
@@ -650,6 +651,11 @@ private class NativeBridge(private val activity: Activity, private val webView: 
       }
     } else JSONObject().put("published", false).put("skipped", true)
     return JSONObject().put("ok", true).put("url", published.optString("link")).put("postId", published.optInt("id")).put("pinterest", pinterestResult)
+  }
+
+  private fun savePinterestMetadata(root: String, settings: JSONObject, postId: Int, title: String, description: String, altText: String, imageUrl: String) {
+    val body = JSONObject().put("post_id", postId).put("title", title.take(100)).put("description", description.take(800)).put("alt_text", altText.take(320)).put("image", imageUrl)
+    http("$root/wp-json/orbitpress/v1/pinterest-meta", "POST", wordpressHeaders(settings) + mapOf("Content-Type" to "application/json"), body.toString().toByteArray())
   }
 
   private fun notifyPublishResult(request: JSONObject, result: JSONObject) {
