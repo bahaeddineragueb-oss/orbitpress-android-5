@@ -1,0 +1,14 @@
+from pathlib import Path
+p=Path('/home/ubuntu/orbitpress5/wp-plugin/orbitpress-pinterest-bridge/orbitpress-pinterest-bridge.php')
+s=p.read_text()
+s=s.replace("""  $alt = get_post_meta($post_id, '_orbitpress_pinterest_alt_text', true) ?: ($title . ' Pinterest image');
+  return ['_orbitpress_pinterest_title'=>sanitize_text_field($title), '_orbitpress_pinterest_description'=>sanitize_textarea_field($description), '_orbitpress_pinterest_alt_text'=>sanitize_text_field($alt), '_orbitpress_pinterest_image'=>esc_url_raw($image ?: '')];""", """  $alt = get_post_meta($post_id, '_orbitpress_pinterest_alt_text', true) ?: ($title . ' Pinterest image');
+  $focus = get_post_meta($post_id, '_yoast_wpseo_focuskw', true) ?: implode(' ', array_slice(preg_split('/\\s+/', strtolower(wp_strip_all_tags($title))), 0, 5));
+  $seo_title = get_post_meta($post_id, '_yoast_wpseo_title', true) ?: wp_trim_words($title, 10, '');
+  $seo_description = get_post_meta($post_id, '_yoast_wpseo_metadesc', true) ?: $description;
+  return ['_orbitpress_pinterest_title'=>sanitize_text_field($title), '_orbitpress_pinterest_description'=>sanitize_textarea_field($description), '_orbitpress_pinterest_alt_text'=>sanitize_text_field($alt), '_orbitpress_pinterest_image'=>esc_url_raw($image ?: ''), '_yoast_wpseo_focuskw'=>sanitize_text_field($focus), '_yoast_wpseo_title'=>sanitize_text_field($seo_title), '_yoast_wpseo_metadesc'=>sanitize_textarea_field($seo_description)];""")
+s=s.replace("""  echo '<p><button type=\\\"submit\\\" class=\\\"button\\\" name=\\\"orbitpress_pin_fix\\\" value=\\\"1\\\">Fix Pinterest metadata</button></p>';""", """  echo '<p><button type=\\\"submit\\\" class=\\\"button\\\" name=\\\"orbitpress_pin_fix\\\" value=\\\"1\\\">Fix Pinterest + Yoast SEO</button></p>';""")
+s=s.replace("""  if (isset($_POST['orbitpress_fix_all']) && check_admin_referer('orbitpress_fix_all')) {""", """  if ((isset($_POST['orbitpress_fix_all']) || isset($_POST['orbitpress_fix_yoast'])) && check_admin_referer('orbitpress_fix_all')) {""")
+s=s.replace("""  if (isset($_POST['orbitpress_fix_all'])) echo '<div class=\\\"notice notice-success\\\"><p>Fixed metadata for '.intval($fixed).' article(s).</p></div>';""", """  if (isset($_POST['orbitpress_fix_all']) || isset($_POST['orbitpress_fix_yoast'])) echo '<div class=\\\"notice notice-success\\\"><p>Fixed Pinterest and Yoast metadata for '.intval($fixed).' article(s).</p></div>';""")
+s=s.replace("""echo '<form method=\\\"post\\\">'; wp_nonce_field('orbitpress_fix_all'); echo '<p><button class=\\\"button button-primary\\\" name=\\\"orbitpress_fix_all\\\" value=\\\"1\\\">Fix all missing Pinterest metadata</button></p></form></div>';""", """echo '<form method=\\\"post\\\">'; wp_nonce_field('orbitpress_fix_all'); echo '<p><button class=\\\"button button-primary\\\" name=\\\"orbitpress_fix_all\\\" value=\\\"1\\\">Fix all missing Pinterest + Yoast metadata</button></p></form></div>';""")
+p.write_text(s)

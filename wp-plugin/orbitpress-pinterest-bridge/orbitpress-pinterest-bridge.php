@@ -98,7 +98,10 @@ function orbitpress_pin_fallback_values($post_id) {
   $description = get_post_meta($post_id, '_orbitpress_pinterest_description', true) ?: wp_trim_words(wp_strip_all_tags($post->post_excerpt ?: $post->post_content), 40, '...');
   $image = get_post_meta($post_id, '_orbitpress_pinterest_image', true) ?: get_the_post_thumbnail_url($post_id, 'full');
   $alt = get_post_meta($post_id, '_orbitpress_pinterest_alt_text', true) ?: ($title . ' Pinterest image');
-  return ['_orbitpress_pinterest_title'=>sanitize_text_field($title), '_orbitpress_pinterest_description'=>sanitize_textarea_field($description), '_orbitpress_pinterest_alt_text'=>sanitize_text_field($alt), '_orbitpress_pinterest_image'=>esc_url_raw($image ?: '')];
+  $focus = get_post_meta($post_id, '_yoast_wpseo_focuskw', true) ?: implode(' ', array_slice(preg_split('/\s+/', strtolower(wp_strip_all_tags($title))), 0, 5));
+  $seo_title = get_post_meta($post_id, '_yoast_wpseo_title', true) ?: wp_trim_words($title, 10, '');
+  $seo_description = get_post_meta($post_id, '_yoast_wpseo_metadesc', true) ?: $description;
+  return ['_orbitpress_pinterest_title'=>sanitize_text_field($title), '_orbitpress_pinterest_description'=>sanitize_textarea_field($description), '_orbitpress_pinterest_alt_text'=>sanitize_text_field($alt), '_orbitpress_pinterest_image'=>esc_url_raw($image ?: ''), '_yoast_wpseo_focuskw'=>sanitize_text_field($focus), '_yoast_wpseo_title'=>sanitize_text_field($seo_title), '_yoast_wpseo_metadesc'=>sanitize_textarea_field($seo_description)];
 }
 function orbitpress_pin_save_meta($post_id) {
   if (!isset($_POST['orbitpress_pin_nonce']) || !wp_verify_nonce($_POST['orbitpress_pin_nonce'], 'orbitpress_pin_save') || defined('DOING_AUTOSAVE') || !current_user_can('edit_post', $post_id)) return;
@@ -131,7 +134,7 @@ add_action('admin_notices', 'orbitpress_pin_admin_notice');
 function orbitpress_pin_tools_page() {
   if (!current_user_can('edit_posts')) return;
   $fixed = 0;
-  if (isset($_POST['orbitpress_fix_all']) && check_admin_referer('orbitpress_fix_all')) {
+  if ((isset($_POST['orbitpress_fix_all']) || isset($_POST['orbitpress_fix_yoast'])) && check_admin_referer('orbitpress_fix_all')) {
     foreach (get_posts(['post_type'=>'post','post_status'=>'publish','numberposts'=>-1,'fields'=>'ids']) as $post_id) {
       $values = orbitpress_pin_fallback_values($post_id); $changed = false;
       foreach ($values as $key => $value) if (!get_post_meta($post_id, $key, true) && $value) { update_post_meta($post_id, $key, $value); $changed = true; }
