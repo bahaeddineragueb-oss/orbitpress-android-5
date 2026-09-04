@@ -237,6 +237,7 @@ private class NativeBridge(private val activity: Activity, private val webView: 
     val provider = ProviderCompatibilityContract.normalize(settings.getString("articleBaseUrl"), settings.getString("articleModel"))
     val endpoint = chatEndpoint(provider.baseUrl)
     val category = request.optString("categoryName").trim()
+    val siteBaseUrl = settings.optString("wordpressBaseUrl").trim().trimEnd('/')
     val existingTitles = request.optJSONArray("existingTitles") ?: JSONArray()
     val titleList = (0 until minOf(existingTitles.length(), 20)).joinToString(" | ") { existingTitles.optString(it).take(255) }
     val requestedRecipeCount = if (isFoodProfile) RecipeRequestContract.requestedCount(keyword) else 0
@@ -262,14 +263,19 @@ private class NativeBridge(private val activity: Activity, private val webView: 
       $formatRequirements
       Preferred category: ${category.ifBlank { if (isFoodProfile) "Choose the best existing food category" else "Choose the best existing category for this niche" }}
       Existing site titles to avoid duplicating: ${titleList.ifBlank { "None supplied" }}
+      Approved site homepage for internal linking: ${siteBaseUrl.ifBlank { "No site URL supplied; do not invent URLs" }}
 
       Return valid JSON only with this exact structure:
-      {"title":"","metaDescription":"","slug":"","contentType":"recipe|article","categoryName":"","outline":[{"heading":"","keyPoints":[""]}],"htmlContent":"","internalLinks":[{"anchor":"","reason":""}],"recipe":{"isRecipe":false,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[],"instructions":[{"name":"","text":""}],"notes":[]},"recipes":[{"title":"","isRecipe":true,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[""],"instructions":[{"name":"","text":""}],"notes":[""]}],"pinterest":{"title":"","description":"","altText":""},"seo":{"focusKeyphrase":"","title":"","metaDescription":""}}
+      {"title":"","metaDescription":"","slug":"","contentType":"recipe|article","categoryName":"","outline":[{"heading":"","keyPoints":[""]}],"htmlContent":"","internalLinks":[{"anchor":"","url":"","reason":""}],"recipe":{"isRecipe":false,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[],"instructions":[{"name":"","text":""}],"notes":[]},"recipes":[{"title":"","isRecipe":true,"description":"","prepTime":"","cookTime":"","totalTime":"","recipeYield":"","cuisine":"","ingredients":[""],"instructions":[{"name":"","text":""}],"notes":[""]}],"pinterest":{"title":"","description":"","altText":""},"seo":{"focusKeyphrase":"","title":"","metaDescription":""}}
 
       Requirements:
-      - Infer practical search intent, create a distinct title, a concise meta description under 160 characters, and a lower-case canonical-friendly slug.
-      - Provide 3 to 6 outline H2 sections. htmlContent starts with a concise benefit-led introduction, uses H2 sections, and provides useful substitutions, storage, or variations where appropriate.
-      - Offer 2 to 4 internal-link anchor suggestions but never invent URLs.
+      - Infer practical search intent and create a distinct article title. The SEO title must be 50-60 characters, never exceed 60 characters, and begin with the exact focus keyphrase.
+      - The SEO meta description must be 120-160 characters, contain the exact focus keyphrase once, and communicate a clear benefit and reason to click.
+      - Use the exact focus keyphrase naturally in the first paragraph, the SEO title, the SEO meta description, the slug, at least one H2 or H3, image alt text, and at least 3 total times in the body for a long-form article. Use synonyms elsewhere; never keyword-stuff.
+      - Provide 3 to 6 outline H2 sections. htmlContent must start with a clear 2-3 sentence introduction that contains the exact focus keyphrase in its first sentence, then use descriptive H2/H3 headings. Do not put the title in an H1 because WordPress supplies it.
+      - Include at least one genuine internal HTML link in htmlContent. Use only the approved site homepage URL supplied above when no article URL list is supplied; never invent a path or URL. Return the same link in internalLinks with its anchor, url, and reason.
+      - Include at least one relevant image placeholder-free paragraph context where the WordPress featured image can be referenced; the app supplies the actual images and alt text.
+      - Keep paragraphs short, use transition words, active voice, and answer the search intent immediately. Do not repeat the keyphrase unnaturally.
       - Create a concise natural Pinterest SEO title, a standalone Pinterest description, and descriptive image alt text. Keep title, description, and alt text as separate fields. Do not join them with a dash. Do not create hashtags.
       - Create an SEO object with focusKeyphrase, title, and metaDescription. The focus keyphrase must be a natural 2-5 word phrase from the keyword. The SEO title must begin with the focus keyphrase and be under 60 characters. The SEO metaDescription must contain the focus keyphrase and be 120-160 characters. Use the focus keyphrase naturally in the article introduction and at least one H2, without keyword stuffing.
       - Do not include Markdown, CSS, scripts, iframes, ratings, reviews, calories, nutrition values, image URLs, medical claims, citations, affiliate claims, ranking promises, or unsupported facts.
@@ -351,7 +357,7 @@ private class NativeBridge(private val activity: Activity, private val webView: 
           "contentType":{"type":"string","enum":["recipe","article"]},"categoryName":{"type":"string"},
           "outline":{"type":"array","items":{"type":"object","properties":{"heading":{"type":"string"},"keyPoints":{"type":"array","items":{"type":"string"}}},"required":["heading","keyPoints"],"additionalProperties":false}},
           "htmlContent":{"type":"string"},
-          "internalLinks":{"type":"array","items":{"type":"object","properties":{"anchor":{"type":"string"},"reason":{"type":"string"}},"required":["anchor","reason"],"additionalProperties":false}},
+          "internalLinks":{"type":"array","items":{"type":"object","properties":{"anchor":{"type":"string"},"url":{"type":"string"},"reason":{"type":"string"}},"required":["anchor","url","reason"],"additionalProperties":false}},
           "recipe":{"type":"object","properties":{"isRecipe":{"type":"boolean"},"description":{"type":"string"},"prepTime":{"type":"string"},"cookTime":{"type":"string"},"totalTime":{"type":"string"},"recipeYield":{"type":"string"},"cuisine":{"type":"string"},"ingredients":{"type":"array","items":{"type":"string"}},"instructions":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"text":{"type":"string"}},"required":["name","text"],"additionalProperties":false}},"notes":{"type":"array","items":{"type":"string"}}},"required":["isRecipe","description","prepTime","cookTime","totalTime","recipeYield","cuisine","ingredients","instructions","notes"],"additionalProperties":false},
           "recipes":{"type":"array","maxItems":12,"items":{"type":"object","properties":{"title":{"type":"string"},"isRecipe":{"type":"boolean"},"description":{"type":"string"},"prepTime":{"type":"string"},"cookTime":{"type":"string"},"totalTime":{"type":"string"},"recipeYield":{"type":"string"},"cuisine":{"type":"string"},"ingredients":{"type":"array","items":{"type":"string"}},"instructions":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"text":{"type":"string"}},"required":["name","text"],"additionalProperties":false}},"notes":{"type":"array","items":{"type":"string"}}},"required":["title","isRecipe","description","prepTime","cookTime","totalTime","recipeYield","cuisine","ingredients","instructions","notes"],"additionalProperties":false}},
           "pinterest":{"type":"object","properties":{"title":{"type":"string"},"description":{"type":"string"},"altText":{"type":"string"}},"required":["title","description","altText"],"additionalProperties":false},
