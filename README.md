@@ -33,3 +33,8 @@ gradle :app:assembleRelease
 ## الأمان
 
 لا توجد مفاتيح API أو كلمات مرور داخل المصدر. تُدخل مفاتيح Article API وWordPress وPinterest وCloudflare من Settings وتُحفظ الأسرار عبر EncryptedSharedPreferences. لا تضف `local.properties` أو ملفات التوقيع إلى Git.
+
+
+## سياسة التحديث
+
+OrbitPress 5 يستخدم applicationId ثابتًا (`com.askinz.publisher.v5`) ومفتاح توقيع ثابتًا. لذلك تحتفظ تحديثات 5.x بالمسودات والإعدادات وبيانات Editorial Pipeline تلقائيًا ولا تتطلب حذف التطبيق أو إعادة إدخال البيانات. النسخة الأولى الموقعة بالمفتاح الثابت هي ترقية انتقالية واحدة؛ بعد تثبيتها تصبح كل تحديثات 5.x فوقية.

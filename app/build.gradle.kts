@@ -11,15 +11,21 @@ android {
     applicationId = "com.askinz.publisher.v5"
     minSdk = 26
     targetSdk = 35
-    versionCode = 9
+    versionCode = 10
     versionName = "5.0.0"
   }
 
+  signingConfigs {
+    create("stableRelease") {
+      storeFile = file("../signing/orbitpress-v5-release.jks")
+      storePassword = "OrbitPress5Store2026!"
+      keyAlias = "orbitpress-release"
+      keyPassword = "OrbitPress5Key2026!"
+    }
+  }
   buildTypes {
     getByName("release") {
-      // Public test build: use the CI-generated debug key so Android can install it.
-      // Production distribution should replace this with a private release keystore.
-      signingConfig = signingConfigs.getByName("debug")
+      signingConfig = signingConfigs.getByName("stableRelease")
     }
   }
 
