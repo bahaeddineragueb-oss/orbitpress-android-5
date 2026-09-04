@@ -535,8 +535,9 @@ private class NativeBridge(private val activity: Activity, private val webView: 
           val pinTitle = draft.optString("pinterestTitle", draft.optString("title")).trim().take(100)
           val pinDescription = draft.optString("pinterestDescription", draft.optString("metaDescription")).trim().take(800)
           val pinAltText = pinterestImageAltText(draft)
-          val shareDescription = listOf(pinTitle, pinDescription).filter { it.isNotBlank() }.joinToString(" — ")
-          val share = "https://www.pinterest.com/pin/create/button/?url=" + java.net.URLEncoder.encode(canonical, "UTF-8") + "&media=" + java.net.URLEncoder.encode(pinterestUrl, "UTF-8") + "&description=" + java.net.URLEncoder.encode(shareDescription, "UTF-8") + "&title=" + java.net.URLEncoder.encode(pinTitle, "UTF-8")
+          // Pinterest's legacy create URL has one reliable text field: description.
+          // Never concatenate the title into it; title is supplied by WordPress OG metadata.
+          val share = "https://www.pinterest.com/pin/create/button/?url=" + java.net.URLEncoder.encode(canonical, "UTF-8") + "&media=" + java.net.URLEncoder.encode(pinterestUrl, "UTF-8") + "&description=" + java.net.URLEncoder.encode(pinDescription, "UTF-8")
           content += WordPressMarkup.pinterestSaveButton(share, pinTitle, pinDescription, pinterestUrl, pinAltText)
         }
         if (inspection.getBoolean("missingSchema")) {
@@ -613,8 +614,9 @@ private class NativeBridge(private val activity: Activity, private val webView: 
     val pinTitle = draft.optString("pinterestTitle", draft.optString("title")).trim().take(100)
     val pinDescription = draft.optString("pinterestDescription", draft.optString("metaDescription")).trim().take(800)
     val pinAltText = pinterestImageAltText(draft)
-    val shareDescription = listOf(pinTitle, pinDescription).filter { it.isNotBlank() }.joinToString(" — ")
-    val share = "https://www.pinterest.com/pin/create/button/?url=" + java.net.URLEncoder.encode("$root/$slug/", "UTF-8") + "&media=" + java.net.URLEncoder.encode(pinterestUrl, "UTF-8") + "&description=" + java.net.URLEncoder.encode(shareDescription, "UTF-8") + "&title=" + java.net.URLEncoder.encode(pinTitle, "UTF-8")
+    // Pinterest's legacy create URL has one reliable text field: description.
+    // Never concatenate the title into it; title is supplied by WordPress OG metadata.
+    val share = "https://www.pinterest.com/pin/create/button/?url=" + java.net.URLEncoder.encode("$root/$slug/", "UTF-8") + "&media=" + java.net.URLEncoder.encode(pinterestUrl, "UTF-8") + "&description=" + java.net.URLEncoder.encode(pinDescription, "UTF-8")
     val featuredBlock = WordPressMarkup.featuredImage(featuredUrl, featuredAltText)
     val pinBlock = WordPressMarkup.pinterestSaveButton(share, pinTitle, pinDescription, pinterestUrl, pinAltText)
     val schema = DraftContract.buildSchema(draft, "$root/$slug/", listOf(featuredUrl, pinterestUrl))
