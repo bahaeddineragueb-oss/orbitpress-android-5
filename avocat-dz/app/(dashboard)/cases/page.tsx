@@ -4,6 +4,7 @@ import { mockCases, mockClients, mockHearings, mockDocuments, mockFees } from "@
 import { CourtCase, CaseStatus } from "@/lib/types";
 import { formatDateShort, formatDZD, uid } from "@/lib/utils";
 import { Scale, Search, Plus, MapPin, Calendar, User, Clock, FileText, Gavel, Filter, TrendingUp } from "lucide-react";
+import { CourtSelector } from "@/components/CourtSelector";
 
 const statuses: CaseStatus[] = ["جديد", "قيد المتابعة", "مؤجل", "محكوم", "استئناف", "طعن", "مغلق", "مؤرشف"];
 
@@ -13,6 +14,7 @@ export default function CasesPage() {
   const [statusFilter, setStatusFilter] = useState<string>("الكل");
   const [selected, setSelected] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [courtPick, setCourtPick] = useState<{ wilayaCode: string; wilaya: string; council: string; tribunal: string; section: string } | null>(null);
   const [form, setForm] = useState<Partial<CourtCase>>({ title: "", court: "محكمة الرويبة", category: "مدني", status: "جديد", section: "مدني", clientRole: "مدعي", council: "مجلس قضاء الجزائر", opponent: "" });
 
   const filtered = useMemo(() => cases.filter(c => {
@@ -23,15 +25,16 @@ export default function CasesPage() {
 
   const addCase = () => {
     if (!form.title || !form.fileNumber) return alert("عنوان القضية ورقم الملف مطلوبان");
+    if (!courtPick) return alert("اختر الولاية والمحكمة والقسم من القائمة");
     const newCase: CourtCase = {
       id: uid(),
       fileNumber: form.fileNumber!,
       caseNumber: form.caseNumber || form.fileNumber!,
       clientId: mockClients[0].id,
       title: form.title!,
-      court: form.court!,
-      council: form.council!,
-      section: form.section!,
+      court: courtPick.tribunal,
+      council: courtPick.council,
+      section: courtPick.section,
       category: form.category as any,
       clientRole: form.clientRole as any,
       opponent: form.opponent || "غير محدد",
@@ -42,6 +45,7 @@ export default function CasesPage() {
     setCases([newCase, ...cases]);
     setShowForm(false);
     setForm({ title: "", court: "محكمة الرويبة", category: "مدني", status: "جديد", section: "مدني", clientRole: "مدعي", council: "مجلس قضاء الجزائر", opponent: "" });
+    setCourtPick(null);
   };
 
   const selectedCase = cases.find(c => c.id === selected);
@@ -58,13 +62,11 @@ export default function CasesPage() {
 
       {showForm && (
         <div className="rounded-2xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50] p-5">
-          <h3 className="font-bold mb-4">فتح ملف جديد</h3>
-          <div className="grid md:grid-cols-3 gap-4">
+          <h3 className="font-bold mb-4">فتح ملف جديد — اختيار من قاعدة وزارة العدل (لا كتابة يدوية)</h3>
+          <div className="grid md:grid-cols-2 gap-4">
             <input placeholder="رقم الملف * (مثال: 2026/500)" value={form.fileNumber || ""} onChange={e => setForm({ ...form, fileNumber: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <input placeholder="رقم القضية" value={form.caseNumber || ""} onChange={e => setForm({ ...form, caseNumber: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
-            <input placeholder="عنوان القضية *" value={form.title || ""} onChange={e => setForm({ ...form, title: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50] md:col-span-1" />
-            <input placeholder="المحكمة" value={form.court || ""} onChange={e => setForm({ ...form, court: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
-            <input placeholder="القسم" value={form.section || ""} onChange={e => setForm({ ...form, section: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            <input placeholder="عنوان القضية *" value={form.title || ""} onChange={e => setForm({ ...form, title: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50] md:col-span-2" />
             <input placeholder="الخصم" value={form.opponent || ""} onChange={e => setForm({ ...form, opponent: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value as any })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
               <option>مدني</option><option>جزائي</option><option>إداري</option><option>تجاري</option><option>أسرة</option><option>عقاري</option><option>اجتماعي</option>
@@ -72,10 +74,18 @@ export default function CasesPage() {
             <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value as any })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
               {statuses.map(s => <option key={s}>{s}</option>)}
             </select>
-            <div className="flex gap-3 md:col-span-3">
-              <button onClick={addCase} className="flex-1 py-3 rounded-xl bg-[#0e7490] text-white font-bold">حفظ الملف</button>
-              <button onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-xl border dark:border-[#1e2e50]">إلغاء</button>
-            </div>
+            <select value={form.clientRole} onChange={e => setForm({ ...form, clientRole: e.target.value as any })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
+              <option>مدعي</option><option>مدعية</option><option>مدعى عليه</option><option>متهم</option><option>ضحية</option><option>مستأنف</option>
+            </select>
+          </div>
+          <div className="mt-6">
+            <div className="text-sm font-bold mb-2 flex items-center gap-2">🏛️ الجهة القضائية — اختيار من قاعدة بيانات وزارة العدل (58 ولاية)</div>
+            <CourtSelector onChange={setCourtPick} value={courtPick || undefined} />
+            {!courtPick && <div className="text-xs text-amber-600 mt-2">⚠️ يجب اختيار الولاية والمحكمة والقسم قبل الحفظ</div>}
+          </div>
+          <div className="flex gap-3 mt-6">
+            <button onClick={addCase} className="flex-1 py-3 rounded-xl bg-[#0e7490] text-white font-bold">حفظ الملف</button>
+            <button onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-xl border dark:border-[#1e2e50]">إلغاء</button>
           </div>
         </div>
       )}

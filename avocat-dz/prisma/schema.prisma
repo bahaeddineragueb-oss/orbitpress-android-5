@@ -1,0 +1,214 @@
+// Prisma schema — Maktabi Real Database (SQLite)
+// المصدر: وزارة العدل الجزائرية + 10 ولايات جديدة (مرسوم 21-117)
+// 58 ولاية، 256 محكمة/فرع، 58 مجلس قضائي، 58 محكمة إدارية
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ── الجهات القضائية ──
+model Wilaya {
+  code       String   @id // 01..58
+  name       String   @unique // أدرار
+  nameAr     String   // ولاية أدرار
+  isNew      Boolean  @default(false) // هل من الولايات 10 الجديدة
+  council    Council?
+  tribunals  Tribunal[]
+  adminCourt AdminCourt?
+
+  @@map("wilayas")
+}
+
+model Council {
+  id         String   @id @default(cuid())
+  wilayaCode String   @unique
+  wilaya     Wilaya   @relation(fields: [wilayaCode], references: [code], onDelete: Cascade)
+  name       String   // مجلس قضاء أدرار
+  adminCourt AdminCourt?
+  tribunals  Tribunal[]
+
+  @@map("councils")
+}
+
+model Tribunal {
+  id         String   @id @default(cuid())
+  councilId  String
+  council    Council  @relation(fields: [councilId], references: [id], onDelete: Cascade)
+  wilayaCode String
+  wilaya     Wilaya   @relation(fields: [wilayaCode], references: [code])
+  name       String   // محكمة أدرار / فرع برج باجي مختار
+  isBranch   Boolean  @default(false)
+  // الأقسام متاحة لكل محكمة (نفس القائمة، لكن يمكن تخصيصها)
+  // نحفظها كـ JSON أو علاقة
+
+  @@unique([councilId, name])
+  @@map("tribunals")
+}
+
+model AdminCourt {
+  id         String   @id @default(cuid())
+  wilayaCode String   @unique
+  wilaya     Wilaya   @relation(fields: [wilayaCode], references: [code])
+  councilId  String   @unique
+  council    Council  @relation(fields: [councilId], references: [id])
+  name       String   // المحكمة الإدارية بأدرار
+
+  @@map("admin_courts")
+}
+
+model CourtSection {
+  id   String @id @default(cuid())
+  name String @unique // المدني، الجزائي...
+
+  @@map("court_sections")
+}
+
+// ── إدارة المكتب (المحاماة) ──
+model Client {
+  id         String   @id @default(cuid())
+  fullName   String
+  phone      String
+  email      String?
+  address    String?
+  profession String?
+  nationalId String?
+  notes      String?
+  createdAt  DateTime @default(now())
+  cases      CourtCase[]
+  fees       Fee[]
+
+  @@map("clients")
+}
+
+model CourtCase {
+  id             String    @id @default(cuid())
+  fileNumber     String    @unique // 2026/184
+  caseNumber     String
+  clientId       String
+  client         Client    @relation(fields: [clientId], references: [id])
+  title          String
+  wilayaCode     String?   // 16
+  councilId      String?
+  tribunalId     String?
+  tribunalName   String?   // denormalized for quick display
+  councilName    String?
+  section        String?   // المدني
+  category       String    // عقاري...
+  clientRole     String
+  opponent       String
+  opponentLawyer String?
+  status         String
+  assignedLawyer String?
+  openDate       DateTime
+  closeDate      DateTime?
+  notes          String?
+  strategy       String?
+  archivedAt     DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  hearings       Hearing[]
+  deadlines      Deadline[]
+  documents      Document[]
+  fees           Fee[]
+  expenses       Expense[]
+
+  @@index([clientId])
+  @@index([status])
+  @@map("cases")
+}
+
+model Hearing {
+  id       String   @id @default(cuid())
+  caseId   String
+  kase     CourtCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  date     DateTime
+  court    String
+  room     String?
+  judge    String?
+  reason   String?
+  decision String?
+  nextDate DateTime?
+  status   String
+
+  @@map("hearings")
+}
+
+model Deadline {
+  id       String   @id @default(cuid())
+  caseId   String
+  kase     CourtCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  title    String
+  dueDate  DateTime
+  type     String
+  priority String
+  done     Boolean  @default(false)
+
+  @@map("deadlines")
+}
+
+model Document {
+  id         String   @id @default(cuid())
+  caseId     String
+  kase       CourtCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  title      String
+  category   String
+  date       DateTime
+  fileName   String?
+  filePath   String?
+  uploadedBy String
+
+  @@map("documents")
+}
+
+model Fee {
+  id       String   @id @default(cuid())
+  caseId   String
+  kase     CourtCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  clientId String
+  client   Client   @relation(fields: [clientId], references: [id])
+  total    Int
+  paid     Int
+  dueDate  DateTime?
+  method   String?
+
+  @@map("fees")
+}
+
+model Expense {
+  id       String   @id @default(cuid())
+  caseId   String?
+  kase     CourtCase? @relation(fields: [caseId], references: [id])
+  title    String
+  amount   Int
+  date     DateTime
+  category String
+
+  @@map("expenses")
+}
+
+model User {
+  id       String @id @default(cuid())
+  name     String
+  email    String @unique
+  role     String // admin, lawyer, trainee, secretary
+  active   Boolean @default(true)
+
+  @@map("users")
+}
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  userId   String?
+  action   String
+  entity   String
+  entityId String?
+  at       DateTime @default(now())
+  details  String? // JSON
+
+  @@map("audit_logs")
+}

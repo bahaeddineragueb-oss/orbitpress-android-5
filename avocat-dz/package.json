@@ -24,30 +24,32 @@
     "postinstall": "electron-builder install-app-deps || true"
   },
   "dependencies": {
+    "clsx": "2.1.1",
+    "date-fns": "3.6.0",
+    "lucide-react": "0.441.0",
     "next": "14.2.5",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "lucide-react": "0.441.0",
-    "clsx": "2.1.1",
-    "tailwind-merge": "2.5.2",
     "recharts": "2.12.7",
-    "date-fns": "3.6.0"
+    "tailwind-merge": "2.5.2"
   },
   "devDependencies": {
-    "typescript": "5.5.4",
+    "@prisma/client": "^5.22.0",
     "@types/node": "20.14.12",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
-    "tailwindcss": "3.4.10",
-    "postcss": "8.4.40",
     "autoprefixer": "10.4.20",
-    "eslint": "8.57.0",
-    "eslint-config-next": "14.2.5",
+    "concurrently": "9.0.1",
+    "cross-env": "7.0.3",
     "electron": "30.5.1",
     "electron-builder": "24.13.3",
-    "concurrently": "9.0.1",
-    "wait-on": "8.0.1",
-    "cross-env": "7.0.3"
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.5",
+    "postcss": "8.4.40",
+    "prisma": "^5.22.0",
+    "tailwindcss": "3.4.10",
+    "typescript": "5.5.4",
+    "wait-on": "8.0.1"
   },
   "build": {
     "appId": "dz.maktabi.avocat",
@@ -61,23 +63,38 @@
       "out/**/*",
       "electron/**/*",
       "public/**/*",
+      "prisma/maktabi.db",
+      "data/courts.json",
+      "lib/courts-data.json",
       "package.json"
     ],
     "extraResources": [
       {
         "from": "out",
         "to": "out"
+      },
+      {
+        "from": "prisma/maktabi.db",
+        "to": "maktabi.db"
+      },
+      {
+        "from": "data",
+        "to": "data"
       }
     ],
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "icon": "build/icon.ico",
@@ -93,7 +110,10 @@
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
       "multiLanguageInstaller": true,
-      "languages": ["en_US", "fr_FR"]
+      "languages": [
+        "en_US",
+        "fr_FR"
+      ]
     },
     "portable": {
       "artifactName": "Maktabi-Portable-${version}.exe"
