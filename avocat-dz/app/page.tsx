@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Gavel, Shield, Calendar, Files, Wallet, Sparkles, ArrowLeft, Check, Scale, Users, Building2, Bot } from "lucide-react";
+import { Gavel, Shield, Calendar, Files, Wallet, Sparkles, ArrowLeft, Check, Scale, Users, Building2, Bot, MonitorDown, HardDrive } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -34,10 +34,14 @@ export default function Landing() {
             </p>
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/dashboard" className="px-6 py-3 rounded-xl bg-[#0e7490] text-white font-bold">جرّب لوحة التحكم الآن</Link>
-              <a href="#features" className="px-6 py-3 rounded-xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50] font-bold">استكشاف المزايا</a>
+              <Link href="/download" className="px-6 py-3 rounded-xl border-2 border-[#0e7490] bg-white dark:bg-[#0f1b33] text-[#0e7490] font-extrabold inline-flex items-center gap-2"><MonitorDown size={18} /> تحميل للـ PC (Windows .exe)</Link>
             </div>
-            <div className="mt-6 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
-              <span className="inline-flex items-center gap-2"><Check size={16} className="text-emerald-600" /> يعمل بدون إنترنت (PWA)</span>
+            <div className="mt-4 p-3 rounded-xl bg-gradient-to-br from-slate-900 to-[#0e7490] text-white flex items-center justify-between">
+              <div className="flex items-center gap-2 text-sm"><HardDrive size={16} /> <b>Logiciel PC</b> — يعمل بدون انترنت، بياناتك على جهازك</div>
+              <Link href="/download" className="text-xs px-3 py-1 rounded-full bg-white text-slate-900 font-bold">التحميل مجاني →</Link>
+            </div>
+            <div className="mt-4 flex items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
+              <span className="inline-flex items-center gap-2"><Check size={16} className="text-emerald-600" /> logiciel PC + PWA</span>
               <span className="inline-flex items-center gap-2"><Check size={16} className="text-emerald-600" /> RTL كامل</span>
               <span className="inline-flex items-center gap-2"><Check size={16} className="text-emerald-600" /> آمن ومشفّر</span>
             </div>
@@ -85,9 +89,12 @@ export default function Landing() {
         <div className="mt-8 rounded-2xl border bg-gradient-to-br from-[#0e7490] to-[#063544] text-white p-6 lg:p-8 flex flex-col lg:flex-row items-center justify-between gap-4">
           <div>
             <div className="font-display font-extrabold text-xl">جاهز لتنظيم مكتبك في دقائق؟</div>
-            <div className="text-white/80 text-sm mt-1">يعمل على الويب والهاتف مع مزامنة فورية — بدون تعقيد.</div>
+            <div className="text-white/80 text-sm mt-1">حمّل الـ logiciel PC وشغّله بدون انترنت — أو جرّبه على الويب الآن.</div>
           </div>
-          <Link href="/dashboard" className="px-6 py-3 rounded-xl bg-white text-[#063544] font-extrabold">ابدأ الآن — مجاناً</Link>
+          <div className="flex gap-3">
+            <Link href="/download" className="px-6 py-3 rounded-xl bg-white text-[#063544] font-extrabold inline-flex items-center gap-2"><MonitorDown size={18} /> تحميل للـ PC</Link>
+            <Link href="/dashboard" className="px-6 py-3 rounded-xl bg-white/15 border border-white/20 font-bold">جرّب الويب</Link>
+          </div>
         </div>
       </section>
 

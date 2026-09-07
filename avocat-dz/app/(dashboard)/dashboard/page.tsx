@@ -1,5 +1,6 @@
 "use client";
 import { StatCard } from "@/components/StatCard";
+import { PCBanner } from "@/components/PCBanner";
 import { mockCases, mockClients, mockDeadlines, mockDocuments, mockFees, mockHearings, mockExpenses } from "@/lib/data";
 import { formatDZD, formatDateShort, daysUntil } from "@/lib/utils";
 import Link from "next/link";
@@ -39,6 +40,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
+      <PCBanner />
       {/* Welcome */}
       <div className="rounded-2xl bg-gradient-to-br from-[#0e7490] to-[#063544] text-white p-6 lg:p-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_50%)]" />

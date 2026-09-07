@@ -7,3 +7,10 @@ dist
 .DS_Store
 *.log
 .vercel
+# Electron
+dist-electron
+*.exe
+*.dmg
+*.AppImage
+*.snap
+*.blockmap

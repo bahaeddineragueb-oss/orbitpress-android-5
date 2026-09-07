@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Scale, CalendarDays, AlarmClock, Files, FileText, Wallet, Receipt, Building2, BarChart3, Bot, Archive, Settings, Gavel, Sparkles } from "lucide-react";
+import { LayoutDashboard, Users, Scale, CalendarDays, AlarmClock, Files, FileText, Wallet, Receipt, Building2, BarChart3, Bot, Archive, Settings, Gavel, Sparkles, MonitorDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -18,6 +18,7 @@ const nav = [
   { href: "/reports", label: "التقارير", icon: BarChart3 },
   { href: "/assistant", label: "المساعد الذكي", icon: Bot },
   { href: "/archive", label: "الأرشيف", icon: Archive },
+  { href: "/download", label: "تحميل للـ PC", icon: MonitorDown },
 ];
 
 export function Sidebar() {
@@ -68,7 +69,10 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-3 border-t dark:border-[#1e2e50]">
+      <div className="p-3 border-t dark:border-[#1e2e50] space-y-2">
+        <Link href="/download" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-br from-[#0e7490] to-[#063544] text-white font-bold shadow">
+          <MonitorDown size={18} /> تحميل للـ PC
+        </Link>
         <Link href="/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300">
           <Settings size={18} /> الإعدادات
         </Link>

@@ -4,7 +4,7 @@
 
 > العميل → القضية → الإجراءات والجلسات → الوثائق → الأتعاب → المصاريف → الآجال → الأرشيف
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Tailwind](https://img.shields.io/badge/Tailwind-3-38bdf8) ![RTL](https://img.shields.io/badge/RTL-عربي-green) ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Next.js](https://img.shields.io/badge/Next.js-14-black) ![Electron](https://img.shields.io/badge/Electron-30-47848F) ![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6) ![Offline](https://img.shields.io/badge/Offline-100%25-green) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
@@ -44,19 +44,45 @@
 
 ---
 
-## 🚀 التشغيل
+## 🖥️ Logiciel PC (Windows) — الجديد في v1.1
+
+**الآن logiciel PC حقيقي لـ Windows 10/11 — يعمل بدون انترنت!**
+
+| النسخة | الملف | الحجم |
+|---|---|---|
+| **المثبت** | `Maktabi-Setup-1.0.0.exe` | ~85MB |
+| **المحمولة** | `Maktabi-Portable-1.0.0.exe` | ~80MB |
+
+**التثبيت في دقيقة:**
+1. حمّل المثبت من صفحة `/download` أو من `Releases`
+2. شغّله → اختر المجلد → أنشئ اختصار سطح المكتب
+3. افتح **مكتبي** — بياناتك تُحفظ في `AppData/Roaming/maktabi/maktabi-data.json` (لا سحابة)
+
+راجع `docs/PC_GUIDE_AR.md` + `README_PC.md` للتفاصيل.
 
 ```bash
-# 1) التثبيت
+# بناء المثبت من المصدر (Windows)
 npm install
+npm run dist:win      # → dist/Maktabi-Setup-1.0.0.exe
+npm run dist:portable # → dist/Maktabi-Portable-1.0.0.exe
+```
 
-# 2) التشغيل (يفتح على 0.0.0.0 للـ Preview)
-npm run dev
-# افتح http://localhost:3000
+---
 
-# 3) البناء
-npm run build
-npm start
+## 🚀 التشغيل (Web + PC)
+
+```bash
+# Web فقط
+npm install
+npm run dev              # http://localhost:3000
+npm run build            # build للويب (Vercel)
+
+# PC (Electron) — للتطوير
+npm run dev:pc           # يشغّل Next + Electron معاً
+
+# PC — بناء المثبت
+npm run build:pc         # تصدير Static للـ PC
+npm run dist:win         # بناء .exe
 ```
 
 > يتطلب Node.js 18+
@@ -67,37 +93,32 @@ npm start
 
 ```
 avocat-dz/
+├─ electron/               # Logiciel PC
+│  ├─ main.js              # نافذة + قوائم + IPC
+│  └─ preload.js           # جسر window.electronAPI
 ├─ app/
-│  ├─ page.tsx                 # Landing تسويقية
-│  ├─ layout.tsx               # RTL + Fonts
-│  ├─ globals.css
+│  ├─ page.tsx             # Landing + زر تحميل PC
 │  └─ (dashboard)/
-│     ├─ layout.tsx            # Sidebar + Topbar + Drawer موبايل
-│     ├─ dashboard/page.tsx    # لوحة التحكم + Charts
-│     ├─ clients/page.tsx
-│     ├─ cases/page.tsx        # Timeline
-│     ├─ sessions/page.tsx     # List/Calendar
-│     ├─ deadlines/page.tsx
-│     ├─ documents/page.tsx
-│     ├─ templates/page.tsx    # مولد النماذج
-│     ├─ fees/page.tsx
-│     ├─ expenses/page.tsx
-│     ├─ courts/page.tsx
-│     ├─ reports/page.tsx
-│     ├─ assistant/page.tsx    # AI mock
-│     ├─ archive/page.tsx
-│     └─ settings/page.tsx
+│     ├─ dashboard/page.tsx # + PCBanner
+│     ├─ download/page.tsx  # صفحة تحميل PC
+│     └─ ... (13 قسم)
 ├─ components/
-│  ├─ Sidebar.tsx
+│  ├─ Sidebar.tsx          # + رابط تحميل PC
 │  ├─ Topbar.tsx
-│  └─ StatCard.tsx
+│  ├─ StatCard.tsx
+│  └─ PCBanner.tsx         # بانر PC/ويب
 ├─ lib/
-│  ├─ types.ts                 # كل الكيانات
-│  ├─ data.ts                  # Mock + courtsDB + templates
-│  └─ utils.ts
+│  ├─ types.ts
+│  ├─ data.ts
+│  ├─ utils.ts
+│  └─ db.ts                # تخزين موحد: localStorage (ويب) / JSON (PC)
+├─ build/                  # أيقونات
+│  └─ icon.png / icon.ico
+├─ out/                    # تصدير Static للـ PC (ELECTRON=true)
 └─ docs/
-   ├─ SCHEMA.md                # مخطط قاعدة البيانات
-   └─ UI_SPEC.md
+   ├─ SCHEMA.md
+   ├─ UI_SPEC.md
+   └─ PC_GUIDE_AR.md       # دليل PC
 ```
 
 ---
@@ -144,9 +165,9 @@ npm run build && npx cap sync
 ## 🛣️ خارطة الطريق
 
 - [x] v1.0 — كل الأقسام الأساسية + Mock data جزائرية
-- [ ] v1.1 — ربط Prisma + Supabase + Auth حقيقي
-- [ ] v1.2 — رفع ملفات S3 + معاينة PDF حقيقية + OCR لاستخراج آجال
-- [ ] v1.3 — إشعارات Push للآجال والجلسات
+- [x] v1.1 — **Logiciel PC (Windows)**: Electron + Offline + Installer + Portable
+- [ ] v1.2 — ربط Prisma/SQLite + Auth + نسخ احتياطي سحابي اختياري
+- [ ] v1.3 — OCR لاستخراج آجال من PDF + إشعارات Desktop
 - [ ] v1.4 — تصدير Word/PDF للنماذج + ختم المكتب
 - [ ] v2.0 — تطبيق Android/iOS + مزامنة
 
@@ -166,6 +187,6 @@ MIT — استخدمه لمكتبك أو لعملائك بحرية.
 
 ---
 
-**صُنع بـ ❤️ في الجزائر — مكتبي v1.0**
+**صُنع بـ ❤️ في الجزائر — مكتبي v1.1 PC**
 > هل تريد Repo جديد على GitHub؟ أنشئ repo فارغ باسم `avocat-dz` على https://github.com/new ثم أخبرني لأرفعه فوراً — أو سأضعه في `orbitpress-android-5/avocat-dz` مؤقتاً.
 

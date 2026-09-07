@@ -2,12 +2,26 @@
   "name": "avocat-dz",
   "version": "1.0.0",
   "private": true,
-  "description": "مكتبي - نظام تسيير مكاتب المحاماة الجزائرية | Avocat DZ Pro",
+  "description": "مكتبي - logiciel PC لتسيير مكاتب المحاماة الجزائرية | Avocat DZ Pro",
+  "main": "electron/main.js",
+  "author": "Maktabi DZ <support@maktabi.dz>",
+  "homepage": "https://github.com/bahaeddineragueb-oss/avocat-dz",
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3000",
+    "dev:next": "next dev -H 0.0.0.0 -p 3000",
+    "dev:electron": "wait-on http://localhost:3000 && electron .",
+    "dev:pc": "concurrently \"npm:dev:next\" \"npm:dev:electron\"",
     "build": "next build",
+    "build:web": "next build",
+    "build:pc": "ELECTRON=true next build",
     "start": "next start -H 0.0.0.0 -p 3000",
-    "lint": "next lint"
+    "lint": "next lint",
+    "electron": "electron .",
+    "electron:build": "ELECTRON=true next build && electron-builder --win --x64",
+    "dist": "npm run electron:build",
+    "dist:win": "ELECTRON=true next build && electron-builder --win --x64",
+    "dist:portable": "ELECTRON=true next build && electron-builder --win portable --x64",
+    "postinstall": "electron-builder install-app-deps || true"
   },
   "dependencies": {
     "next": "14.2.5",
@@ -28,6 +42,69 @@
     "postcss": "8.4.40",
     "autoprefixer": "10.4.20",
     "eslint": "8.57.0",
-    "eslint-config-next": "14.2.5"
+    "eslint-config-next": "14.2.5",
+    "electron": "30.5.1",
+    "electron-builder": "24.13.3",
+    "concurrently": "9.0.1",
+    "wait-on": "8.0.1",
+    "cross-env": "7.0.3"
+  },
+  "build": {
+    "appId": "dz.maktabi.avocat",
+    "productName": "مكتبي - Avocat DZ",
+    "copyright": "Copyright © 2026 Maktabi DZ",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "out/**/*",
+      "electron/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "out",
+        "to": "out"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.ico",
+      "publisherName": "Maktabi DZ"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "مكتبي",
+      "installerIcon": "build/icon.ico",
+      "uninstallerIcon": "build/icon.ico",
+      "installerHeaderIcon": "build/icon.ico",
+      "multiLanguageInstaller": true,
+      "languages": ["en_US", "fr_FR"]
+    },
+    "portable": {
+      "artifactName": "Maktabi-Portable-${version}.exe"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "build/icon.icns"
+    }
   }
 }
