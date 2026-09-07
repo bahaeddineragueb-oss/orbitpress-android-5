@@ -10,8 +10,8 @@ import org.json.JSONObject
  */
 object DraftContract {
   private val blockedBlocks = Regex("<(script|style|iframe|object|embed)[^>]*>[\\s\\S]*?</\\1>", RegexOption.IGNORE_CASE)
-  private val eventHandlers = Regex("[\\s/]on\\w+\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s>]+)", RegexOption.IGNORE_CASE)
-  private val javascriptUrls = Regex("[\\s/](?:href|src)\\s*=\\s*(?:\"\\s*javascript:[^\"]*\"|'\\s*javascript:[^']*'|javascript:[^\\s>]+)", RegexOption.IGNORE_CASE)
+  private val eventHandlers = Regex("\\son\\w+\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s>]+)", RegexOption.IGNORE_CASE)
+  private val javascriptUrls = Regex("\\s(?:href|src)\\s*=\\s*(?:\"\\s*javascript:[^\"]*\"|'\\s*javascript:[^']*'|javascript:[^\\s>]+)", RegexOption.IGNORE_CASE)
 
   fun cleanSlug(value: String): String = value.lowercase()
     .replace(Regex("[^a-z0-9]+"), "-")
@@ -174,19 +174,16 @@ object DraftContract {
     for (index in 0 until minOf(source?.length() ?: 0, 4)) {
       val item = source?.optJSONObject(index) ?: continue
       val anchor = item.optString("anchor").trim().take(160)
-      val reason = item.optString("reason").trim().take(240)
-      val url = item.optString("url").trim().take(240)
-      if (anchor.isNotBlank()) {
-        result.put(JSONObject().put("anchor", anchor).put("reason", reason).put("url", url))
-      }
+      val reason = item.optString("reason").trim().take(260)
+      if (anchor.isNotBlank() && reason.isNotBlank()) result.put(JSONObject().put("anchor", anchor).put("reason", reason))
     }
     return result
   }
 
   private fun normalizeRecipe(source: JSONObject?, contentType: String): JSONObject {
-    val recipe = source ?: return emptyRecipe()
-    if (contentType != "recipe" && !recipe.optBoolean("isRecipe", false)) return emptyRecipe()
-    val ingredients = stringArray(recipe.optJSONArray("ingredients"), 20, 160)
+    if (contentType != "recipe") return emptyRecipe()
+    val recipe = source ?: JSONObject()
+    val ingredients = stringArray(recipe.optJSONArray("ingredients"), 30, 260)
     val notes = stringArray(recipe.optJSONArray("notes"), 3, 360)
     val instructions = JSONArray()
     val sourceInstructions = recipe.optJSONArray("instructions") ?: JSONArray()
@@ -232,15 +229,15 @@ object DraftContract {
         sequence += 1
         val id = "askinz-section-$sequence"
         headings.add(id to label)
-        "<h2${match.groupValues[1]} id=\"$id\" data-askinz-section=\"$id\" style=\"scroll-margin-top:1.25rem;\">${match.groupValues[2]}</h2>"
+        "<h2${match.groupValues[1]} data-askinz-section=\"$id\" style=\"scroll-margin-top:1.25rem;\">${match.groupValues[2]}</h2>"
       }
     }
     val toc = if (headings.size >= 2) {
-      val items = headings.joinToString("") { "<li style=\"margin:.45rem 0;\"><a href=\"#${escape(it.first)}\" data-askinz-toc=\"true\" style=\"color:#315d37;text-decoration:none;font-weight:700;\">${escape(it.second)}</a></li>" }
+      val items = headings.joinToString("") { "<li style=\"margin:.45rem 0;\"><a href=\"#${escape(it.first)}\" data-askinz-toc=\"true\" onclick=\"document.querySelector('[data-askinz-section=${escape(it.first)}]')?.scrollIntoView({behavior:'smooth',block:'start'});return false;\" style=\"color:#315d37;text-decoration:none;font-weight:700;\">${escape(it.second)}</a></li>" }
       "<details class=\"askinz-table-of-contents\" data-askinz-toc-card=\"true\" open style=\"margin:1rem 0 1.5rem;padding:1rem 1.15rem;border:1px solid #d8e5cc;border-radius:14px;background:#f1f7ec;\"><summary style=\"cursor:pointer;color:#315d37;font-weight:800;letter-spacing:.01em;\">On this page <span style=\"color:#8a5a3c;\">↓</span></summary><ol style=\"margin:.75rem 0 0;padding-left:1.2rem;line-height:1.55;\">$items</ol></details>"
     } else ""
     val recipeCards = if (recipes.length() > 0) renderRecipeCards(recipes, title) else if (isRecipe) renderRecipeCard(recipe, title) else ""
-    val shortcuts = if (isRecipe || recipes.length() > 0) "<nav class=\"askinz-recipe-actions\" aria-label=\"Recipe shortcuts\" style=\"display:flex;flex-wrap:wrap;gap:.7rem;margin:1.5rem 0 1rem;\"><a href=\"#askinz-recipe-1\" data-askinz-jump=\"true\" style=\"display:inline-block;padding:.72rem 1rem;border-radius:999px;background:#315d37;color:#fff;text-decoration:none;font-weight:700;\">Jump to recipe</a><a href=\"#askinz-recipe\" data-askinz-print=\"true\" onclick=\"window.print();return false;\" style=\"display:inline-block;padding:.72rem 1rem;border:1px solid #d9cdbb;border-radius:999px;color:#5c4531;text-decoration:none;font-weight:700;\">Print recipe</a></nav>" else ""
+    val shortcuts = if (isRecipe || recipes.length() > 0) "<nav class=\"askinz-recipe-actions\" aria-label=\"Recipe shortcuts\" style=\"display:flex;flex-wrap:wrap;gap:.7rem;margin:1.5rem 0 1rem;\"><a href=\"#askinz-recipe-1\" data-askinz-jump=\"true\" onclick=\"document.querySelector('.askinz-recipe-card')?.scrollIntoView({behavior:'smooth',block:'start'});return false;\" style=\"display:inline-block;padding:.72rem 1rem;border-radius:999px;background:#315d37;color:#fff;text-decoration:none;font-weight:700;\">Jump to recipe</a><a href=\"#askinz-recipe\" data-askinz-print=\"true\" onclick=\"window.print();return false;\" style=\"display:inline-block;padding:.72rem 1rem;border:1px solid #d9cdbb;border-radius:999px;color:#5c4531;text-decoration:none;font-weight:700;\">Print recipe</a></nav>" else ""
     val cleanedContent = if (isRecipe || recipes.length() > 0) removeDuplicateRecipeSections(content) else content
     return "<article class=\"askinz-article\" style=\"max-width:760px;margin:0 auto;color:#35342f;line-height:1.8;font-size:1.06rem;\">$shortcuts<div class=\"askinz-article-body\">$toc$cleanedContent$recipeCards</div></article>"
   }
@@ -265,8 +262,9 @@ object DraftContract {
     val notes = recipe.optJSONArray("notes") ?: JSONArray()
     val noteItems = (0 until notes.length()).joinToString("") { "<li>${escape(notes.optString(it))}</li>" }
     val notesBlock = if (noteItems.isBlank()) "" else "<details class=\"askinz-recipe-notes\" style=\"margin-top:1.5rem;padding:1rem 1.15rem;border-radius:12px;background:#f1f5e9;\"><summary style=\"cursor:pointer;color:#315d37;font-weight:700;\">Recipe notes &amp; helpful tips</summary><ul style=\"margin:.8rem 0 0;padding-left:1.2rem;line-height:1.75;\">$noteItems</ul></details>"
-    val backToTop = "<p class=\"askinz-recipe-back-to-top\" style=\"margin:1.75rem 0 0;text-align:right;\"><a href=\"#top\" data-askinz-top=\"true\" style=\"color:#315d37;font-weight:700;text-decoration:none;\">Back to top ↑</a></p>"
-    return "<section id=\"askinz-recipe-${index + 1}\" class=\"askinz-recipe-card\" data-recipe-card=\"true\" style=\"margin:2.5rem 0;padding:2rem;border:1px solid #eadfcd;border-radius:18px;background:#fffaf2;box-shadow:0 12px 30px rgba(64,46,25,.06);color:#2f3529;\"><header style=\"padding-bottom:1.25rem;border-bottom:1px solid #eadfcd;\"><p style=\"margin:0 0 .45rem;color:#8a5a3c;font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;\">Askinz kitchen</p><h2 style=\"margin:0;color:#263c2d;font-family:Georgia,serif;font-size:2rem;line-height:1.12;\">${escape(title)}</h2><p style=\"margin:1rem 0 0;line-height:1.7;color:#5e6358;\">${escape(recipe.optString("description"))}</p><div class=\"askinz-recipe-times\" style=\"display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:1rem;font-size:.9rem;color:#49633d;\">$details</div></header><section style=\"margin-top:1.5rem;\"><h3 style=\"margin:0 0 .75rem;color:#263c2d;font-family:Georgia,serif;font-size:1.35rem;\">Ingredients</h3><ul style=\"margin:0;padding-left:1.25rem;line-height:1.85;\">$ingredientItems</ul></section><section style=\"margin-top:1.5rem;\"><h3 style=\"margin:0 0 .75rem;color:#263c2d;font-family:Georgia,serif;font-size:1.35rem;\">Instructions</h3><ol style=\"margin:0;padding-left:1.35rem;line-height:1.8;\">$instructionItems</ol></section>$notesBlock$backToTop</section>"
+    val tools = "<section class=\"askinz-recipe-tools\" data-askinz-recipe-tools=\"true\" aria-label=\"Recipe tools\" style=\"margin:1rem 0 1.75rem;padding:1rem 1.1rem;border:1px solid #d8e5cc;border-radius:14px;background:#f5f8f1;\"><p style=\"margin:0 0 .7rem;color:#315d37;font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;\">Make it yours</p><div style=\"display:flex;flex-wrap:wrap;gap:.65rem;align-items:center;\"><label style=\"display:inline-flex;gap:.4rem;align-items:center;font-weight:700;color:#334332;\">Scale <select data-askinz-serving-scale=\"true\" aria-label=\"Scale ingredient quantities\" style=\"padding:.5rem;border:1px solid #cbd7c5;border-radius:8px;background:#fff;\"><option value=\"0.5\">Half batch</option><option value=\"1\" selected>Original</option><option value=\"2\">Double</option><option value=\"3\">Triple</option></select></label><button type=\"button\" data-askinz-shopping-list=\"true\" style=\"padding:.55rem .75rem;border:1px solid #315d37;border-radius:999px;background:#fff;color:#315d37;font:inherit;font-weight:800;cursor:pointer;\">Copy shopping list</button><button type=\"button\" data-askinz-cooking-mode=\"true\" style=\"padding:.55rem .75rem;border:0;border-radius:999px;background:#315d37;color:#fff;font:inherit;font-weight:800;cursor:pointer;\">Cooking mode</button></div><p data-askinz-tools-status=\"true\" aria-live=\"polite\" style=\"margin:.65rem 0 0;color:#5e6358;font-size:.9rem;\"></p></section>"
+    val backToTop = "<p class=\"askinz-recipe-back-to-top\" style=\"margin:1.75rem 0 0;text-align:right;\"><a href=\"#top\" data-askinz-top=\"true\" onclick=\"window.scrollTo({top:0,behavior:'smooth'});return false;\" style=\"color:#315d37;font-weight:700;text-decoration:none;\">Back to top ↑</a></p>"
+    return "<section id=\"askinz-recipe-${index + 1}\" class=\"askinz-recipe-card\" data-recipe-card=\"true\" style=\"margin:2.5rem 0;padding:2rem;border:1px solid #eadfcd;border-radius:18px;background:#fffaf2;box-shadow:0 12px 30px rgba(64,46,25,.06);color:#2f3529;\"><header style=\"padding-bottom:1.25rem;border-bottom:1px solid #eadfcd;\"><p style=\"margin:0 0 .45rem;color:#8a5a3c;font-size:.75rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;\">Askinz kitchen</p><h2 style=\"margin:0;color:#263c2d;font-family:Georgia,serif;font-size:2rem;line-height:1.12;\">${escape(title)}</h2><p style=\"margin:1rem 0 0;line-height:1.7;color:#5e6358;\">${escape(recipe.optString("description"))}</p><div class=\"askinz-recipe-times\" style=\"display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin-top:1rem;font-size:.9rem;color:#49633d;\">$details</div></header><section style=\"margin-top:1.5rem;\"><h3 style=\"margin:0 0 .75rem;color:#263c2d;font-family:Georgia,serif;font-size:1.35rem;\">Ingredients</h3><ul style=\"margin:0;padding-left:1.25rem;line-height:1.85;\">$ingredientItems</ul></section><section style=\"margin-top:1.5rem;\"><h3 style=\"margin:0 0 .75rem;color:#263c2d;font-family:Georgia,serif;font-size:1.35rem;\">Instructions</h3><ol style=\"margin:0;padding-left:1.35rem;line-height:1.8;\">$instructionItems</ol></section>$notesBlock$tools$backToTop</section>"
   }
 
   private fun escape(value: String): String = value.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;").replace("'", "&#39;")
