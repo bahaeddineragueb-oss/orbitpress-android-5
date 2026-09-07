@@ -46,9 +46,27 @@ export const NATIONAL_COURTS: WilayaCourts = {
   isNew: false,
 };
 
+// المحاكم التجارية المتخصصة — 5 محاكم وطنية (مرسوم 22-148 المؤرخ 28 مارس 2022)
+// المصدر: وزارة العدل — المحاكم التجارية المتخصصة بالجزائر/وهران/عنابة/قسنطينة/ورقلة
+export const SPECIALIZED_COMMERCIAL_COURTS: WilayaCourts = {
+  code: "99",
+  wilaya: "المحاكم التجارية المتخصصة",
+  wilayaAr: "المحاكم التجارية المتخصصة",
+  council: "المحاكم التجارية المتخصصة",
+  tribunals: [
+    { name: "المحكمة التجارية المتخصصة بالجزائر", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بوهران", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بعنابة", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بقسنطينة", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بورقلة", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+  ],
+  adminCourt: null,
+  isNew: false,
+};
+
 const rawData: WilayaCourts[] = data as any;
-// دمج الولايات 58 + الهيئات العليا (المحكمة العليا + مجلس الدولة) = 59 جهة
-export const courtsData: WilayaCourts[] = [...rawData, NATIONAL_COURTS];
+// دمج الولايات 58 + الهيئات العليا (المحكمة العليا + مجلس الدولة) + التجارية المتخصصة = 60 جهة
+export const courtsData: WilayaCourts[] = [...rawData, NATIONAL_COURTS, SPECIALIZED_COMMERCIAL_COURTS];
 
 // Helpers
 export function getAllWilayas(): WilayaCourts[] {
@@ -91,7 +109,7 @@ export function searchCourts(query: string) {
 
 // For DB file info
 export const DB_INFO = {
-  source: "وزارة العدل الجزائرية — https://www.mjustice.gov.dz/ar/المحاكم-و-المجالس/ + الهيئات العليا",
+  source: "وزارة العدل الجزائرية — https://www.mjustice.gov.dz/ar/المحاكم-و-المجالس/ + الهيئات العليا + المحاكم التجارية المتخصصة (مرسوم 22-148)",
   date: "2026-09-07",
   wilayas: 58,
   councils: 58,
@@ -100,7 +118,8 @@ export const DB_INFO = {
   supremeCourt: 1, // المحكمة العليا
   councilOfState: 1, // مجلس الدولة
   nationalBodies: 2,
-  totalCourts: 58 + 256 + 58 + 2, // مجالس + محاكم + إدارية + عليا
+  specializedCommercial: 5, // المحاكم التجارية المتخصصة
+  totalCourts: 58 + 256 + 58 + 2 + 5, // مجالس + محاكم + إدارية + عليا + تجارية متخصصة = 379
   fileJson: "data/courts.json (111KB)",
   fileDb: "prisma/maktabi.db (164KB SQLite)",
   isNewCount: 10,
