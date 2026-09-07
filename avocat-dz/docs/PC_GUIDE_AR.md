@@ -1,10 +1,10 @@
-# دليل Logiciel PC — مكتبي (Windows)
+# دليل Logiciel PC — مكتبي - maktabi (Windows)
 
 ## نظرة سريعة
-مكتبي الآن **logiciel PC حقيقي** لـ Windows 10/11:
+مكتبي - maktabi الآن **logiciel PC حقيقي** لـ Windows 10/11:
 - تثبيت بضغطة (Setup .exe) أو نسخة محمولة Portable بدون تثبيت
 - يعمل **Offline 100%** — لا يحتاج انترنت بعد التثبيت
-- بياناتك تُحفظ على جهازك: `%APPDATA%/Maktabi/maktabi-data.json` + مجلد الوثائق `Documents/Maktabi/`
+- بياناتك تُحفظ على جهازك: `%APPDATA%/مكتبي - maktabi/maktabi-data.json` + مجلد الوثائق `Documents/مكتبي - maktabi/`
 - نفس الواجهة العصرية (RTL) مع قائمة سطح مكتب علوية وقصارات لوحة المفاتيح
 
 ---
@@ -12,12 +12,12 @@
 ## التحميل
 
 ### الخيار 1: المثبت (موصى به)
-- الملف: `Maktabi-Setup-1.0.0.exe` (~85MB)
+- الملف: `مكتبي - maktabi-Setup-1.0.0.exe` (~85MB)
 - حمّله من صفحة **/download** داخل التطبيق أو من **Releases** على GitHub
 - شغّله → اختر مجلد التثبيت → أنشئ اختصار سطح المكتب
 
 ### الخيار 2: Portable
-- الملف: `Maktabi-Portable-1.0.0.exe` (~80MB)
+- الملف: `مكتبي - maktabi-Portable-1.0.0.exe` (~80MB)
 - لا يحتاج تثبيت — ضعه على USB وشغّله مباشرة في المحكمة أو أي حاسوب
 - مثالي للمحامين المتنقلين
 
@@ -27,7 +27,7 @@
 
 ## التشغيل الأول
 
-1. افتح **مكتبي** من سطح المكتب
+1. افتح **مكتبي - maktabi** من سطح المكتب
 2. ستظهر لوحة التحكم — أضف أول عميل وقضية من `العملاء → + عميل جديد`
 3. البيانات تُحفظ تلقائياً على جهازك (لا حاجة لحفظ يدوي)
 
@@ -38,7 +38,7 @@
 ```
 Windows:
   البيانات: C:\Users\<YOU>\AppData\Roaming\maktabi\maktabi-data.json
-  الوثائق: C:\Users\<YOU>\Documents\Maktabi\
+  الوثائق: C:\Users\<YOU>\Documents\مكتبي - maktabi\
   النسخ الاحتياطي: يمكنك تصدير JSON من الإعدادات → نسخ احتياطي
 ```
 
@@ -105,11 +105,11 @@ npm run dev:pc
 
 # 3. بناء المثبت (Windows)
 npm run dist:win
-# الناتج: dist/Maktabi-Setup-1.0.0.exe
+# الناتج: dist/مكتبي - maktabi-Setup-1.0.0.exe
 
 # 4. بناء المحمولة
 npm run dist:portable
-# الناتج: dist/Maktabi-Portable-1.0.0.exe
+# الناتج: dist/مكتبي - maktabi-Portable-1.0.0.exe
 
 # 5. بناء للويب فقط (للـ Vercel)
 npm run build:web
@@ -134,7 +134,7 @@ lib/db.ts      → طبقة تخزين موحدة: localStorage (ويب) أو JS
 | **البيانات اختفت** | تحقق من `AppData/Roaming/maktabi/maktabi-data.json` — استعد من نسخة |
 | **تحذير SmartScreen** | More info → Run anyway |
 | **المثبت يطلب صلاحيات** | وافق — يحتاج كتابة في Program Files |
-| **الوثائق لا تُحفظ** | تأكد من صلاحيات `Documents/Maktabi` |
+| **الوثائق لا تُحفظ** | تأكد من صلاحيات `Documents/مكتبي - maktabi` |
 
 ---
 

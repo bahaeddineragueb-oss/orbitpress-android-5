@@ -1,4 +1,4 @@
-# مكتبي — Logiciel PC (Windows) 🖥️
+# مكتبي - maktabi — Logiciel PC (Windows) 🖥️
 
 **تحميل مباشر للويندوز — يعمل بدون انترنت**
 
@@ -8,14 +8,14 @@
 
 | النسخة | الملف | الحجم | الرابط |
 |---|---|---|---|
-| **المثبت** (موصى به) | `Maktabi-Setup-1.0.0.exe` | ~85MB | [تحميل من /download](#) أو من Releases |
-| **المحمولة** | `Maktabi-Portable-1.0.0.exe` | ~80MB | تعمل بدون تثبيت — USB |
+| **المثبت** (موصى به) | `مكتبي - maktabi-Setup-1.0.0.exe` | ~85MB | [تحميل من /download](#) أو من Releases |
+| **المحمولة** | `مكتبي - maktabi-Portable-1.0.0.exe` | ~80MB | تعمل بدون تثبيت — USB |
 
 ## 🚀 التثبيت في دقيقة
 
-1. حمّل `Maktabi-Setup-1.0.0.exe`
+1. حمّل `مكتبي - maktabi-Setup-1.0.0.exe`
 2. شغّله → اختر المجلد → أنشئ اختصار سطح المكتب
-3. افتح **مكتبي** — جاهز!
+3. افتح **مكتبي - maktabi** — جاهز!
 
 ## ✨ لماذا PC؟
 
@@ -25,14 +25,14 @@
 - **طباعة و PDF مباشرة** — `Ctrl+P`
 - **قائمة سطح مكتب + اختصارات**: `Ctrl+N` عميل جديد، `Ctrl+1` لوحة التحكم
 - **نسخ احتياطي بضغطة**: تصدير/استيراد JSON
-- **مجلد وثائق**: `Documents/Maktabi/` — كل ملفاتك المنظمة
+- **مجلد وثائق**: `Documents/مكتبي - maktabi/` — كل ملفاتك المنظمة
 
 ## 🛠️ بناء المثبت من المصدر
 
 ```bash
 npm install
-npm run dist:win      # → dist/Maktabi-Setup-1.0.0.exe
-npm run dist:portable # → dist/Maktabi-Portable-1.0.0.exe
+npm run dist:win      # → dist/مكتبي - maktabi-Setup-1.0.0.exe
+npm run dist:portable # → dist/مكتبي - maktabi-Portable-1.0.0.exe
 ```
 
 راجع `docs/PC_GUIDE_AR.md` للتفاصيل الكاملة.

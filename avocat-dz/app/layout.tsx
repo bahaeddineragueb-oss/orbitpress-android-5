@@ -4,12 +4,12 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { LanguageProvider } from "@/components/LanguageProvider";
 
 export const metadata: Metadata = {
-  title: "مكتبي | Maktabi — Avocat DZ Pro | تسيير مكاتب المحاماة",
-  description: "مكتبي Maktabi — نظام احترافي ثلاثي اللغات لتسيير مكاتب المحاماة في الجزائر: العملاء، القضايا، الجلسات، الآجال، الوثائق، الأتعاب — Arabe / Français / English",
-  keywords: ["مكتبي", "Maktabi", "Avocat", "Algerie", "DZ", "cabinet avocat", "law firm", "محامي"],
+  title: "مكتبي - maktabi — Avocat DZ Pro | تسيير مكاتب المحاماة",
+  description: "مكتبي - maktabi — نظام احترافي ثلاثي اللغات لتسيير مكاتب المحاماة في الجزائر: العملاء، القضايا، الجلسات، الآجال، الوثائق، الأتعاب — Arabe / Français / English",
+  keywords: ["مكتبي - maktabi", "مكتبي", "maktabi", "Avocat", "Algerie", "DZ", "cabinet avocat", "law firm", "محامي"],
   openGraph: {
-    title: "مكتبي | Maktabi — Avocat DZ Pro",
-    description: "نظام احترافي لتسيير مكاتب المحاماة — Arabe / Français / English — يعمل على الويب و Windows بدون انترنت",
+    title: "مكتبي - maktabi — Avocat DZ Pro",
+    description: "مكتبي - maktabi — نظام احترافي لتسيير مكاتب المحاماة — Arabe / Français / English — يعمل على الويب و Windows بدون انترنت",
   },
 };
 

@@ -22,7 +22,7 @@ function getDataPath() {
 }
 
 function getDocsPath() {
-  const docs = path.join(app.getPath('documents'), 'Maktabi');
+  const docs = path.join(app.getPath('documents'), 'مكتبي - maktabi');
   if (!fs.existsSync(docs)) fs.mkdirSync(docs, { recursive: true });
   return docs;
 }
@@ -35,7 +35,7 @@ function createWindow() {
     minHeight: 700,
     show: false,
     backgroundColor: '#070e1f',
-    title: 'مكتبي — Avocat DZ Pro',
+    title: 'مكتبي - maktabi — Avocat DZ Pro',
     icon: path.join(__dirname, '../public/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -70,7 +70,7 @@ function createWindow() {
       { role: 'togglefullscreen', label: 'ملء الشاشة' },
     ]},
     { label: 'مساعدة', submenu: [
-      { label: 'حول مكتبي', click: () => dialog.showMessageBox(mainWindow, { type: 'info', title: 'حول مكتبي', message: 'مكتبي — Avocat DZ Pro v1.0\nنظام تسيير مكاتب المحاماة الجزائرية\nصُنع في الجزائر 🇩🇿\n\nالدعم: support@maktabi.dz' }) },
+      { label: 'حول مكتبي - maktabi', click: () => dialog.showMessageBox(mainWindow, { type: 'info', title: 'حول مكتبي - maktabi', message: 'مكتبي - maktabi — Avocat DZ Pro v1.0\nنظام تسيير مكاتب المحاماة الجزائرية\nصُنع في الجزائر 🇩🇿\n\nالدعم: support@maktabi.dz' }) },
       { label: 'فتح مجلد الوثائق', click: () => shell.openPath(getDocsPath()) },
       { label: 'فتح مجلد البيانات', click: () => shell.openPath(app.getPath('userData')) },
     ]}
@@ -172,7 +172,7 @@ const { Notification } = require('electron');
 ipcMain.handle('notify', (e, { title, body }) => {
   try {
     if (Notification.isSupported()) {
-      const n = new Notification({ title: title || 'مكتبي — تنبيه جلسة', body: body || '', icon: path.join(__dirname, '../public/icon.png'), silent: false });
+      const n = new Notification({ title: title || 'مكتبي - maktabi — تنبيه جلسة', body: body || '', icon: path.join(__dirname, '../public/icon.png'), silent: false });
       n.show();
       n.on('click', () => { if (mainWindow) { if (mainWindow.isMinimized()) mainWindow.restore(); mainWindow.focus(); } });
     }

@@ -1,4 +1,4 @@
-# مكتبي — Avocat DZ Pro ⚖️
+# مكتبي - maktabi — Avocat DZ Pro ⚖️
 
 **نظام تسيير مكاتب المحاماة الجزائرية — احترافي وليس مجرد دفتر إلكتروني**
 
@@ -56,7 +56,7 @@
 **التثبيت في دقيقة:**
 1. حمّل المثبت من صفحة `/download` أو من `Releases`
 2. شغّله → اختر المجلد → أنشئ اختصار سطح المكتب
-3. افتح **مكتبي** — بياناتك تُحفظ في `AppData/Roaming/maktabi/maktabi-data.json` (لا سحابة)
+3. افتح **مكتبي - maktabi** — بياناتك تُحفظ في `AppData/Roaming/maktabi/maktabi-data.json` (لا سحابة)
 
 راجع `docs/PC_GUIDE_AR.md` + `README_PC.md` للتفاصيل.
 
@@ -209,6 +209,6 @@ MIT — استخدمه لمكتبك أو لعملائك بحرية.
 
 ---
 
-**صُنع بـ ❤️ في الجزائر — مكتبي v1.1 PC**
+**صُنع بـ ❤️ في الجزائر — مكتبي - maktabi v1.1 PC**
 > Repo الرسمي الآن هو **`maktabi`** على https://github.com/bahaeddineragueb-oss/maktabi — ثلاثي اللغات (AR/FR/EN). إذا كان لا يزال يظهر باسم `orbitpress-android-5` غيّره من Settings → Rename.
 

@@ -48,7 +48,7 @@ export default function DownloadPC() {
         <ol className="mt-6 space-y-4">
           <li className="flex gap-4"><span className="w-8 h-8 rounded-full bg-[#0e7490] text-white grid place-items-center font-bold shrink-0">1</span><div><div className="font-bold">حمّل المثبت</div><div className="text-sm text-slate-600 dark:text-slate-400">اضغط الزر أعلاه — سيتم تحميل <code>Maktabi-Setup-1.0.0.exe</code></div></div></li>
           <li className="flex gap-4"><span className="w-8 h-8 rounded-full bg-[#0e7490] text-white grid place-items-center font-bold shrink-0">2</span><div><div className="font-bold">شغّل المثبت</div><div className="text-sm text-slate-600 dark:text-slate-400">اختر مجلد التثبيت (افتراضي: Program Files) — أنشئ اختصار سطح المكتب</div></div></li>
-          <li className="flex gap-4"><span className="w-8 h-8 rounded-full bg-[#0e7490] text-white grid place-items-center font-bold shrink-0">3</span><div><div className="font-bold">افتح مكتبي</div><div className="text-sm text-slate-600 dark:text-slate-400">ستجد أيقونة "مكتبي" على سطح المكتب — شغّلها وابدأ بإضافة عملائك</div></div></li>
+          <li className="flex gap-4"><span className="w-8 h-8 rounded-full bg-[#0e7490] text-white grid place-items-center font-bold shrink-0">3</span><div><div className="font-bold">افتح مكتبي - maktabi</div><div className="text-sm text-slate-600 dark:text-slate-400">ستجد أيقونة "مكتبي - maktabi" على سطح المكتب — شغّلها وابدأ بإضافة عملائك</div></div></li>
         </ol>
         <div className="mt-6 p-4 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-sm">
           <b>ملاحظة:</b> قد يظهر تحذير SmartScreen أول مرة (لأن التطبيق جديد) — اضغط <b>More info → Run anyway</b>. سنضيف توقيع EV قريباً.

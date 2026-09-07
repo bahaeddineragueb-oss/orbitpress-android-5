@@ -1,4 +1,4 @@
-// lib/i18n.ts — نظام ثلاثي اللغات لمكتبي Maktabi
+// lib/i18n.ts — نظام ثلاثي اللغات لمكتبي - maktabi
 // ar = العربية (RTL) | fr = Français (LTR) | en = English (LTR)
 
 export type Lang = "ar" | "fr" | "en";
@@ -18,10 +18,10 @@ type AllDict = Record<Lang, Dict>;
 export const translations: AllDict = {
   ar: {
     // brand
-    "brand.name": "مكتبي",
-    "brand.full": "مكتبي — Avocat DZ Pro",
+    "brand.name": "مكتبي - maktabi",
+    "brand.full": "مكتبي - maktabi — Avocat DZ Pro",
     "brand.tagline": "تسيير مكاتب المحاماة الجزائرية",
-    "brand.copyright": "© 2026 مكتبي — صُنع في الجزائر 🇩🇿",
+    "brand.copyright": "© 2026 مكتبي - maktabi — صُنع في الجزائر 🇩🇿",
     "brand.motto": "صُمم للمحامي الجزائري",
 
     // nav
@@ -158,23 +158,23 @@ export const translations: AllDict = {
     "courts.admin": "محكمة إدارية",
 
     // download
-    "download.title": "حمّل مكتبي على حاسوبك واشتغل بدون انترنت",
+    "download.title": "حمّل مكتبي - maktabi على حاسوبك واشتغل بدون انترنت",
     "download.desc": "Logiciel PC لنظام Windows 10/11 — بياناتك على جهازك، لا سحابة",
 
     // theme
     "theme.light": "فاتح ☀️",
     "theme.dark": "داكن 🌙",
     "theme.system": "حسب النظام 🖥️",
-    "theme.azraq": "أزرق مكتبي",
+    "theme.azraq": "أزرق مكتبي - maktabi",
     "theme.akhdar": "أخضر عدالة",
     "theme.banafseji": "بنفسجي قضاء",
     "theme.zahri": "زهري",
   },
   fr: {
-    "brand.name": "Maktabi",
-    "brand.full": "Maktabi — Avocat DZ Pro",
+    "brand.name": "مكتبي - maktabi",
+    "brand.full": "مكتبي - maktabi — Avocat DZ Pro",
     "brand.tagline": "Gestion des cabinets d'avocats algériens",
-    "brand.copyright": "© 2026 Maktabi — Fabriqué en Algérie 🇩🇿",
+    "brand.copyright": "© 2026 مكتبي - maktabi — Fabriqué en Algérie 🇩🇿",
     "brand.motto": "Conçu pour l'avocat algérien",
 
     "nav.dashboard": "Tableau de bord",
@@ -300,22 +300,22 @@ export const translations: AllDict = {
     "courts.tribunal": "Tribunal / Annexe",
     "courts.admin": "Tribunal administratif",
 
-    "download.title": "Installez Maktabi sur votre PC et travaillez hors ligne",
+    "download.title": "Installez مكتبي - maktabi sur votre PC et travaillez hors ligne",
     "download.desc": "Logiciel PC pour Windows 10/11 — vos données restent sur votre appareil, pas de cloud",
 
     "theme.light": "Clair ☀️",
     "theme.dark": "Sombre 🌙",
     "theme.system": "Système 🖥️",
-    "theme.azraq": "Bleu Maktabi",
+    "theme.azraq": "Bleu مكتبي - maktabi",
     "theme.akhdar": "Vert justice",
     "theme.banafseji": "Violet justice",
     "theme.zahri": "Rose",
   },
   en: {
-    "brand.name": "Maktabi",
-    "brand.full": "Maktabi — Avocat DZ Pro",
+    "brand.name": "مكتبي - maktabi",
+    "brand.full": "مكتبي - maktabi — Avocat DZ Pro",
     "brand.tagline": "Algerian Law Firm Management",
-    "brand.copyright": "© 2026 Maktabi — Made in Algeria 🇩🇿",
+    "brand.copyright": "© 2026 مكتبي - maktabi — Made in Algeria 🇩🇿",
     "brand.motto": "Built for the Algerian lawyer",
 
     "nav.dashboard": "Dashboard",
@@ -441,13 +441,13 @@ export const translations: AllDict = {
     "courts.tribunal": "Court / Branch",
     "courts.admin": "Administrative Court",
 
-    "download.title": "Install Maktabi on your PC and work offline",
+    "download.title": "Install مكتبي - maktabi on your PC and work offline",
     "download.desc": "PC software for Windows 10/11 — your data stays on your device, no cloud",
 
     "theme.light": "Light ☀️",
     "theme.dark": "Dark 🌙",
     "theme.system": "System 🖥️",
-    "theme.azraq": "Maktabi Blue",
+    "theme.azraq": "مكتبي - maktabi Blue",
     "theme.akhdar": "Justice Green",
     "theme.banafseji": "Justice Purple",
     "theme.zahri": "Pink",

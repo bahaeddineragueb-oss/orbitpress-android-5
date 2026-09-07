@@ -10,7 +10,7 @@ export const THEMES: Record<Theme, string> = {
 };
 
 export const PRIMARY_COLORS: Record<PrimaryColor, { label: string; hex: string; bg: string }> = {
-  azraq: { label: "أزرق مكتبي", hex: "#0e7490", bg: "bg-[#0e7490]" },
+  azraq: { label: "أزرق مكتبي - maktabi", hex: "#0e7490", bg: "bg-[#0e7490]" },
   akhdar: { label: "أخضر عدالة", hex: "#059669", bg: "bg-[#059669]" },
   banafseji: { label: "بنفسجي قضاء", hex: "#7c3aed", bg: "bg-[#7c3aed]" },
   zahri: { label: "زهري", hex: "#db2777", bg: "bg-[#db2777]" },

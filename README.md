@@ -1,4 +1,4 @@
-# مكتبي | Maktabi — Avocat DZ Pro ⚖️
+# مكتبي - maktabi — Avocat DZ Pro ⚖️
 
 **نظام ثلاثي اللغات لتسيير مكاتب المحاماة الجزائرية — Arabe / Français / English**
 
@@ -6,7 +6,7 @@
 
 [![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org) [![Electron](https://img.shields.io/badge/Electron-30-47848F)](https://www.electronjs.org) [![Windows](https://img.shields.io/badge/Windows-10%2F11-0078D6)](https://microsoft.com) [![i18n](https://img.shields.io/badge/i18n-AR%2FFR%2FEN-blue)](./avocat-dz/lib/i18n.ts) [![Offline](https://img.shields.io/badge/Offline-100%25-green)]() [![License](https://img.shields.io/badge/License-MIT-yellow)]()
 
-**الاسم الرسمي للمشروع هو `مكتبي | Maktabi`** — لا OrbitPress. هذا الريبو يحتوي على تطبيق الويب + logiciel PC (Windows .exe) في المجلد `avocat-dz/`.
+**الاسم الرسمي للمشروع هو `مكتبي - maktabi`** — لا OrbitPress. هذا الريبو يحتوي على تطبيق الويب + logiciel PC (Windows .exe) في المجلد `avocat-dz/`.
 
 > **تنبيه حول اسم الريبو على GitHub:** إذا كان لا يزال يظهر باسم `orbitpress-android-5` على GitHub، غيّره يدوياً من GitHub → Settings → General → Repository name → `maktabi` → Rename. الكود المحلي صار جاهزاً باسم `maktabi` (انظر `avocat-dz/package.json` : `name: "maktabi"`, `homepage: https://github.com/bahaeddineragueb-oss/maktabi`).
 

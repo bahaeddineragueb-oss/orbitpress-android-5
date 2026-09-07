@@ -2,7 +2,7 @@
   "name": "maktabi",
   "version": "1.0.0",
   "private": true,
-  "description": "مكتبي | Maktabi — نظام ثلاثي اللغات لتسيير مكاتب المحاماة الجزائرية | Gestion cabinets d'avocats DZ | Algerian Law Firm Management — Arabe / Français / English",
+  "description": "مكتبي - maktabi — نظام ثلاثي اللغات لتسيير مكاتب المحاماة الجزائرية | Gestion cabinets d'avocats DZ | Algerian Law Firm Management — Arabe / Français / English",
   "main": "electron/main.js",
   "author": "Maktabi <support@maktabi.dz>",
   "homepage": "https://github.com/bahaeddineragueb-oss/maktabi",
@@ -10,7 +10,15 @@
     "type": "git",
     "url": "https://github.com/bahaeddineragueb-oss/maktabi.git"
   },
-  "keywords": ["maktabi", "مكتبي", "avocat", "algerie", "lawyer", "cabinet", "dz"],
+  "keywords": [
+    "maktabi",
+    "مكتبي",
+    "avocat",
+    "algerie",
+    "lawyer",
+    "cabinet",
+    "dz"
+  ],
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3000",
     "dev:next": "next dev -H 0.0.0.0 -p 3000",
@@ -58,7 +66,7 @@
   },
   "build": {
     "appId": "dz.maktabi.avocat",
-    "productName": "مكتبي - Avocat DZ",
+    "productName": "مكتبي - maktabi",
     "copyright": "Copyright © 2026 Maktabi DZ",
     "directories": {
       "output": "dist",
@@ -110,7 +118,7 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "مكتبي",
+      "shortcutName": "مكتبي - maktabi",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
