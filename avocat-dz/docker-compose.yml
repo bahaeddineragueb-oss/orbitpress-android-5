@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: maktabi-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: maktabi
+      POSTGRES_PASSWORD: maktabi123
+      POSTGRES_DB: maktabi
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./prisma/maktabi-postgres.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U maktabi"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Optional: Adminer for DB management
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:

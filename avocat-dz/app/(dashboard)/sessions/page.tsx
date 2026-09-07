@@ -4,12 +4,14 @@ import { mockCases, mockHearings } from "@/lib/data";
 import { Hearing } from "@/lib/types";
 import { formatDateShort, uid } from "@/lib/utils";
 import { CalendarDays, Clock, MapPin, Plus, Search, Filter } from "lucide-react";
+import { CourtSelector } from "@/components/CourtSelector";
 
 export default function SessionsPage() {
   const [hearings, setHearings] = useState<Hearing[]>(mockHearings);
   const [q, setQ] = useState("");
   const [view, setView] = useState<"list" | "calendar">("list");
   const [showForm, setShowForm] = useState(false);
+  const [courtPick, setCourtPick] = useState<{ wilayaCode: string; wilaya: string; council: string; tribunal: string; section: string } | null>(null);
   const [form, setForm] = useState<Partial<Hearing>>({ court: "محكمة الرويبة", date: new Date().toISOString().slice(0,16), status: "قادمة" });
 
   const filtered = useMemo(() => hearings.filter(h => {
@@ -19,9 +21,15 @@ export default function SessionsPage() {
 
   const addHearing = () => {
     if (!form.caseId) return alert("اختر القضية");
-    const nh: Hearing = { id: uid(), caseId: form.caseId!, date: new Date(form.date!).toISOString(), court: form.court!, room: form.room, judge: form.judge, status: (form.status as any) || "قادمة" };
+    if (!courtPick) return alert("اختر الولاية والمحكمة من قاعدة وزارة العدل");
+    const nh: Hearing = { id: uid(), caseId: form.caseId!, date: new Date(form.date!).toISOString(), court: courtPick.tribunal, room: form.room, judge: form.judge, status: (form.status as any) || "قادمة" };
+    // يمكن حفظ wilaya/council/section مع الجلسة إذا أردت
+    (nh as any).wilayaCode = courtPick.wilayaCode;
+    (nh as any).council = courtPick.council;
+    (nh as any).section = courtPick.section;
     setHearings([nh, ...hearings]);
     setShowForm(false);
+    setCourtPick(null);
   };
 
   // Calendar helpers - group by date
@@ -54,20 +62,24 @@ export default function SessionsPage() {
 
       {showForm && (
         <div className="rounded-2xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50] p-5">
-          <h3 className="font-bold mb-4">إضافة جلسة</h3>
-          <div className="grid md:grid-cols-3 gap-4">
+          <h3 className="font-bold mb-4">إضافة جلسة — اختيار المحكمة من قاعدة وزارة العدل (لا كتابة)</h3>
+          <div className="grid md:grid-cols-2 gap-4">
             <select value={form.caseId || ""} onChange={e=>setForm({...form, caseId:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
               <option value="">— اختر القضية —</option>
               {mockCases.map(c=><option key={c.id} value={c.id}>{c.fileNumber} — {c.title}</option>)}
             </select>
             <input type="datetime-local" value={form.date || ""} onChange={e=>setForm({...form, date:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
-            <input placeholder="المحكمة" value={form.court || ""} onChange={e=>setForm({...form, court:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <input placeholder="القاعة (مثال: قاعة 03)" value={form.room || ""} onChange={e=>setForm({...form, room:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <input placeholder="القاضي/الغرفة" value={form.judge || ""} onChange={e=>setForm({...form, judge:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <select value={form.status} onChange={e=>setForm({...form, status:e.target.value as any})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
               <option>قادمة</option><option>تمت</option><option>مؤجلة</option><option>ملغاة</option>
             </select>
-            <div className="md:col-span-3 flex gap-3">
+            <div className="md:col-span-2">
+              <div className="text-sm font-bold mb-2 flex items-center gap-2">🏛️ الجهة القضائية — من قاعدة وزارة العدل (58 ولاية)</div>
+              <CourtSelector onChange={setCourtPick} value={courtPick || undefined} compact />
+              {!courtPick && <div className="text-xs text-amber-600 mt-2">⚠️ يجب اختيار الولاية والمحكمة قبل الحفظ</div>}
+            </div>
+            <div className="md:col-span-2 flex gap-3">
               <button onClick={addHearing} className="flex-1 py-3 rounded-xl bg-[#0e7490] text-white font-bold">حفظ</button>
               <button onClick={()=>setShowForm(false)} className="flex-1 py-3 rounded-xl border dark:border-[#1e2e50]">إلغاء</button>
             </div>

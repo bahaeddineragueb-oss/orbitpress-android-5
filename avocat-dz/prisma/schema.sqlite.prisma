@@ -1,15 +1,13 @@
-// Prisma schema — Maktabi Real Database (PostgreSQL for Web, SQLite for PC)
+// Prisma schema — Maktabi Real Database (SQLite)
 // المصدر: وزارة العدل الجزائرية + 10 ولايات جديدة (مرسوم 21-117)
 // 58 ولاية، 256 محكمة/فرع، 58 مجلس قضائي، 58 محكمة إدارية
-// للـ PC: استخدم prisma/schema.sqlite.prisma مع DATABASE_URL="file:./prisma/maktabi.db"
-// للـ Web/Production: استخدم هذا الملف مع PostgreSQL (Supabase/Neon/Render)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -45,6 +43,8 @@ model Tribunal {
   wilaya     Wilaya   @relation(fields: [wilayaCode], references: [code])
   name       String   // محكمة أدرار / فرع برج باجي مختار
   isBranch   Boolean  @default(false)
+  // الأقسام متاحة لكل محكمة (نفس القائمة، لكن يمكن تخصيصها)
+  // نحفظها كـ JSON أو علاقة
 
   @@unique([councilId, name])
   @@map("tribunals")
@@ -134,9 +134,6 @@ model Hearing {
   decision String?
   nextDate DateTime?
   status   String
-  wilayaCode String?
-  councilName String?
-  section String?
 
   @@map("hearings")
 }

@@ -123,14 +123,36 @@ avocat-dz/
 
 ---
 
-## 🗄️ قاعدة البيانات (مقترح Prisma)
+## 🗄️ قاعدة البيانات الحقيقية — الجديد في v1.2
 
-راجع `docs/SCHEMA.md` — مخطط كامل بـ 13 جدول: Client, Case, Hearing, Deadline, Document, Fee, Expense, Template, Court, User, Role, AuditLog, Notification
+**التطبيق كله الآن لديه قاعدة حقيقية — من وزارة العدل إلى آخر مصروف!**
 
-يمكن التحويل لاحقاً إلى:
-- **Supabase / PostgreSQL** (موصى به)
-- **Prisma + SQLite** للـ offline أولاً
-- **Encrypted localStorage** حالياً (يعمل بدون Backend)
+- **المحاكم:** 58 ولاية، 58 مجلس، 256 محكمة/فرع، 58 إدارية — من **mjustice.gov.dz** مباشرة
+- **المكتب:** كل شيء في DB: العملاء، القضايا، الجلسات (مع اختيار المحكمة من نفس القاعدة)، الآجال، الوثائق، الأتعاب، المصاريف
+- **الملفات:**
+  - `prisma/maktabi.db` (164KB SQLite) — للـ PC Offline
+  - `prisma/maktabi-postgres.sql` (93KB) — للـ Web PostgreSQL
+  - `data/courts.json` (111KB) — JSON للويب (fallback)
+  - `prisma/schema.prisma` (PostgreSQL) + `schema.sqlite.prisma` (SQLite)
+
+```bash
+# PC (SQLite)
+sqlite3 prisma/maktabi.db "SELECT COUNT(*) FROM tribunals" # 256
+
+# Web — PostgreSQL (Docker)
+docker compose up -d
+npx prisma db push
+psql postgresql://maktabi:maktabi123@localhost:5432/maktabi -f prisma/maktabi-postgres.sql
+
+# API حقيقي
+curl http://localhost:3000/api/courts?code=16
+curl http://localhost:3000/api/clients
+curl http://localhost:3000/api/cases
+```
+
+**الجلسات أيضاً:** في `/sessions` → + جلسة جديدة → تختار **الولاية → المجلس → المحكمة → القسم** من نفس قاعدة وزارة العدل (اختيار فقط).
+
+راجع `docs/DB_GUIDE.md` + `prisma/README.md` للتفاصيل.
 
 ---
 
