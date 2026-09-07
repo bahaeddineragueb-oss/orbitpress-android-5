@@ -1,0 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Cairo:wght@400;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #f8fafc;
+  --fg: #0f172a;
+  --card: #ffffff;
+  --border: #e2e8f0;
+}
+html.dark {
+  --bg: #070e1f;
+  --fg: #e2e8f0;
+  --card: #0f1b33;
+  --border: #1e293b;
+}
+* { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+html.dark ::-webkit-scrollbar-thumb { background: #334155; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Tajawal", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+.font-display { font-family: "Cairo", sans-serif; }
+
+/* Print */
+@media print {
+  .no-print { display: none !important; }
+}
