@@ -30,18 +30,18 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.10'
-      - name: Run unit tests
-        run: gradle :app:testDebugUnitTest --info --stacktrace
-      - name: Build release APK
-        run: gradle :app:assembleRelease --stacktrace
+      - name: Build and Test
+        run: |
+          set -o pipefail
+          if ! gradle :app:testDebugUnitTest :app:assembleRelease > build_log.txt 2>&1; then
+            echo "::error title=Build Failure::$(grep -E 'e: |error: |FAILURE:' build_log.txt | head -n 20)"
+            tail -n 120 build_log.txt
+            exit 1
+          fi
       - name: Verify release APK signature
         run: $ANDROID_HOME/build-tools/35.0.0/apksigner verify --verbose app/build/outputs/apk/release/*.apk
       - name: Upload APK
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: orbitpress-release-apk
-          path: |
-            app/build/outputs/apk/release/*.apk
-            app/build/reports/
-            app/build/test-results/
+          path: app/build/outputs/apk/release/*.apk
