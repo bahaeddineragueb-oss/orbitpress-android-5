@@ -17,7 +17,8 @@ object PublishingContracts {
       bytes.size >= 12 && bytes[0] == 'R'.code.toByte() && bytes[1] == 'I'.code.toByte() && bytes[2] == 'F'.code.toByte() && bytes[3] == 'F'.code.toByte() && bytes[8] == 'W'.code.toByte() && bytes[9] == 'E'.code.toByte() && bytes[10] == 'B'.code.toByte() && bytes[11] == 'P'.code.toByte() -> "image/webp"
       else -> throw IllegalArgumentException("Image bytes are not a supported JPEG, PNG, or WebP file.")
     }
-    require(declaredMime == actual) { "Image MIME type does not match its actual bytes." }
+    val normalizedDeclared = if (declaredMime.equals("image/jpg", ignoreCase = true)) "image/jpeg" else declaredMime
+    require(normalizedDeclared == actual) { "Image MIME type does not match its actual bytes." }
     return actual
   }
 
