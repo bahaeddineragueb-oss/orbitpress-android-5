@@ -98,3 +98,29 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Attach .exe to existing release v1.0.0-maktabi (arena branch push)
+        if: github.ref == 'refs/heads/arena/01a07cf5-orbitpress-android-5' && github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.0-maktabi
+          name: "مكتبي - maktabi v1.0.0 — Windows .exe + Web"
+          body: |
+            ## مكتبي - maktabi v1.0.0 — Windows .exe
+
+            تم بناء المثبت تلقائياً على Windows.
+
+            **التثبيت:**
+            1. حمّل `مكتبي - maktabi-Setup-1.0.0.exe` أو `Maktabi-Portable-1.0.0.exe` أدناه
+            2. شغّله → اختر المجلد → أنشئ اختصار
+            3. افتح **مكتبي - maktabi** — بياناتك في `%APPDATA%/مكتبي - maktabi/`
+
+            - 60 جهة (58 ولاية + 00 + 99)
+            - 3 لغات + ثيم + خط
+          files: |
+            avocat-dz/dist/*.exe
+            avocat-dz/dist/*.blockmap
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
