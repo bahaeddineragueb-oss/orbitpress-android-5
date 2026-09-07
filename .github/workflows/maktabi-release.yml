@@ -1,0 +1,100 @@
+name: مكتبي - maktabi — Build Windows .exe
+
+on:
+  push:
+    branches: [ "arena/01a07cf5-orbitpress-android-5" ]
+    tags: [ "v*" ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version tag (ex: v1.0.0)"
+        required: false
+        default: "v1.0.0"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: avocat-dz
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: avocat-dz/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify Next.js build
+        run: npm run build
+
+      - name: Build Windows installer (.exe)
+        run: npm run dist:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List dist artifacts
+        run: Get-ChildItem -Recurse dist | Format-List
+        shell: pwsh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: maktabi-windows-exe
+          path: |
+            avocat-dz/dist/*.exe
+            avocat-dz/dist/*.zip
+            avocat-dz/dist/*.blockmap
+          if-no-files-found: error
+
+      - name: Create GitHub Release with .exe
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            avocat-dz/dist/*.exe
+            avocat-dz/dist/*.blockmap
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release on manual dispatch (no tag)
+        if: github.event_name == 'workflow_dispatch' && !startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.version }}
+          name: "مكتبي - maktabi ${{ inputs.version }} — Windows .exe"
+          body: |
+            ## مكتبي - maktabi — Windows .exe
+
+            **تثبيت في دقيقة:**
+            1. حمّل `مكتبي - maktabi-Setup-*.exe` (المثبت) أو `Maktabi-Portable-*.exe` (محمولة)
+            2. شغّله → اختر المجلد → أنشئ اختصار سطح المكتب
+            3. افتح **مكتبي - maktabi** — بياناتك في `%APPDATA%/مكتبي - maktabi/` (لا سحابة)
+
+            - 60 جهة قضائية (58 ولاية + الهيئات العليا 00 + التجارية المتخصصة 99)
+            - 3 لغات: العربية 🇩🇿 / Français 🇫🇷 / English 🇬🇧
+            - الثيم + حجم الخط يحفظ تلقائياً
+
+            **Web:** `npm run dev` في `avocat-dz/`
+          files: |
+            avocat-dz/dist/*.exe
+            avocat-dz/dist/*.blockmap
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
