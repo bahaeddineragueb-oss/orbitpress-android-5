@@ -1,9 +1,11 @@
 package com.askinz.publisher.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -42,13 +44,12 @@ fun ContentStudioScreen(
     verticalArrangement = Arrangement.spacedBy(16.dp),
     contentPadding = PaddingValues(top = 12.dp, bottom = 32.dp)
   ) {
-    // 🚀 Connection Status Hero Card
+    // 🚀 Connection Status Hero Card (Cadre Style)
     item {
-      Card(
-        colors = CardDefaults.cardColors(
-          containerColor = if (isConfigured) MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.8f)
-        ),
+      Surface(
+        color = if (isConfigured) MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.8f),
         shape = RoundedCornerShape(20.dp),
+        border = BorderStroke(1.2.dp, if (isConfigured) MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f) else MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
         modifier = Modifier.fillMaxWidth()
       ) {
         Row(
@@ -95,11 +96,12 @@ fun ContentStudioScreen(
       }
     }
 
-    // 💡 Add Keyword Form Card
+    // 💡 Add Keyword Form Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -129,7 +131,7 @@ fun ContentStudioScreen(
             label = { Text("Article Keyword / Topic") },
             placeholder = { Text("e.g. 5 quick high protein breakfast ideas") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth()
           )
 
@@ -236,7 +238,7 @@ fun ContentStudioScreen(
             },
             enabled = keywordText.isNotBlank(),
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(14.dp)
           ) {
             Icon(Icons.Default.Add, contentDescription = null)
             Spacer(Modifier.width(8.dp))
@@ -259,14 +261,29 @@ fun ContentStudioScreen(
 
     if (state.keywords.isEmpty()) {
       item {
-        Box(
-          modifier = Modifier.fillMaxWidth().padding(vertical = 36.dp),
-          contentAlignment = Alignment.Center
+        Surface(
+          shape = RoundedCornerShape(20.dp),
+          color = MaterialTheme.colorScheme.surface,
+          border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+          modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp)
         ) {
-          Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Default.Queue, contentDescription = null, modifier = Modifier.size(52.dp), tint = MaterialTheme.colorScheme.outline)
-            Text("Your queue is ready for ideas.", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-            Text("Add a keyword above to start generating SEO articles.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+          Box(
+            modifier = Modifier.padding(32.dp),
+            contentAlignment = Alignment.Center
+          ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+              Box(
+                modifier = Modifier
+                  .size(56.dp)
+                  .clip(CircleShape)
+                  .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(Icons.Default.Queue, contentDescription = null, modifier = Modifier.size(28.dp), tint = MaterialTheme.colorScheme.primary)
+              }
+              Text("Your queue is ready for ideas.", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+              Text("Add a keyword above to start generating SEO articles.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
           }
         }
       }
@@ -320,7 +337,8 @@ fun ContentStudioScreen(
               viewModel.importKeywords(importText, nicheProfile, selectedCategoryId, selectedCategoryName)
               showBatchImportDialog = false
             }
-          }
+          },
+          shape = RoundedCornerShape(10.dp)
         ) {
           Text("Import")
         }
@@ -341,9 +359,10 @@ fun KeywordQueueCard(
   onOpenDraft: () -> Unit,
   onDelete: () -> Unit
 ) {
-  Card(
-    shape = RoundedCornerShape(18.dp),
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+  Surface(
+    shape = RoundedCornerShape(20.dp),
+    color = MaterialTheme.colorScheme.surface,
+    border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
     modifier = Modifier.fillMaxWidth()
   ) {
     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -363,11 +382,13 @@ fun KeywordQueueCard(
       ) {
         Surface(
           shape = RoundedCornerShape(8.dp),
-          color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+          color = MaterialTheme.colorScheme.surfaceVariant,
+          border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
         ) {
           Text(
             keyword.nicheProfile.replaceFirstChar { it.uppercase() },
             fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -375,11 +396,13 @@ fun KeywordQueueCard(
         if (keyword.categoryName.isNotBlank()) {
           Surface(
             shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
           ) {
             Text(
               keyword.categoryName,
               fontSize = 11.sp,
+              fontWeight = FontWeight.Bold,
               modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
               color = MaterialTheme.colorScheme.primary
             )
@@ -391,7 +414,7 @@ fun KeywordQueueCard(
         Text(keyword.errorDetails, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
       }
 
-      HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+      HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
       Row(
         modifier = Modifier.fillMaxWidth(),
@@ -408,17 +431,17 @@ fun KeywordQueueCard(
           ) {
             Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Open Draft", maxLines = 1)
+            Text("Open Draft", fontWeight = FontWeight.Bold, maxLines = 1)
           }
         } else {
           Button(
             onClick = onGenerate,
-            shape = RoundedCornerShape(10.dp),
+            shape = RoundedCornerShape(12.dp),
             enabled = keyword.status != "generating"
           ) {
             Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
-            Text(if (keyword.status == "generating") "Generating..." else "Generate Article", maxLines = 1)
+            Text(if (keyword.status == "generating") "Generating..." else "Generate Article", fontWeight = FontWeight.Bold, maxLines = 1)
           }
         }
       }
@@ -428,20 +451,28 @@ fun KeywordQueueCard(
 
 @Composable
 fun StatusBadge(status: String) {
-  val (bgColor, textColor, label) = when (status) {
-    "published" -> Triple(MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer, "Published")
-    "ready" -> Triple(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer, "Draft Ready")
-    "generating" -> Triple(MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.onTertiaryContainer, "Generating…")
-    "failed" -> Triple(MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer, "Failed")
-    else -> Triple(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, "Queued")
+  val (bgColor, textColor, borderColor, label) = when (status) {
+    "published" -> Quadruple(MaterialTheme.colorScheme.secondaryContainer, MaterialTheme.colorScheme.onSecondaryContainer, MaterialTheme.colorScheme.secondary, "Published")
+    "ready" -> Quadruple(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.onPrimaryContainer, MaterialTheme.colorScheme.primary, "Draft Ready")
+    "generating" -> Quadruple(MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.onTertiaryContainer, MaterialTheme.colorScheme.tertiary, "Generating…")
+    "failed" -> Quadruple(MaterialTheme.colorScheme.errorContainer, MaterialTheme.colorScheme.onErrorContainer, MaterialTheme.colorScheme.error, "Failed")
+    else -> Quadruple(MaterialTheme.colorScheme.surfaceVariant, MaterialTheme.colorScheme.onSurfaceVariant, MaterialTheme.colorScheme.outline, "Queued")
   }
 
-  Box(
-    modifier = Modifier
-      .clip(RoundedCornerShape(8.dp))
-      .background(bgColor)
-      .padding(horizontal = 10.dp, vertical = 5.dp)
+  Surface(
+    shape = RoundedCornerShape(10.dp),
+    color = bgColor,
+    border = BorderStroke(1.dp, borderColor.copy(alpha = 0.5f))
   ) {
-    Text(label, color = textColor, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+    Text(
+      label,
+      color = textColor,
+      fontSize = 11.sp,
+      fontWeight = FontWeight.Bold,
+      modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+      maxLines = 1
+    )
   }
 }
+
+data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val fourth: D)

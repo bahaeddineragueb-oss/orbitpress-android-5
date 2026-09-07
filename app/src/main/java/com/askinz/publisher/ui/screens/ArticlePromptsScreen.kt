@@ -1,12 +1,15 @@
 package com.askinz.publisher.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EditNote
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,55 +29,63 @@ fun ArticlePromptsScreen(viewModel: OrbitPressViewModel) {
   LazyColumn(
     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp),
-    contentPadding = PaddingValues(vertical = 16.dp)
+    contentPadding = PaddingValues(top = 12.dp, bottom = 32.dp)
   ) {
     item {
-      Text("Article Prompts by Niche", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+      Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Icon(Icons.Default.EditNote, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+        Text("Article Prompts by Niche", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+      }
       Text("Optional custom editorial instructions. Built-in SEO and safety rules always remain active.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 
     item {
-      Card(
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+      Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-          Text("Food & Recipes Prompt", fontWeight = FontWeight.SemiBold)
+        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+          Text("Food & Recipes Prompt", fontWeight = FontWeight.Bold)
           OutlinedTextField(
             value = foodPrompt,
             onValueChange = { foodPrompt = it },
             placeholder = { Text("e.g. Focus on budget-friendly 30-minute meals with common pantry ingredients.") },
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
             maxLines = 6
           )
 
-          Text("Gardening Prompt", fontWeight = FontWeight.SemiBold)
+          Text("Gardening Prompt", fontWeight = FontWeight.Bold)
           OutlinedTextField(
             value = gardeningPrompt,
             onValueChange = { gardeningPrompt = it },
             placeholder = { Text("e.g. Provide USDA hardiness zone advice and organic pest prevention tips.") },
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
             maxLines = 6
           )
 
-          Text("Home Decor Prompt", fontWeight = FontWeight.SemiBold)
+          Text("Home Decor Prompt", fontWeight = FontWeight.Bold)
           OutlinedTextField(
             value = homeDecorPrompt,
             onValueChange = { homeDecorPrompt = it },
             placeholder = { Text("e.g. Focus on modern minimalist and cozy scandinavian aesthetic.") },
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
             maxLines = 6
           )
 
-          Text("Custom Niche Prompt", fontWeight = FontWeight.SemiBold)
+          Text("Custom Niche Prompt", fontWeight = FontWeight.Bold)
           OutlinedTextField(
             value = customPrompt,
             onValueChange = { customPrompt = it },
             placeholder = { Text("Custom guidelines for general or specialized niche topics.") },
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth(),
             minLines = 3,
             maxLines = 6
@@ -90,11 +101,12 @@ fun ArticlePromptsScreen(viewModel: OrbitPressViewModel) {
               )
               viewModel.saveSettings(state.currentSettings.copy(profilePrompts = newMap))
             },
+            shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth()
           ) {
             Icon(Icons.Default.Save, contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text("Save Editorial Prompts")
+            Text("Save Editorial Prompts", fontWeight = FontWeight.Bold)
           }
         }
       }

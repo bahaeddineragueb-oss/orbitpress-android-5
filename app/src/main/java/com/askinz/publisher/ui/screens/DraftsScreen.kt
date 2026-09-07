@@ -1,11 +1,14 @@
 package com.askinz.publisher.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -55,14 +58,14 @@ fun DraftsScreen(
     verticalArrangement = Arrangement.spacedBy(14.dp),
     contentPadding = PaddingValues(top = 12.dp, bottom = 32.dp)
   ) {
-    // 🔍 Search Bar & Stats Header
+    // 🔍 Modern Instagram/Pinterest Style Search & Cadre Filters
     item {
-      Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+      Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         OutlinedTextField(
           value = searchQuery,
           onValueChange = { searchQuery = it },
-          placeholder = { Text("Search drafts by title, keyword, niche…") },
-          leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant) },
+          placeholder = { Text("Search drafts, topics, niches…") },
+          leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
           trailingIcon = {
             if (searchQuery.isNotBlank()) {
               IconButton(onClick = { searchQuery = "" }) {
@@ -71,42 +74,48 @@ fun DraftsScreen(
             }
           },
           singleLine = true,
-          shape = RoundedCornerShape(14.dp),
+          shape = RoundedCornerShape(16.dp),
+          colors = OutlinedTextFieldDefaults.colors(
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+            focusedBorderColor = MaterialTheme.colorScheme.primary
+          ),
           modifier = Modifier.fillMaxWidth()
         )
 
-        // Full-Width Segmented Filter Selector
+        // 🏷️ Cadres / Pill Tab Row (Instagram / Pinterest Category Style)
         Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
-            .padding(4.dp),
-          horizontalArrangement = Arrangement.spacedBy(4.dp)
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
           listOf(
-            "all" to "All (${state.drafts.size})",
+            "all" to "All Articles (${state.drafts.size})",
             "ready" to "Ready (${state.drafts.count { it.generationStatus == "ready" }})",
             "published" to "Published (${state.drafts.count { it.generationStatus == "published" }})"
           ).forEach { (key, label) ->
             val isSelected = selectedFilter == key
             Surface(
-              shape = RoundedCornerShape(10.dp),
-              color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+              shape = RoundedCornerShape(14.dp),
+              color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+              border = BorderStroke(
+                1.5.dp,
+                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+              ),
               modifier = Modifier
                 .weight(1f)
                 .clickable { selectedFilter = key }
             ) {
               Box(
-                modifier = Modifier.padding(vertical = 8.dp),
+                modifier = Modifier.padding(vertical = 10.dp, horizontal = 4.dp),
                 contentAlignment = Alignment.Center
               ) {
                 Text(
                   label,
-                  fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                  fontSize = 12.sp,
+                  fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                  fontSize = 11.5.sp,
                   maxLines = 1,
-                  color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                  color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                 )
               }
             }
@@ -117,14 +126,37 @@ fun DraftsScreen(
 
     if (filteredDrafts.isEmpty()) {
       item {
-        Box(
-          modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp),
-          contentAlignment = Alignment.Center
+        Surface(
+          shape = RoundedCornerShape(20.dp),
+          color = MaterialTheme.colorScheme.surface,
+          border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+          modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp)
         ) {
-          Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Default.Article, contentDescription = null, modifier = Modifier.size(56.dp), tint = MaterialTheme.colorScheme.outline)
-            Text(if (searchQuery.isNotBlank()) "No drafts matching search." else "No drafts found.", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-            Text("Generate keywords from Content Studio to see full drafts here.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+          Box(
+            modifier = Modifier.padding(36.dp),
+            contentAlignment = Alignment.Center
+          ) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
+              Box(
+                modifier = Modifier
+                  .size(60.dp)
+                  .clip(CircleShape)
+                  .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+              ) {
+                Icon(Icons.Default.Article, contentDescription = null, modifier = Modifier.size(32.dp), tint = MaterialTheme.colorScheme.primary)
+              }
+              Text(
+                if (searchQuery.isNotBlank()) "No articles match your search." else "No drafts found.",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+              )
+              Text(
+                "Generate articles from Content Studio to see them here.",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+              )
+            }
           }
         }
       }
@@ -149,6 +181,7 @@ fun DraftsScreen(
       confirmButton = {
         Button(
           colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+          shape = RoundedCornerShape(10.dp),
           onClick = {
             viewModel.deleteDraft(draftToDelete!!.id)
             draftToDelete = null
@@ -179,19 +212,27 @@ fun DraftsScreen(
           } else {
             versions.forEach { ver ->
               val dateStr = SimpleDateFormat("MMM d, yyyy HH:mm", Locale.getDefault()).format(Date(ver.createdAt))
-              Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+              Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                modifier = Modifier.fillMaxWidth()
               ) {
-                Text(dateStr, style = MaterialTheme.typography.bodyMedium)
-                FilledTonalButton(
-                  onClick = {
-                    viewModel.restoreDraftSnapshot(ver)
-                    versionsDraft = null
-                  }
+                Row(
+                  modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                  horizontalArrangement = Arrangement.SpaceBetween,
+                  verticalAlignment = Alignment.CenterVertically
                 ) {
-                  Text("Restore")
+                  Text(dateStr, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Medium)
+                  FilledTonalButton(
+                    onClick = {
+                      viewModel.restoreDraftSnapshot(ver)
+                      versionsDraft = null
+                    },
+                    shape = RoundedCornerShape(8.dp)
+                  ) {
+                    Text("Restore")
+                  }
                 }
               }
             }
@@ -216,9 +257,10 @@ fun DraftItemCard(
 ) {
   val dateStr = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(Date(draft.createdAt))
 
-  Card(
-    shape = RoundedCornerShape(18.dp),
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+  Surface(
+    shape = RoundedCornerShape(20.dp),
+    color = MaterialTheme.colorScheme.surface,
+    border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
     modifier = Modifier.fillMaxWidth()
   ) {
     Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -227,8 +269,14 @@ fun DraftItemCard(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text(draft.title, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 2)
-        Spacer(Modifier.width(8.dp))
+        Text(
+          draft.title,
+          fontWeight = FontWeight.Bold,
+          style = MaterialTheme.typography.titleMedium,
+          modifier = Modifier.weight(1f),
+          maxLines = 2
+        )
+        Spacer(Modifier.width(10.dp))
         StatusBadge(status = draft.generationStatus)
       }
 
@@ -239,17 +287,21 @@ fun DraftItemCard(
         maxLines = 2
       )
 
+      // Metadata Tag Badges
       Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
       ) {
         Surface(
           shape = RoundedCornerShape(8.dp),
-          color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+          color = MaterialTheme.colorScheme.surfaceVariant,
+          border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
         ) {
           Text(
             draft.nicheProfile.replaceFirstChar { it.uppercase() },
             fontSize = 11.sp,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -257,25 +309,42 @@ fun DraftItemCard(
         if (draft.images.isNotEmpty()) {
           Surface(
             shape = RoundedCornerShape(8.dp),
-            color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.secondary.copy(alpha = 0.4f))
           ) {
             Text(
               "${draft.images.size} Images Attached",
               fontSize = 11.sp,
+              fontWeight = FontWeight.Bold,
               modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-              color = MaterialTheme.colorScheme.onSecondaryContainer
+              color = MaterialTheme.colorScheme.secondary
             )
           }
         }
-        Text("• $dateStr", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, modifier = Modifier.align(Alignment.CenterVertically))
+        Text("• $dateStr", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
       }
 
       if (draft.publishedUrl.isNotBlank()) {
-        Text("🔗 ${draft.publishedUrl}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary, maxLines = 1)
+        Surface(
+          shape = RoundedCornerShape(8.dp),
+          color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f),
+          border = BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Text(
+            "🔗 ${draft.publishedUrl}",
+            fontSize = 11.sp,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+            maxLines = 1
+          )
+        }
       }
 
-      HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+      HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
+      // Action Footer
       Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -291,11 +360,11 @@ fun DraftItemCard(
         }
         Button(
           onClick = onOpen,
-          shape = RoundedCornerShape(10.dp)
+          shape = RoundedCornerShape(12.dp)
         ) {
           Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
           Spacer(Modifier.width(6.dp))
-          Text(if (draft.generationStatus == "published") "View & Update" else "Review & Publish", maxLines = 1)
+          Text(if (draft.generationStatus == "published") "View & Update" else "Review & Publish", fontWeight = FontWeight.Bold, maxLines = 1)
         }
       }
     }

@@ -1,10 +1,12 @@
 package com.askinz.publisher.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -39,34 +41,34 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
         }
         Text("Local content planning, keyword clusters, and publishing analytics.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
 
-        // Full-Width Segmented Tab Row
+        // Cadres / Pill Tab Row
         Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f))
-            .padding(4.dp),
-          horizontalArrangement = Arrangement.spacedBy(4.dp)
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
           tabs.forEachIndexed { index, title ->
             val isSelected = selectedTab == index
             Surface(
-              shape = RoundedCornerShape(10.dp),
-              color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
+              shape = RoundedCornerShape(14.dp),
+              color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface,
+              border = BorderStroke(
+                1.5.dp,
+                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
+              ),
               modifier = Modifier
                 .weight(1f)
                 .clickable { selectedTab = index }
             ) {
               Box(
-                modifier = Modifier.padding(vertical = 8.dp),
+                modifier = Modifier.padding(vertical = 10.dp, horizontal = 4.dp),
                 contentAlignment = Alignment.Center
               ) {
                 Text(
                   title,
-                  fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                  fontSize = 11.sp,
+                  fontWeight = if (isSelected) FontWeight.Bold else FontWeight.SemiBold,
+                  fontSize = 11.5.sp,
                   maxLines = 1,
-                  color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                  color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                 )
               }
             }
@@ -77,7 +79,7 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
 
     when (selectedTab) {
       0 -> {
-        // 📊 KPIs 2x2 Clean Grid
+        // 📊 KPIs 2x2 Clean Grid (Cadre Style)
         item {
           val ideasCount = state.keywords.size
           val draftsCount = state.drafts.size
@@ -102,15 +104,16 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
 
         if (state.keywords.isEmpty()) {
           item {
-            Card(
-              shape = RoundedCornerShape(16.dp),
-              colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-              modifier = Modifier.fillMaxWidth()
+            Surface(
+              shape = RoundedCornerShape(20.dp),
+              color = MaterialTheme.colorScheme.surface,
+              border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+              modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)
             ) {
               Box(modifier = Modifier.padding(28.dp), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(6.dp)) {
                   Icon(Icons.Default.HourglassEmpty, contentDescription = null, tint = MaterialTheme.colorScheme.outline, modifier = Modifier.size(40.dp))
-                  Text("No keywords queued in pipeline.", fontWeight = FontWeight.SemiBold)
+                  Text("No keywords queued in pipeline.", fontWeight = FontWeight.Bold)
                   Text("Add ideas from Content Studio to track them here.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 }
               }
@@ -118,9 +121,10 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
           }
         } else {
           items(state.keywords.take(30), key = { it.id }) { kw ->
-            Card(
-              shape = RoundedCornerShape(16.dp),
-              colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            Surface(
+              shape = RoundedCornerShape(18.dp),
+              color = MaterialTheme.colorScheme.surface,
+              border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
               modifier = Modifier.fillMaxWidth()
             ) {
               Row(
@@ -140,11 +144,12 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
       }
 
       1 -> {
-        // Keyword Clusters
+        // Keyword Clusters (Cadre Style)
         item {
-          Card(
+          Surface(
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
           ) {
             var clusterName by remember { mutableStateOf("") }
@@ -159,7 +164,7 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
                 onValueChange = { clusterName = it },
                 label = { Text("Cluster Topic / Pillar Name") },
                 placeholder = { Text("e.g. Italian Pasta Guide") },
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
               )
               OutlinedTextField(
@@ -167,7 +172,7 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
                 onValueChange = { clusterKeywords = it },
                 label = { Text("Sub-Keywords (comma separated)") },
                 placeholder = { Text("carbonara, bolognese sauce, fresh pasta dough") },
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
               )
               Button(
@@ -184,7 +189,7 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
               ) {
                 Icon(Icons.Default.Add, contentDescription = null)
                 Spacer(Modifier.width(6.dp))
-                Text("Save Cluster Pillar")
+                Text("Save Cluster Pillar", fontWeight = FontWeight.Bold)
               }
             }
           }
@@ -192,11 +197,12 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
       }
 
       2 -> {
-        // Content Calendar Reminders
+        // Content Calendar Reminders (Cadre Style)
         item {
-          Card(
+          Surface(
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier.fillMaxWidth()
           ) {
             Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -215,10 +221,11 @@ fun EditorialPipelineScreen(viewModel: OrbitPressViewModel) {
 
 @Composable
 fun KpiCard(title: String, count: String, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier) {
-  Card(
+  Surface(
     modifier = modifier,
-    shape = RoundedCornerShape(16.dp),
-    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    shape = RoundedCornerShape(18.dp),
+    color = MaterialTheme.colorScheme.surface,
+    border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline)
   ) {
     Column(
       modifier = Modifier.padding(14.dp),
@@ -229,7 +236,15 @@ fun KpiCard(title: String, count: String, icon: androidx.compose.ui.graphics.vec
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+        Box(
+          modifier = Modifier
+            .size(36.dp)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+          contentAlignment = Alignment.Center
+        ) {
+          Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
+        }
         Text(count, fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, color = MaterialTheme.colorScheme.primary)
       }
       Text(title, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)

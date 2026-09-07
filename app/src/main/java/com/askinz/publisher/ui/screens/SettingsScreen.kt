@@ -1,5 +1,6 @@
 package com.askinz.publisher.ui.screens
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -92,11 +93,12 @@ fun SettingsScreen(
     verticalArrangement = Arrangement.spacedBy(16.dp),
     contentPadding = PaddingValues(top = 12.dp, bottom = 32.dp)
   ) {
-    // 🎨 App Appearance & Theme Studio Card
+    // 🎨 App Appearance & Theme Studio Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -112,12 +114,12 @@ fun SettingsScreen(
           }
 
           Text(
-            "Select your favorite aesthetic theme palette:",
+            "Select your favorite aesthetic theme palette (styles 100% of all UI):",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
 
-          // Theme Presets Swatches
+          // Theme Presets Swatches (Cadre Pills)
           LazyRow(
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             modifier = Modifier.fillMaxWidth()
@@ -125,14 +127,17 @@ fun SettingsScreen(
             items(ThemePreset.entries) { preset ->
               val isSelected = state.themePreset.equals(preset.id, ignoreCase = true)
               Surface(
-                shape = RoundedCornerShape(14.dp),
+                shape = RoundedCornerShape(16.dp),
                 color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                border = if (isSelected) androidx.compose.foundation.BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null,
+                border = BorderStroke(
+                  if (isSelected) 2.dp else 1.dp,
+                  if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant
+                ),
                 modifier = Modifier
                   .width(135.dp)
                   .clickable { viewModel.setThemePreset(preset.id) }
               ) {
-                Column(modifier = Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                   Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     Box(Modifier.size(16.dp).clip(CircleShape).background(preset.primaryLight))
                     Box(Modifier.size(16.dp).clip(CircleShape).background(preset.secondaryColor))
@@ -145,7 +150,7 @@ fun SettingsScreen(
             }
           }
 
-          HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+          HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
           // Dark Mode & AMOLED switches
           Row(
@@ -183,11 +188,12 @@ fun SettingsScreen(
       }
     }
 
-    // 🌐 Website Profiles Card
+    // 🌐 Website Profiles Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -211,7 +217,7 @@ fun SettingsScreen(
             }
           }
 
-          // Horizontal list of site chips
+          // Horizontal list of site chips (Cadre Style)
           LazyRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxWidth()
@@ -219,8 +225,9 @@ fun SettingsScreen(
             items(state.siteProfiles) { profile ->
               val isSelected = profile.id == state.activeSiteId
               Surface(
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                border = BorderStroke(1.dp, if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
                 modifier = Modifier.clickable { viewModel.switchSite(profile.id) }
               ) {
                 Row(
@@ -245,11 +252,12 @@ fun SettingsScreen(
       }
     }
 
-    // 🤖 Article API Credentials Card
+    // 🤖 Article API Credentials Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -265,7 +273,7 @@ fun SettingsScreen(
             label = { Text("Base URL (HTTPS)") },
             placeholder = { Text("https://api.openai.com/v1") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth()
           )
 
@@ -275,7 +283,7 @@ fun SettingsScreen(
             label = { Text("Model Name") },
             placeholder = { Text("gpt-4o / claude-3-5-sonnet") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth()
           )
 
@@ -284,7 +292,7 @@ fun SettingsScreen(
             onValueChange = { articleApiKey = it },
             label = { Text("API Secret Key") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             visualTransformation = if (showArticleKey) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -298,11 +306,12 @@ fun SettingsScreen(
       }
     }
 
-    // 🌐 WordPress Credentials Card
+    // 🌐 WordPress Credentials Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -317,7 +326,7 @@ fun SettingsScreen(
             label = { Text("WordPress Site URL (HTTPS)") },
             placeholder = { Text("https://yourblog.com") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth()
           )
 
@@ -326,7 +335,7 @@ fun SettingsScreen(
             onValueChange = { wpUsername = it },
             label = { Text("WordPress Username") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth()
           )
 
@@ -335,7 +344,7 @@ fun SettingsScreen(
             onValueChange = { wpAppPassword = it },
             label = { Text("Application Password") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             visualTransformation = if (showWpPass) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             trailingIcon = {
@@ -359,7 +368,7 @@ fun SettingsScreen(
               onValueChange = {},
               readOnly = true,
               label = { Text("Default Category") },
-              shape = RoundedCornerShape(12.dp),
+              shape = RoundedCornerShape(14.dp),
               trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = catExpanded) },
               modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
             )
@@ -386,6 +395,7 @@ fun SettingsScreen(
                 viewModel.testConnection()
               },
               shape = RoundedCornerShape(12.dp),
+              border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
               modifier = Modifier.weight(1f)
             ) {
               Icon(Icons.Default.CloudSync, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -406,11 +416,12 @@ fun SettingsScreen(
       }
     }
 
-    // 🖼️ Image Generator & AI Setup Card (Fixed Full-Width Responsive Toggle)
+    // 🖼️ Image Generator & AI Setup Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -419,24 +430,21 @@ fun SettingsScreen(
             Text("Image Generation Mode", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
           }
 
-          // Full-Width Segmented Option Selector (Prevents any vertical wrapping!)
+          // Cadre Segmented Option Selector
           Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .clip(RoundedCornerShape(12.dp))
-              .background(MaterialTheme.colorScheme.surfaceVariant)
-              .padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
           ) {
             Surface(
-              shape = RoundedCornerShape(10.dp),
-              color = if (imageMode == "manual") MaterialTheme.colorScheme.primary else Color.Transparent,
+              shape = RoundedCornerShape(14.dp),
+              color = if (imageMode == "manual") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+              border = BorderStroke(1.2.dp, if (imageMode == "manual") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
               modifier = Modifier
                 .weight(1f)
                 .clickable { imageMode = "manual" }
             ) {
               Row(
-                modifier = Modifier.padding(vertical = 10.dp),
+                modifier = Modifier.padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
               ) {
@@ -449,8 +457,8 @@ fun SettingsScreen(
                 Spacer(Modifier.width(6.dp))
                 Text(
                   "Manual Upload",
-                  fontWeight = FontWeight.SemiBold,
-                  fontSize = 13.sp,
+                  fontWeight = FontWeight.Bold,
+                  fontSize = 12.5.sp,
                   maxLines = 1,
                   color = if (imageMode == "manual") MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -458,14 +466,15 @@ fun SettingsScreen(
             }
 
             Surface(
-              shape = RoundedCornerShape(10.dp),
-              color = if (imageMode == "automatic") MaterialTheme.colorScheme.primary else Color.Transparent,
+              shape = RoundedCornerShape(14.dp),
+              color = if (imageMode == "automatic") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+              border = BorderStroke(1.2.dp, if (imageMode == "automatic") MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outlineVariant),
               modifier = Modifier
                 .weight(1f)
                 .clickable { imageMode = "automatic" }
             ) {
               Row(
-                modifier = Modifier.padding(vertical = 10.dp),
+                modifier = Modifier.padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
               ) {
@@ -478,8 +487,8 @@ fun SettingsScreen(
                 Spacer(Modifier.width(6.dp))
                 Text(
                   "Auto AI Images",
-                  fontWeight = FontWeight.SemiBold,
-                  fontSize = 13.sp,
+                  fontWeight = FontWeight.Bold,
+                  fontSize = 12.5.sp,
                   maxLines = 1,
                   color = if (imageMode == "automatic") MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -490,28 +499,25 @@ fun SettingsScreen(
           if (imageMode == "automatic") {
             Text("AI Image Provider:", fontSize = 12.sp, fontWeight = FontWeight.Bold)
 
-            // Provider Switcher (Full Width)
+            // Provider Switcher (Cadre Style)
             Row(
-              modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(4.dp),
-              horizontalArrangement = Arrangement.spacedBy(4.dp)
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
               Surface(
-                shape = RoundedCornerShape(10.dp),
-                color = if (imageProvider == "cloudflare") MaterialTheme.colorScheme.secondary else Color.Transparent,
+                shape = RoundedCornerShape(12.dp),
+                color = if (imageProvider == "cloudflare") MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceVariant,
+                border = BorderStroke(1.dp, if (imageProvider == "cloudflare") MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outlineVariant),
                 modifier = Modifier.weight(1f).clickable { imageProvider = "cloudflare" }
               ) {
                 Row(
-                  modifier = Modifier.padding(vertical = 8.dp),
+                  modifier = Modifier.padding(vertical = 10.dp),
                   horizontalArrangement = Arrangement.Center,
                   verticalAlignment = Alignment.CenterVertically
                 ) {
                   Text(
                     "Cloudflare Flux AI",
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     maxLines = 1,
                     color = if (imageProvider == "cloudflare") MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -520,18 +526,19 @@ fun SettingsScreen(
               }
 
               Surface(
-                shape = RoundedCornerShape(10.dp),
-                color = if (imageProvider == "openai") MaterialTheme.colorScheme.secondary else Color.Transparent,
+                shape = RoundedCornerShape(12.dp),
+                color = if (imageProvider == "openai") MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceVariant,
+                border = BorderStroke(1.dp, if (imageProvider == "openai") MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.outlineVariant),
                 modifier = Modifier.weight(1f).clickable { imageProvider = "openai" }
               ) {
                 Row(
-                  modifier = Modifier.padding(vertical = 8.dp),
+                  modifier = Modifier.padding(vertical = 10.dp),
                   horizontalArrangement = Arrangement.Center,
                   verticalAlignment = Alignment.CenterVertically
                 ) {
                   Text(
                     "OpenAI DALL-E 3",
-                    fontWeight = FontWeight.SemiBold,
+                    fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     maxLines = 1,
                     color = if (imageProvider == "openai") MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurfaceVariant
@@ -546,7 +553,7 @@ fun SettingsScreen(
                 onValueChange = { cfAccountId = it },
                 label = { Text("Cloudflare Account ID") },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
               )
               OutlinedTextField(
@@ -555,7 +562,7 @@ fun SettingsScreen(
                 label = { Text("Cloudflare Model") },
                 placeholder = { Text("@cf/black-forest-labs/flux-1-schnell") },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
               )
               OutlinedTextField(
@@ -563,7 +570,7 @@ fun SettingsScreen(
                 onValueChange = { cfToken = it },
                 label = { Text("Cloudflare API Token") },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
               )
@@ -574,7 +581,7 @@ fun SettingsScreen(
                 label = { Text("Image API Base URL") },
                 placeholder = { Text("https://api.openai.com/v1") },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
               )
               OutlinedTextField(
@@ -583,7 +590,7 @@ fun SettingsScreen(
                 label = { Text("Image Model Name") },
                 placeholder = { Text("dall-e-3") },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 modifier = Modifier.fillMaxWidth()
               )
               OutlinedTextField(
@@ -591,7 +598,7 @@ fun SettingsScreen(
                 onValueChange = { imageApiKey = it },
                 label = { Text("Image API Secret Key") },
                 singleLine = true,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(14.dp),
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth()
               )
@@ -601,16 +608,17 @@ fun SettingsScreen(
       }
     }
 
-    // 📌 Pinterest Integration Card
+    // 📌 Pinterest Integration Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
           Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Default.PushPin, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Icon(Icons.Default.Bookmark, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Text("Pinterest API Integration", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
           }
 
@@ -619,7 +627,7 @@ fun SettingsScreen(
             onValueChange = { pinToken = it },
             label = { Text("Pinterest Access Token (v5)") },
             singleLine = true,
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
           )
@@ -634,17 +642,18 @@ fun SettingsScreen(
           ) {
             Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Fetch Pinterest Boards (${state.pinterestBoards.size} Loaded)")
+            Text("Fetch Pinterest Boards (${state.pinterestBoards.size} Loaded)", fontWeight = FontWeight.Bold)
           }
         }
       }
     }
 
-    // 🔒 Device Security & PIN Lock Card
+    // 🔒 Device Security & PIN Lock Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -661,22 +670,23 @@ fun SettingsScreen(
           ) {
             Icon(Icons.Default.Lock, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
-            Text(if (state.isPinLockEnabled) "Modify or Remove PIN Lock" else "Enable Security PIN Lock")
+            Text(if (state.isPinLockEnabled) "Modify or Remove PIN Lock" else "Enable Security PIN Lock", fontWeight = FontWeight.Bold)
           }
         }
       }
     }
 
-    // 💾 Workspace Backup & Restore Card
+    // 💾 Workspace Backup & Restore Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
           Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Icon(Icons.Default.FolderZip, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+            Icon(Icons.Default.Folder, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
             Text("Encrypted Backup & Restore", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
           }
           Text("Export or import all drafts, queues, and activity logs via Android Storage Access Framework (SAF).", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
@@ -685,6 +695,7 @@ fun SettingsScreen(
             OutlinedButton(
               onClick = onExportBackup,
               shape = RoundedCornerShape(12.dp),
+              border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
               modifier = Modifier.weight(1f)
             ) {
               Icon(Icons.Default.FileDownload, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -694,6 +705,7 @@ fun SettingsScreen(
             OutlinedButton(
               onClick = onImportBackup,
               shape = RoundedCornerShape(12.dp),
+              border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
               modifier = Modifier.weight(1f)
             ) {
               Icon(Icons.Default.FileUpload, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -730,7 +742,8 @@ fun SettingsScreen(
               viewModel.addSite(siteName)
               showNewSiteDialog = false
             }
-          }
+          },
+          shape = RoundedCornerShape(10.dp)
         ) {
           Text("Add Website")
         }
@@ -769,7 +782,8 @@ fun SettingsScreen(
           onClick = {
             viewModel.setPinLock(newPin)
             showPinSetupDialog = false
-          }
+          },
+          shape = RoundedCornerShape(10.dp)
         ) {
           Text("Save PIN")
         }

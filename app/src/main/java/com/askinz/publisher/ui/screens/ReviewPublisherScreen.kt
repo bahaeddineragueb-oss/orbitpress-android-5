@@ -1,11 +1,13 @@
 package com.askinz.publisher.ui.screens
 
 import android.graphics.Bitmap
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -18,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.askinz.publisher.DraftRecord
@@ -42,7 +45,7 @@ fun ReviewPublisherScreen(
       Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Icon(Icons.Default.Description, contentDescription = null, modifier = Modifier.size(52.dp), tint = MaterialTheme.colorScheme.outline)
         Text("No draft selected.", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Button(onClick = onBack, shape = RoundedCornerShape(10.dp)) {
+        Button(onClick = onBack, shape = RoundedCornerShape(12.dp)) {
           Text("Back to Drafts")
         }
       }
@@ -91,7 +94,8 @@ fun ReviewPublisherScreen(
       ) {
         OutlinedButton(
           onClick = onBack,
-          shape = RoundedCornerShape(10.dp)
+          shape = RoundedCornerShape(12.dp),
+          border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline)
         ) {
           Icon(Icons.Default.ArrowBack, contentDescription = null, modifier = Modifier.size(16.dp))
           Spacer(Modifier.width(4.dp))
@@ -100,7 +104,7 @@ fun ReviewPublisherScreen(
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
           FilledTonalButton(
             onClick = { viewModel.saveDraftSnapshot(draft.id) },
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(12.dp)
           ) {
             Icon(Icons.Default.BookmarkAdd, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(4.dp))
@@ -121,7 +125,7 @@ fun ReviewPublisherScreen(
               )
               viewModel.notify("Draft edits saved locally.")
             },
-            shape = RoundedCornerShape(10.dp)
+            shape = RoundedCornerShape(12.dp)
           ) {
             Icon(Icons.Default.Save, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(4.dp))
@@ -131,14 +135,15 @@ fun ReviewPublisherScreen(
       }
     }
 
-    // 🏆 SEO & Pinterest Readiness Score Card
+    // 🏆 SEO & Content Readiness Audit Card (Cadre Style, 100% Zero-Wrapping Fix)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
-        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
           Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -146,14 +151,15 @@ fun ReviewPublisherScreen(
           ) {
             Column(modifier = Modifier.weight(1f)) {
               Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(20.dp))
                 Text("SEO & Publishing Audit", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
               }
               Text("Real-time content readiness score", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             Surface(
               shape = RoundedCornerShape(12.dp),
-              color = if (auditResult.score >= 80) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.tertiaryContainer,
+              color = if (auditResult.score >= 80) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+              border = BorderStroke(1.dp, if (auditResult.score >= 80) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary),
               modifier = Modifier.padding(start = 8.dp)
             ) {
               Text(
@@ -161,73 +167,113 @@ fun ReviewPublisherScreen(
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 20.sp,
                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                color = if (auditResult.score >= 80) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary
+                color = if (auditResult.score >= 80) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary
               )
             }
           }
 
-          HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+          HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-          auditResult.checks.forEach { check ->
-            Row(
-              modifier = Modifier.fillMaxWidth().padding(vertical = 3.dp),
-              horizontalArrangement = Arrangement.SpaceBetween,
-              verticalAlignment = Alignment.CenterVertically
-            ) {
-              Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(1f)) {
-                Icon(
-                  if (check.ok) Icons.Default.CheckCircle else Icons.Default.RadioButtonUnchecked,
-                  contentDescription = null,
-                  tint = if (check.ok) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
-                  modifier = Modifier.size(16.dp)
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(check.label, fontSize = 13.sp, fontWeight = if (check.ok) FontWeight.Normal else FontWeight.Medium)
+          // Audit Items in Individual Cadres (Guaranteed No Squishing)
+          Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            auditResult.checks.forEach { check ->
+              Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = if (check.ok) MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f),
+                border = BorderStroke(
+                  1.dp,
+                  if (check.ok) MaterialTheme.colorScheme.outlineVariant else MaterialTheme.colorScheme.error.copy(alpha = 0.4f)
+                ),
+                modifier = Modifier.fillMaxWidth()
+              ) {
+                Row(
+                  modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                  Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.weight(1f)
+                  ) {
+                    Icon(
+                      if (check.ok) Icons.Default.CheckCircle else Icons.Default.Cancel,
+                      contentDescription = null,
+                      tint = if (check.ok) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                      modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(Modifier.width(10.dp))
+                    Text(
+                      check.label,
+                      fontWeight = FontWeight.SemiBold,
+                      fontSize = 13.sp,
+                      color = MaterialTheme.colorScheme.onSurface
+                    )
+                  }
+
+                  Surface(
+                    shape = RoundedCornerShape(8.dp),
+                    color = if (check.ok) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer,
+                    modifier = Modifier.padding(start = 8.dp)
+                  ) {
+                    Text(
+                      check.detail,
+                      fontSize = 11.sp,
+                      fontWeight = FontWeight.Bold,
+                      color = if (check.ok) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                      modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                      maxLines = 1,
+                      overflow = TextOverflow.Ellipsis
+                    )
+                  }
+                }
               }
-              Text(check.detail, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant, maxLines = 1)
             }
           }
         }
       }
     }
 
-    // 🔍 Google SERP Snippet Preview Card (Modern Visual Feature)
+    // 🔍 Google SERP Snippet Preview Card (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-          Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-            Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(16.dp))
-            Text("Google SERP Snippet Preview", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+          Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(Icons.Default.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp))
+            Text("Google SERP Preview", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
           }
 
           Surface(
-            shape = RoundedCornerShape(12.dp),
-            color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth().border(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+            shape = RoundedCornerShape(14.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+            modifier = Modifier.fillMaxWidth()
           ) {
-            Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
               Text(
                 "https://${state.currentSettings.wordpressBaseUrl.removePrefix("https://").removePrefix("http://").ifBlank { "example.com" }}/${slug.ifBlank { "article-slug" }}",
                 fontSize = 11.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 1
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
               )
               Text(
                 title.ifBlank { "Untitled Article" },
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1A0DAB), // Google link blue
+                color = Color(0xFF1A0DAB),
                 maxLines = 2
               )
               Text(
                 metaDescription.ifBlank { "No meta description provided yet. Add a concise SEO description." },
                 fontSize = 12.sp,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 2
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
               )
             }
           }
@@ -235,11 +281,12 @@ fun ReviewPublisherScreen(
       }
     }
 
-    // 🖼️ Images Section Card
+    // 🖼️ Article Imagery Section (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
@@ -260,7 +307,8 @@ fun ReviewPublisherScreen(
             }
             OutlinedButton(
               onClick = onPickFeaturedImage,
-              shape = RoundedCornerShape(10.dp)
+              shape = RoundedCornerShape(10.dp),
+              border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
               Icon(Icons.Default.Image, contentDescription = null, modifier = Modifier.size(16.dp))
               Spacer(Modifier.width(6.dp))
@@ -271,11 +319,15 @@ fun ReviewPublisherScreen(
             Image(
               bitmap = featuredBitmap.asImageBitmap(),
               contentDescription = "Featured Preview",
-              modifier = Modifier.fillMaxWidth().height(160.dp).clip(RoundedCornerShape(12.dp)).border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+              modifier = Modifier
+                .fillMaxWidth()
+                .height(160.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .border(1.2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
             )
           }
 
-          HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+          HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
           // Pinterest Image Slot
           Row(
@@ -289,7 +341,8 @@ fun ReviewPublisherScreen(
             }
             OutlinedButton(
               onClick = onPickPinterestImage,
-              shape = RoundedCornerShape(10.dp)
+              shape = RoundedCornerShape(10.dp),
+              border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
             ) {
               Icon(Icons.Default.AddPhotoAlternate, contentDescription = null, modifier = Modifier.size(16.dp))
               Spacer(Modifier.width(6.dp))
@@ -301,7 +354,11 @@ fun ReviewPublisherScreen(
               Image(
                 bitmap = pinterestBitmap.asImageBitmap(),
                 contentDescription = "Pinterest Preview",
-                modifier = Modifier.width(160.dp).height(240.dp).clip(RoundedCornerShape(12.dp)).border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(12.dp))
+                modifier = Modifier
+                  .width(160.dp)
+                  .height(240.dp)
+                  .clip(RoundedCornerShape(14.dp))
+                  .border(1.2.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(14.dp))
               )
             }
           }
@@ -309,11 +366,12 @@ fun ReviewPublisherScreen(
       }
     }
 
-    // ✍️ Article Content & SEO Editor Card
+    // ✍️ Article & SEO Metadata (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -326,8 +384,8 @@ fun ReviewPublisherScreen(
             value = title,
             onValueChange = { title = it },
             label = { Text("Article Title") },
-            supportingText = { Text("${title.length} characters (ideal: 45–60)") },
-            shape = RoundedCornerShape(12.dp),
+            supportingText = { Text("${title.length} characters") },
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth()
           )
 
@@ -335,7 +393,7 @@ fun ReviewPublisherScreen(
             value = slug,
             onValueChange = { slug = it },
             label = { Text("Canonical Slug") },
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
           )
@@ -344,7 +402,7 @@ fun ReviewPublisherScreen(
             value = focusKeyphrase,
             onValueChange = { focusKeyphrase = it },
             label = { Text("Focus Keyphrase") },
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
           )
@@ -354,7 +412,7 @@ fun ReviewPublisherScreen(
             onValueChange = { metaDescription = it },
             label = { Text("SEO Meta Description") },
             supportingText = { Text("${metaDescription.length}/160 characters") },
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth(),
             minLines = 2,
             maxLines = 4
@@ -363,11 +421,12 @@ fun ReviewPublisherScreen(
       }
     }
 
-    // 📌 Pinterest Metadata Card
+    // 📌 Pinterest Metadata (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -381,7 +440,7 @@ fun ReviewPublisherScreen(
             onValueChange = { if (it.length <= 100) pinTitle = it },
             label = { Text("Pin Title") },
             supportingText = { Text("${pinTitle.length}/100 chars") },
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
           )
@@ -391,7 +450,7 @@ fun ReviewPublisherScreen(
             onValueChange = { if (it.length <= 800) pinDescription = it },
             label = { Text("Pin Description") },
             supportingText = { Text("${pinDescription.length}/800 chars") },
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             modifier = Modifier.fillMaxWidth(),
             minLines = 2,
             maxLines = 4
@@ -402,7 +461,7 @@ fun ReviewPublisherScreen(
             onValueChange = { if (it.length <= 320) pinAltText = it },
             label = { Text("Pin Image Alt Text") },
             supportingText = { Text("${pinAltText.length}/320 chars") },
-            shape = RoundedCornerShape(12.dp),
+            shape = RoundedCornerShape(14.dp),
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
           )
@@ -410,11 +469,12 @@ fun ReviewPublisherScreen(
       }
     }
 
-    // 🌐 Sandboxed Read-Only Article HTML Preview Card
+    // 🌐 Sandboxed HTML Preview (Cadre Style)
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.2.dp, MaterialTheme.colorScheme.outline),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -428,7 +488,7 @@ fun ReviewPublisherScreen(
             modifier = Modifier
               .fillMaxWidth()
               .clip(RoundedCornerShape(14.dp))
-              .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(14.dp))
+              .border(1.2.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(14.dp))
           ) {
             HtmlPreviewView(
               htmlContent = draft.htmlContent,
@@ -440,11 +500,12 @@ fun ReviewPublisherScreen(
       }
     }
 
-    // 🚀 Publish Action Button Card
+    // 🚀 Publish Action Button
     item {
-      Card(
+      Surface(
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer),
+        color = MaterialTheme.colorScheme.primaryContainer,
+        border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
         modifier = Modifier.fillMaxWidth()
       ) {
         Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -468,7 +529,7 @@ fun ReviewPublisherScreen(
             },
             enabled = !state.isLoading && draft.images.containsKey("featured") && draft.images.containsKey("pinterest"),
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(14.dp)
           ) {
             Icon(Icons.Default.Publish, contentDescription = null)
             Spacer(Modifier.width(8.dp))
@@ -484,7 +545,7 @@ fun ReviewPublisherScreen(
               "⚠️ Attach both Featured and Pinterest images before publishing.",
               color = MaterialTheme.colorScheme.error,
               fontSize = 12.sp,
-              fontWeight = FontWeight.Medium
+              fontWeight = FontWeight.Bold
             )
           }
         }
