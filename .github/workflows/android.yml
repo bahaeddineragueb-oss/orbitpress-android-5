@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -40,8 +40,24 @@ jobs:
           fi
       - name: Verify release APK signature
         run: $ANDROID_HOME/build-tools/35.0.0/apksigner verify --verbose app/build/outputs/apk/release/*.apk
-      - name: Upload APK
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: orbitpress-release-apk
           path: app/build/outputs/apk/release/*.apk
+      - name: Publish GitHub Release
+        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/arena/'))
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v5.0.0-native-compose
+          name: "OrbitPress 5.0.0 (Native Jetpack Compose)"
+          body: |
+            ### 🚀 OrbitPress v5.0.0 Release
+            - Native Jetpack Compose Material 3 interface
+            - EncryptedSharedPreferences and MasterKey security
+            - Asynchronous Coroutines + StateFlow architecture
+            - Storage Access Framework (SAF) JSON backup & restore
+            - WordPress REST API and Pinterest v5 publishing
+          files: app/build/outputs/apk/release/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
