@@ -357,7 +357,7 @@ fun KeywordQueueCard(
         }
         if (keyword.draftId != null) {
           FilledTonalButton(onClick = onOpenDraft) {
-            Icon(Icons.Default.EditDocument, contentDescription = null, modifier = Modifier.size(16.dp))
+            Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
             Text("Open Draft")
           }
