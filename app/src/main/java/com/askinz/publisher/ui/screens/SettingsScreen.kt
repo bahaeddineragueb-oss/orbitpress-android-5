@@ -116,7 +116,7 @@ fun SettingsScreen(
               readOnly = true,
               label = { Text("Active Website") },
               trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = siteExpanded) },
-              modifier = Modifier.menuAnchor().fillMaxWidth()
+              modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
             )
             ExposedDropdownMenu(
               expanded = siteExpanded,
@@ -239,7 +239,7 @@ fun SettingsScreen(
               readOnly = true,
               label = { Text("Default Category") },
               trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = catExpanded) },
-              modifier = Modifier.menuAnchor().fillMaxWidth()
+              modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
             )
             ExposedDropdownMenu(
               expanded = catExpanded,

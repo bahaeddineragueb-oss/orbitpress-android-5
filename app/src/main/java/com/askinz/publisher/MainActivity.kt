@@ -166,7 +166,7 @@ fun OrbitPressApp(viewModel: OrbitPressViewModel) {
             Text("Native Android Content Studio", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
           }
         }
-        Divider(modifier = Modifier.padding(vertical = 12.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
         NavigationDrawerItem(
           icon = { Icon(Icons.Default.Home, contentDescription = null) },
@@ -211,7 +211,7 @@ fun OrbitPressApp(viewModel: OrbitPressViewModel) {
           onClick = { viewModel.showScreen(Screen.REPAIR); scope.launch { drawerState.close() } }
         )
 
-        Divider(modifier = Modifier.padding(vertical = 12.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
         NavigationDrawerItem(
           icon = { Icon(Icons.Default.Settings, contentDescription = null) },

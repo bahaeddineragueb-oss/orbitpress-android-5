@@ -62,7 +62,7 @@ fun PinterestTrendsScreen(viewModel: OrbitPressViewModel) {
                 readOnly = true,
                 label = { Text("Trend Type") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = typeExpanded) },
-                modifier = Modifier.menuAnchor()
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
               )
               ExposedDropdownMenu(
                 expanded = typeExpanded,

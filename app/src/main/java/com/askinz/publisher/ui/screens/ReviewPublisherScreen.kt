@@ -153,7 +153,7 @@ fun ReviewPublisherScreen(
             }
           }
 
-          Divider(modifier = Modifier.padding(vertical = 4.dp))
+          HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
           auditResult.checks.forEach { check ->
             Row(
@@ -212,7 +212,7 @@ fun ReviewPublisherScreen(
             )
           }
 
-          Divider()
+          HorizontalDivider()
 
           // Pinterest Image Slot
           Row(

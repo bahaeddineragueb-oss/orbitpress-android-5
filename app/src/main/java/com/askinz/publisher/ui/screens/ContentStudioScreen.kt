@@ -135,7 +135,7 @@ fun ContentStudioScreen(
                 readOnly = true,
                 label = { Text("Niche Profile") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = profileExpanded) },
-                modifier = Modifier.menuAnchor()
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
               )
               ExposedDropdownMenu(
                 expanded = profileExpanded,
@@ -173,7 +173,7 @@ fun ContentStudioScreen(
                 readOnly = true,
                 label = { Text("WP Category") },
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = catExpanded) },
-                modifier = Modifier.menuAnchor()
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
               )
               ExposedDropdownMenu(
                 expanded = catExpanded,

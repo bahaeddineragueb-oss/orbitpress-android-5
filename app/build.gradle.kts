@@ -18,24 +18,17 @@ android {
 
   signingConfigs {
     create("stableRelease") {
-      val keystorePath = System.getenv("ORBITPRESS_KEYSTORE_PATH") ?: "../signing/orbitpress-v5-release.jks"
-      val keystoreFile = file(keystorePath)
-      if (keystoreFile.exists()) {
-        storeFile = keystoreFile
-        storePassword = System.getenv("ORBITPRESS_STORE_PASSWORD") ?: "OrbitPress5Store2026!"
-        keyAlias = System.getenv("ORBITPRESS_KEY_ALIAS") ?: "orbitpress-release"
-        keyPassword = System.getenv("ORBITPRESS_KEY_PASSWORD") ?: "OrbitPress5Key2026!"
-      }
+      storeFile = file("../signing/orbitpress-v5-release.jks")
+      storePassword = System.getenv("ORBITPRESS_STORE_PASSWORD") ?: "OrbitPress5Store2026!"
+      keyAlias = System.getenv("ORBITPRESS_KEY_ALIAS") ?: "orbitpress-release"
+      keyPassword = System.getenv("ORBITPRESS_KEY_PASSWORD") ?: "OrbitPress5Key2026!"
     }
   }
 
   buildTypes {
     getByName("release") {
       isMinifyEnabled = false
-      val releaseSigning = signingConfigs.findByName("stableRelease")
-      if (releaseSigning?.storeFile?.exists() == true) {
-        signingConfig = releaseSigning
-      }
+      signingConfig = signingConfigs.getByName("stableRelease")
     }
   }
 
@@ -69,5 +62,4 @@ dependencies {
 
   testImplementation("junit:junit:4.13.2")
   testImplementation("org.json:json:20240303")
-  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
 }
