@@ -41,12 +41,12 @@ jobs:
         run: npm run build
 
       - name: Build Windows installer (.exe)
+        shell: bash
         run: |
-          npx cross-env ELECTRON=true npm run build
+          ELECTRON=true npm run build
           npx electron-builder --win portable --x64 --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ELECTRON: "true"
 
       - name: List dist artifacts
         run: Get-ChildItem -Recurse dist | Format-List
