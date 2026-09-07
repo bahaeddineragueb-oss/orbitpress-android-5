@@ -31,7 +31,13 @@ jobs:
         with:
           gradle-version: '8.10'
       - name: Run unit tests
-        run: gradle :app:testDebugUnitTest --stacktrace
+        run: |
+          gradle :app:testDebugUnitTest --info --stacktrace || (
+            echo "=== UNIT TEST FAILURES ==="
+            find app/build/reports/tests/ -type f -name "*.html" -exec head -n 100 {} +
+            find app/build/test-results/ -type f -name "*.xml" -exec cat {} +
+            exit 1
+          )
       - name: Build release APK
         run: gradle :app:assembleRelease --stacktrace
       - name: Verify release APK signature
