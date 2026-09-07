@@ -1,9 +1,12 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState } from "react";
 import { mockCases, mockDocuments } from "@/lib/data";
 import { Bot, Sparkles, FileText, Clock, Users, AlertTriangle } from "lucide-react";
 
 export default function AssistantPage(){
+  const { t } = useI18n();
+
   const [caseId,setCaseId]=useState(mockCases[0].id);
   const [action,setAction]=useState<"summary"|"deadlines"|"memo">("summary");
   const [output,setOutput]=useState("");
@@ -55,7 +58,7 @@ export default function AssistantPage(){
   return (
     <div className="space-y-6">
       <div className="rounded-2xl bg-gradient-to-br from-violet-600 to-indigo-700 text-white p-6">
-        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Bot/> المساعد الذكي — للمحامي</h1>
+        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Bot/> {t("nav.assistant")} — للمحامي</h1>
         <p className="text-white/80 mt-1">يلخص الملف، يستخرج الآجال والتواريخ من الوثيقة، وينشئ مسودة مذكرة — مع تنبيه واضح أن المخرجات تحتاج مراجعة المحامي</p>
       </div>
 

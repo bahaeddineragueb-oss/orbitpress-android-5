@@ -210,5 +210,5 @@ MIT — استخدمه لمكتبك أو لعملائك بحرية.
 ---
 
 **صُنع بـ ❤️ في الجزائر — مكتبي v1.1 PC**
-> هل تريد Repo جديد على GitHub؟ أنشئ repo فارغ باسم `avocat-dz` على https://github.com/new ثم أخبرني لأرفعه فوراً — أو سأضعه في `orbitpress-android-5/avocat-dz` مؤقتاً.
+> Repo الرسمي الآن هو **`maktabi`** على https://github.com/bahaeddineragueb-oss/maktabi — ثلاثي اللغات (AR/FR/EN). إذا كان لا يزال يظهر باسم `orbitpress-android-5` غيّره من Settings → Rename.
 

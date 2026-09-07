@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { mockCases, mockHearings } from "@/lib/data";
 import { Hearing } from "@/lib/types";
@@ -7,6 +8,8 @@ import { CalendarDays, Clock, MapPin, Plus, Search, Filter, Bell, BellOff, Timer
 import { CourtSelector } from "@/components/CourtSelector";
 
 export default function SessionsPage() {
+  const { t } = useI18n();
+
   const [hearings, setHearings] = useState<Hearing[]>(mockHearings);
   const [q, setQ] = useState("");
   const [view, setView] = useState<"list" | "calendar">("list");
@@ -105,7 +108,7 @@ export default function SessionsPage() {
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><CalendarDays className="text-[#0e7490]" /> الجلسات والمواعيد</h1>
+          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><CalendarDays className="text-[#0e7490]" /> {t("nav.sessions")}</h1>
           <p className="text-sm text-slate-500">تقويم يومي/أسبوعي/شهري — جلسات اليوم والقادمة مع القاعة والقاضي • الساعة + تنبيهات</p>
         </div>
         <div className="flex gap-2">

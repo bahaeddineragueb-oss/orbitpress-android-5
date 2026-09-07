@@ -1,9 +1,12 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState, useMemo } from "react";
 import { courtsData, DB_INFO, getAllTribunals } from "@/lib/courts";
 import { Building2, Search, MapPin, Phone, Database, Check, Shield, ExternalLink, Landmark } from "lucide-react";
 
 export default function CourtsPage(){
+  const { t } = useI18n();
+
   const [q,setQ]=useState("");
   const [code,setCode]=useState("16"); // الجزائر default
   const selected = useMemo(()=> courtsData.find(w=>w.code===code), [code]);
@@ -25,7 +28,7 @@ export default function CourtsPage(){
       <div className="rounded-2xl bg-gradient-to-br from-[#0e7490] to-[#063544] text-white p-6 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.12),transparent_50%)]" />
         <div className="relative">
-          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Building2 /> قاعدة بيانات المحاكم — حقيقية 100%</h1>
+          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Building2 /> {t("nav.courts")} — حقيقية 100%</h1>
           <p className="text-white/80 mt-1 text-sm leading-relaxed">من <b>وزارة العدل الجزائرية</b> مباشرة — <a href="https://www.mjustice.gov.dz/ar/المحاكم-و-المجالس/" target="_blank" className="underline inline-flex items-center gap-1">mjustice.gov.dz <ExternalLink size={12}/></a> — المحامي يختار فقط، لا كتابة</p>
           <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-xl bg-white/10 border border-white/20 p-3 text-center"><div className="text-2xl font-extrabold">58</div><div className="text-xs">ولاية</div><div className="text-[11px] opacity-70">48 + 10 جديدة</div></div>

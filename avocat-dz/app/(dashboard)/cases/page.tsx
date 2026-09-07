@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState, useMemo } from "react";
 import { mockCases, mockClients, mockHearings, mockDocuments, mockFees } from "@/lib/data";
 import { CourtCase, CaseStatus } from "@/lib/types";
@@ -9,6 +10,8 @@ import { CourtSelector } from "@/components/CourtSelector";
 const statuses: CaseStatus[] = ["جديد", "قيد المتابعة", "مؤجل", "محكوم", "استئناف", "طعن", "مغلق", "مؤرشف"];
 
 export default function CasesPage() {
+  const { t } = useI18n();
+
   const [cases, setCases] = useState<CourtCase[]>(mockCases);
   const [q, setQ] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("الكل");
@@ -54,7 +57,7 @@ export default function CasesPage() {
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Scale className="text-[#0e7490]" /> القضايا والملفات</h1>
+          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Scale className="text-[#0e7490]" /> {t("nav.cases")}</h1>
           <p className="text-sm text-slate-500">كل ملف يعرض Timeline كامل من الافتتاح إلى الحكم والأرشيف</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="px-5 py-3 rounded-xl bg-[#0e7490] text-white font-bold inline-flex items-center gap-2"><Plus size={18} /> ملف جديد</button>

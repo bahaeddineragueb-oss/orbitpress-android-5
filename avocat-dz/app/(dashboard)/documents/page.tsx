@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState, useMemo } from "react";
 import { mockCases, mockDocuments } from "@/lib/data";
 import { Document, DocCategory } from "@/lib/types";
@@ -8,6 +9,8 @@ import { Files, Search, Upload, Eye, Download, Trash2, FileText, Filter } from "
 const cats: DocCategory[] = ["عريضة افتتاح","مذكرة","محضر","حكم","قرار","استدعاء","وكالة","مراسلة","أخرى"];
 
 export default function DocumentsPage(){
+  const { t } = useI18n();
+
   const [docs, setDocs] = useState<Document[]>(mockDocuments);
   const [q,setQ]=useState("");
   const [cat,setCat]=useState<string>("الكل");
@@ -33,7 +36,7 @@ export default function DocumentsPage(){
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Files className="text-[#0e7490]" /> الوثائق</h1>
+          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Files className="text-[#0e7490]" /> {t("nav.documents")}</h1>
           <p className="text-sm text-slate-500">مجلد إلكتروني لكل ملف — تصنيف، بحث، معاينة PDF، وتنزيل</p>
         </div>
         <button onClick={()=>setShowForm(!showForm)} className="px-5 py-3 rounded-xl bg-[#0e7490] text-white font-bold inline-flex items-center gap-2"><Upload size={18}/> رفع وثيقة</button>

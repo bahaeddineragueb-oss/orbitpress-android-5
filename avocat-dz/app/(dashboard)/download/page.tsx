@@ -1,14 +1,17 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { Monitor, Download, HardDrive, Shield, Zap, FileText, Check, Package } from "lucide-react";
 
 export default function DownloadPC() {
+  const { t } = useI18n();
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div id="download-pc" className="rounded-[1.5rem] bg-gradient-to-br from-[#0e7490] to-[#063544] text-white p-8 lg:p-10 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.15),transparent_50%)]" />
         <div className="relative">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/20 text-xs font-bold"><Monitor size={14} /> Logiciel PC — Windows 10/11</div>
-          <h1 className="mt-4 font-display font-extrabold text-3xl lg:text-4xl leading-tight">حمّل مكتبي على حاسوبك<br />واشتغل بدون انترنت</h1>
+          <h1 className="mt-4 font-display font-extrabold text-3xl lg:text-4xl leading-tight">{t("nav.download")} على حاسوبك<br />واشتغل بدون انترنت</h1>
           <p className="text-white/80 mt-3 max-w-2xl leading-relaxed">نسخة PC كاملة — تثبيت بضغطة، بياناتك على جهازك، نسخ احتياطي تلقائي، وطباعة مباشرة. لا حاجة لمتصفح.</p>
           <div className="mt-6 flex flex-wrap gap-3">
             <a href="#installer" className="px-7 py-3.5 rounded-xl bg-white text-[#063544] font-extrabold inline-flex items-center gap-2 text-[15px]"><Monitor size={18} /> تحميل المثبت (.exe) — 85MB</a>

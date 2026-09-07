@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState, useMemo } from "react";
 import { mockClients, mockCases } from "@/lib/data";
 import { Client } from "@/lib/types";
@@ -6,6 +7,8 @@ import { formatDateShort, uid } from "@/lib/utils";
 import { Search, Plus, Phone, Mail, MapPin, Trash2, Pencil, Users, FileText } from "lucide-react";
 
 export default function ClientsPage() {
+  const { t } = useI18n();
+
   const [clients, setClients] = useState<Client[]>(mockClients);
   const [q, setQ] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -30,7 +33,7 @@ export default function ClientsPage() {
     <div className="space-y-6">
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
-          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Users className="text-[#0e7490]" /> إدارة العملاء</h1>
+          <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Users className="text-[#0e7490]" /> {t("nav.clients")}</h1>
           <p className="text-sm text-slate-500">ملف كامل لكل عميل مع كل قضاياه، سجل التواصل والوثائق</p>
         </div>
         <button onClick={() => setShowForm(!showForm)} className="px-5 py-3 rounded-xl bg-[#0e7490] text-white font-bold inline-flex items-center gap-2"><Plus size={18} /> عميل جديد</button>

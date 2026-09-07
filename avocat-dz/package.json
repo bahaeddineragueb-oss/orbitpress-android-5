@@ -1,11 +1,16 @@
 {
-  "name": "avocat-dz",
+  "name": "maktabi",
   "version": "1.0.0",
   "private": true,
-  "description": "مكتبي - logiciel PC لتسيير مكاتب المحاماة الجزائرية | Avocat DZ Pro",
+  "description": "مكتبي | Maktabi — نظام ثلاثي اللغات لتسيير مكاتب المحاماة الجزائرية | Gestion cabinets d'avocats DZ | Algerian Law Firm Management — Arabe / Français / English",
   "main": "electron/main.js",
-  "author": "Maktabi DZ <support@maktabi.dz>",
-  "homepage": "https://github.com/bahaeddineragueb-oss/avocat-dz",
+  "author": "Maktabi <support@maktabi.dz>",
+  "homepage": "https://github.com/bahaeddineragueb-oss/maktabi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bahaeddineragueb-oss/maktabi.git"
+  },
+  "keywords": ["maktabi", "مكتبي", "avocat", "algerie", "lawyer", "cabinet", "dz"],
   "scripts": {
     "dev": "next dev -H 0.0.0.0 -p 3000",
     "dev:next": "next dev -H 0.0.0.0 -p 3000",

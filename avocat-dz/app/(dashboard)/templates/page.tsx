@@ -1,10 +1,13 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState } from "react";
 import { legalTemplates } from "@/lib/data";
 import { LegalTemplate } from "@/lib/types";
 import { FileText, Sparkles, Download, Copy, Wand2 } from "lucide-react";
 
 export default function TemplatesPage(){
+  const { t } = useI18n();
+
   const [selected, setSelected] = useState<LegalTemplate>(legalTemplates[0]);
   const [values, setValues] = useState<Record<string,string>>({});
   const [output, setOutput] = useState("");
@@ -25,7 +28,7 @@ export default function TemplatesPage(){
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><FileText className="text-[#0e7490]"/> النماذج القانونية الجاهزة</h1>
+        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><FileText className="text-[#0e7490]"/> {t("nav.templates")} الجاهزة</h1>
         <p className="text-sm text-slate-500">مكتبة عرائض ومذكرات قابلة للتعبئة التلقائية — أدخل البيانات ويقوم التطبيق بملء النموذج</p>
       </div>
 

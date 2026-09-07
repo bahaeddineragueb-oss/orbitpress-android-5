@@ -1,13 +1,16 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { mockExpenses, mockCases } from "@/lib/data";
 import { formatDZD, formatDateShort } from "@/lib/utils";
 import { Receipt } from "lucide-react";
 export default function ExpensesPage(){
+  const { t } = useI18n();
+
   const total = mockExpenses.reduce((s,e)=>s+e.amount,0);
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Receipt className="text-[#0e7490]"/> المصاريف</h1>
+        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Receipt className="text-[#0e7490]"/> {t("nav.expenses")}</h1>
         <p className="text-sm text-slate-500">تبليغ، محضر قضائي، تنقل، طوابع، نسخ، خبرة، بريد...</p>
       </div>
       <div className="rounded-2xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50] p-5">

@@ -1,10 +1,13 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState, useMemo } from "react";
 import { mockCases, mockClients, mockFees, mockExpenses } from "@/lib/data";
 import { formatDZD, formatDateShort, uid } from "@/lib/utils";
 import { Wallet, Receipt, Plus, TrendingUp, AlertTriangle, Search } from "lucide-react";
 
 export default function FeesPage(){
+  const { t } = useI18n();
+
   const [fees, setFees] = useState(mockFees);
   const [expenses, setExpenses] = useState(mockExpenses);
   const [q,setQ]=useState("");
@@ -37,7 +40,7 @@ export default function FeesPage(){
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Wallet className="text-[#0e7490]" /> الأتعاب والمصاريف</h1>
+        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Wallet className="text-[#0e7490]" /> {t("nav.fees")} والمصاريف</h1>
         <p className="text-sm text-slate-500">تتبع الأتعاب المتفق عليها، المدفوع، المتبقي، الأقساط، والمصاريف — صافي المداخيل</p>
       </div>
 

@@ -1,4 +1,5 @@
 "use client";
+import { useI18n } from "@/components/LanguageProvider";
 import { useState, useMemo } from "react";
 import { mockDeadlines, mockCases } from "@/lib/data";
 import { Deadline } from "@/lib/types";
@@ -6,6 +7,8 @@ import { formatDateShort, daysUntil, uid } from "@/lib/utils";
 import { AlarmClock, Plus, Check, AlertTriangle, Clock, Search } from "lucide-react";
 
 export default function DeadlinesPage() {
+  const { t } = useI18n();
+
   const [deadlines, setDeadlines] = useState<Deadline[]>(mockDeadlines);
   const [filter, setFilter] = useState<"الكل" | "عاجل" | "هام" | "عادي">("الكل");
   const [q, setQ] = useState("");
@@ -29,7 +32,7 @@ export default function DeadlinesPage() {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl bg-gradient-to-br from-red-500 to-orange-500 text-white p-6">
-        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><AlarmClock /> الآجال والتنبيهات 🚨</h1>
+        <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><AlarmClock /> {t("nav.deadlines")} 🚨</h1>
         <p className="text-white/90 mt-1">تنبيهات ذكية للآجال القانونية — بقي 10 أيام على الاستئناف، 3 أيام على الجلسة...</p>
         <div className="mt-4 grid grid-cols-3 gap-3 text-center">
           <div className="rounded-xl bg-white/15 border border-white/20 p-3"><div className="text-2xl font-extrabold">{deadlines.filter(d=>!d.done).length}</div><div className="text-xs">آجال نشطة</div></div>

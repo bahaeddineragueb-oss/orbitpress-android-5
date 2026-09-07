@@ -7,8 +7,11 @@ import Link from "next/link";
 import { Scale, Users, CalendarDays, AlarmClock, Wallet, Receipt, ArrowLeft, Clock, MapPin, FileText, TrendingUp, AlertTriangle } from "lucide-react";
 import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { useI18n } from "@/components/LanguageProvider";
 
 export default function Dashboard() {
+  const { t, lang } = useI18n();
+  const locale = lang === "ar" ? "ar-DZ" : lang === "fr" ? "fr-FR" : "en-US";
   const stats = useMemo(() => {
     const active = mockCases.filter(c => ["جديد","قيد المتابعة","مؤجل","استئناف"].includes(c.status)).length;
     const closed = mockCases.filter(c => c.status === "مغلق" || c.status === "محكوم").length;
