@@ -2,7 +2,7 @@
 /**
  * Plugin Name: OrbitPress Pinterest Bridge
  * Description: Stores OrbitPress Pinterest metadata separately and exposes it through Open Graph/Twitter tags.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: OrbitPress
@@ -21,7 +21,7 @@ function orbitpress_pin_register_meta() {
   foreach (ORBITPRESS_PIN_META as $key) {
     register_post_meta('post', $key, [
       'type' => 'string', 'single' => true, 'show_in_rest' => true,
-      'sanitize_callback' => 'sanitize_text_field', 'auth_callback' => function() { return current_user_can('edit_posts'); },
+      'sanitize_callback' => 'sanitize_text_field', 'auth_callback' => function($allowed, $meta_key, $post_id) { return current_user_can('edit_post', $post_id); },
     ]);
   }
 }
@@ -29,7 +29,11 @@ add_action('init', 'orbitpress_pin_register_meta');
 
 function orbitpress_pin_rest_routes() {
   register_rest_route('orbitpress/v1', '/pinterest-meta', [
-    'methods' => 'POST', 'permission_callback' => function() { return current_user_can('edit_posts'); },
+    'methods' => 'POST',
+    'permission_callback' => function(WP_REST_Request $request) {
+      $post_id = absint($request->get_param('post_id'));
+      return $post_id > 0 && current_user_can('edit_post', $post_id);
+    },
     'callback' => function(WP_REST_Request $request) {
       $post_id = absint($request->get_param('post_id'));
       $post = get_post($post_id);
@@ -135,7 +139,9 @@ function orbitpress_pin_tools_page() {
   if (!current_user_can('edit_posts')) return;
   $fixed = 0;
   if ((isset($_POST['orbitpress_fix_all']) || isset($_POST['orbitpress_fix_yoast'])) && check_admin_referer('orbitpress_fix_all')) {
-    foreach (get_posts(['post_type'=>'post','post_status'=>'publish','numberposts'=>-1,'fields'=>'ids']) as $post_id) {
+    $post_ids = get_posts(['post_type'=>'post','post_status'=>'publish','numberposts'=>200,'fields'=>'ids']);
+    foreach ($post_ids as $post_id) {
+      if (!current_user_can('edit_post', $post_id)) continue;
       $values = orbitpress_pin_fallback_values($post_id); $changed = false;
       foreach ($values as $key => $value) if (!get_post_meta($post_id, $key, true) && $value) { update_post_meta($post_id, $key, $value); $changed = true; }
       if ($changed) $fixed++;
@@ -143,7 +149,7 @@ function orbitpress_pin_tools_page() {
   }
   echo '<div class="wrap"><h1>OrbitPress Pinterest Fix</h1><p>Repairs missing Pinterest and Yoast SEO metadata for published articles. It does not publish Pins or alter article content.</p>';
   if (isset($_POST['orbitpress_fix_all']) || isset($_POST['orbitpress_fix_yoast'])) echo '<div class="notice notice-success"><p>Fixed Pinterest and Yoast metadata for '.intval($fixed).' article(s).</p></div>';
-  echo '<form method="post">'; wp_nonce_field('orbitpress_fix_all'); echo '<p><button class="button button-primary" name="orbitpress_fix_all" value="1">Fix all missing Pinterest + Yoast metadata</button></p></form></div>';
+  echo '<form method="post">'; wp_nonce_field('orbitpress_fix_all'); echo '<p><button class="button button-primary" name="orbitpress_fix_all" value="1">Fix missing Pinterest + Yoast metadata</button></p></form></div>';
 }
 function orbitpress_pin_tools_menu() { add_management_page('OrbitPress Pinterest Fix', 'OrbitPress Pinterest Fix', 'edit_posts', 'orbitpress-pinterest-fix', 'orbitpress_pin_tools_page'); }
 add_action('admin_menu', 'orbitpress_pin_tools_menu');

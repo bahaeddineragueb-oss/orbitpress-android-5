@@ -21,6 +21,12 @@ object PublishingContracts {
     return actual
   }
 
+  fun isPinterestAspectRatio(width: Int, height: Int): Boolean {
+    if (width <= 0 || height <= 0) return false
+    val diff = kotlin.math.abs(width * 3 - height * 2)
+    return diff <= (kotlin.math.max(width, height) / 80)
+  }
+
   fun requireExistingCategoryId(id: Int) {
     require(id > 0) { "Choose one of the existing WordPress categories before publishing." }
   }
