@@ -13,19 +13,27 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.askinz.publisher.ui.PinLockDialog
 import com.askinz.publisher.ui.screens.*
 import com.askinz.publisher.ui.theme.OrbitPressTheme
+import com.askinz.publisher.ui.theme.ThemePreset
 import kotlinx.coroutines.launch
 import java.io.InputStream
 
@@ -45,7 +53,11 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       val uiState by viewModel.uiState.collectAsState()
-      OrbitPressTheme(darkTheme = uiState.isNightMode) {
+      OrbitPressTheme(
+        presetId = uiState.themePreset,
+        darkTheme = uiState.isNightMode,
+        isAmoled = uiState.isAmoled
+      ) {
         OrbitPressApp(viewModel = viewModel)
       }
     }
@@ -153,21 +165,33 @@ fun OrbitPressApp(viewModel: OrbitPressViewModel) {
   ModalNavigationDrawer(
     drawerState = drawerState,
     drawerContent = {
-      ModalDrawerSheet {
+      ModalDrawerSheet(
+        modifier = Modifier.width(310.dp)
+      ) {
         Spacer(Modifier.height(16.dp))
-        Row(
-          modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          Icon(Icons.Default.Publish, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(28.dp))
-          Spacer(Modifier.width(10.dp))
-          Column {
-            Text("OrbitPress 5.0", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
-            Text("Native Android Content Studio", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+
+        // App Header in Drawer
+        Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)) {
+          Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Box(
+              modifier = Modifier
+                .size(40.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer),
+              contentAlignment = Alignment.Center
+            ) {
+              Icon(Icons.Default.Publish, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+            }
+            Column {
+              Text("OrbitPress Pro", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp)
+              Text("AI Publishing Studio v5.0", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
           }
         }
+
         HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
+        // Navigation Items
         NavigationDrawerItem(
           icon = { Icon(Icons.Default.Home, contentDescription = null) },
           label = { Text("Content Studio") },
@@ -215,13 +239,13 @@ fun OrbitPressApp(viewModel: OrbitPressViewModel) {
 
         NavigationDrawerItem(
           icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-          label = { Text("Settings") },
+          label = { Text("Settings & Appearance") },
           selected = state.currentScreen == Screen.SETTINGS,
           onClick = { viewModel.showScreen(Screen.SETTINGS); scope.launch { drawerState.close() } }
         )
         NavigationDrawerItem(
           icon = { Icon(if (state.isNightMode) Icons.Default.LightMode else Icons.Default.DarkMode, contentDescription = null) },
-          label = { Text(if (state.isNightMode) "Day Mode" else "Night Mode") },
+          label = { Text(if (state.isNightMode) "Switch to Day Mode" else "Switch to Night Mode") },
           selected = false,
           onClick = { viewModel.toggleNightMode() }
         )
@@ -243,7 +267,7 @@ fun OrbitPressApp(viewModel: OrbitPressViewModel) {
                   Screen.ACTIVITY -> "Activity Log"
                   Screen.TRENDS -> "Pinterest Trends"
                   Screen.REPAIR -> "Template Repair"
-                  Screen.SETTINGS -> "Settings"
+                  Screen.SETTINGS -> "Settings & Themes"
                 },
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium

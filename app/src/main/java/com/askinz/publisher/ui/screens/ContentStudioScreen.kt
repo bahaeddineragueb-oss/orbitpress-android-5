@@ -40,34 +40,42 @@ fun ContentStudioScreen(
   LazyColumn(
     modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp),
-    contentPadding = PaddingValues(vertical = 16.dp)
+    contentPadding = PaddingValues(top = 12.dp, bottom = 32.dp)
   ) {
-    // Connection Status Card
+    // 🚀 Connection Status Hero Card
     item {
       Card(
         colors = CardDefaults.cardColors(
-          containerColor = if (isConfigured) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.errorContainer
+          containerColor = if (isConfigured) MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.7f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.8f)
         ),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         modifier = Modifier.fillMaxWidth()
       ) {
         Row(
-          modifier = Modifier.padding(16.dp),
+          modifier = Modifier.padding(18.dp),
           verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.SpaceBetween
         ) {
-          Column(modifier = Modifier.weight(1f)) {
-            Text(
-              text = if (isConfigured) "Publishing is Ready" else "Settings Required",
-              fontWeight = FontWeight.Bold,
-              style = MaterialTheme.typography.titleMedium,
-              color = if (isConfigured) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onErrorContainer
-            )
+          Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+              Icon(
+                if (isConfigured) Icons.Default.CheckCircle else Icons.Default.Warning,
+                contentDescription = null,
+                modifier = Modifier.size(18.dp),
+                tint = if (isConfigured) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onErrorContainer
+              )
+              Text(
+                text = if (isConfigured) "Publishing Ready" else "Settings Required",
+                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.titleMedium,
+                color = if (isConfigured) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onErrorContainer
+              )
+            }
             Text(
               text = if (isConfigured) {
-                if (state.connectedAccountName != null) "Connected as ${state.connectedAccountName} (${state.categories.size} categories)" else "Settings saved. Ready to generate and publish."
+                if (state.connectedAccountName != null) "WordPress connected: ${state.connectedAccountName} (${state.categories.size} categories synced)" else "Settings active. Ready to generate and publish."
               } else {
-                "Configure Article API and WordPress credentials in Settings to start."
+                "Configure Article AI and WordPress credentials in Settings to start."
               },
               style = MaterialTheme.typography.bodySmall,
               color = if (isConfigured) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onErrorContainer
@@ -76,34 +84,42 @@ fun ContentStudioScreen(
           if (!isConfigured) {
             Button(
               onClick = onOpenSettings,
+              shape = RoundedCornerShape(10.dp),
               colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
               modifier = Modifier.padding(start = 8.dp)
             ) {
-              Text("Settings")
+              Text("Setup", fontSize = 12.sp)
             }
           }
         }
       }
     }
 
-    // Add Keyword Form Card
+    // 💡 Add Keyword Form Card
     item {
       Card(
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         modifier = Modifier.fillMaxWidth()
       ) {
-        Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(modifier = Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(14.dp)) {
           Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
           ) {
-            Text("Queue Content Idea", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
-            TextButton(onClick = { showBatchImportDialog = true }) {
-              Icon(Icons.Default.FileUpload, contentDescription = null, modifier = Modifier.size(18.dp))
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+              Icon(Icons.Default.Queue, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+              Text("Queue Content Idea", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium)
+            }
+            FilledTonalButton(
+              onClick = { showBatchImportDialog = true },
+              shape = RoundedCornerShape(10.dp),
+              contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+              Icon(Icons.Default.FileUpload, contentDescription = null, modifier = Modifier.size(16.dp))
               Spacer(Modifier.width(4.dp))
-              Text("Batch Import")
+              Text("Batch Import", fontSize = 12.sp)
             }
           }
 
@@ -111,12 +127,13 @@ fun ContentStudioScreen(
             value = keywordText,
             onValueChange = { keywordText = it },
             label = { Text("Article Keyword / Topic") },
-            placeholder = { Text("e.g. 5 easy chicken dinner recipes") },
+            placeholder = { Text("e.g. 5 quick high protein breakfast ideas") },
             singleLine = true,
+            shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth()
           )
 
-          // Niche Profile Selector
+          // Niche Profile Selector & Category Dropdown
           Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             var profileExpanded by remember { mutableStateOf(false) }
             ExposedDropdownMenuBox(
@@ -134,8 +151,9 @@ fun ContentStudioScreen(
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("Niche Profile") },
+                shape = RoundedCornerShape(12.dp),
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = profileExpanded) },
-                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
               )
               ExposedDropdownMenu(
                 expanded = profileExpanded,
@@ -168,12 +186,13 @@ fun ContentStudioScreen(
               modifier = Modifier.weight(1f)
             ) {
               OutlinedTextField(
-                value = selectedCategoryName.ifBlank { "Category" },
+                value = selectedCategoryName.ifBlank { "WP Category" },
                 onValueChange = {},
                 readOnly = true,
                 label = { Text("WP Category") },
+                shape = RoundedCornerShape(12.dp),
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = catExpanded) },
-                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                modifier = Modifier.menuAnchor(MenuAnchorType.PrimaryNotEditable).fillMaxWidth()
               )
               ExposedDropdownMenu(
                 expanded = catExpanded,
@@ -221,16 +240,16 @@ fun ContentStudioScreen(
           ) {
             Icon(Icons.Default.Add, contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text("Add to Generation Queue")
+            Text("Add to Generation Queue", fontWeight = FontWeight.Bold)
           }
         }
       }
     }
 
-    // Queue List Header & Cards
+    // 📋 Queue List Header & Cards
     item {
       Row(
-        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
@@ -241,13 +260,12 @@ fun ContentStudioScreen(
     if (state.keywords.isEmpty()) {
       item {
         Box(
-          modifier = Modifier.fillMaxWidth().padding(vertical = 32.dp),
+          modifier = Modifier.fillMaxWidth().padding(vertical = 36.dp),
           contentAlignment = Alignment.Center
         ) {
-          Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(Icons.Default.Queue, contentDescription = null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.outline)
-            Spacer(Modifier.height(8.dp))
-            Text("Your queue is ready for ideas.", fontWeight = FontWeight.SemiBold)
+          Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Icon(Icons.Default.Queue, contentDescription = null, modifier = Modifier.size(52.dp), tint = MaterialTheme.colorScheme.outline)
+            Text("Your queue is ready for ideas.", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
             Text("Add a keyword above to start generating SEO articles.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
           }
         }
@@ -277,7 +295,8 @@ fun ContentStudioScreen(
             value = importText,
             onValueChange = { importText = it },
             placeholder = { Text("best indoor plants\nhow to prune tomatoes\neasy pasta recipes") },
-            modifier = Modifier.fillMaxWidth().height(150.dp),
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth().height(140.dp),
             maxLines = 8
           )
           OutlinedButton(
@@ -285,6 +304,7 @@ fun ContentStudioScreen(
               showBatchImportDialog = false
               onPickKeywordsFile()
             },
+            shape = RoundedCornerShape(12.dp),
             modifier = Modifier.fillMaxWidth()
           ) {
             Icon(Icons.Default.FileOpen, contentDescription = null)
@@ -302,7 +322,7 @@ fun ContentStudioScreen(
             }
           }
         ) {
-          Text("Import Lines")
+          Text("Import")
         }
       },
       dismissButton = {
@@ -322,53 +342,83 @@ fun KeywordQueueCard(
   onDelete: () -> Unit
 ) {
   Card(
-    shape = RoundedCornerShape(14.dp),
+    shape = RoundedCornerShape(18.dp),
     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
     modifier = Modifier.fillMaxWidth()
   ) {
-    Column(modifier = Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+    Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
       Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
-        Text(keyword.keyword, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
+        Text(keyword.keyword, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f), maxLines = 2)
+        Spacer(Modifier.width(8.dp))
         StatusBadge(status = keyword.status)
       }
 
-      Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (keyword.categoryName.isNotBlank()) {
-          Text("Category: ${keyword.categoryName}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+      ) {
+        Surface(
+          shape = RoundedCornerShape(8.dp),
+          color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+        ) {
+          Text(
+            keyword.nicheProfile.replaceFirstChar { it.uppercase() },
+            fontSize = 11.sp,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+          )
         }
-        Text("Profile: ${keyword.nicheProfile}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        if (keyword.categoryName.isNotBlank()) {
+          Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+          ) {
+            Text(
+              keyword.categoryName,
+              fontSize = 11.sp,
+              modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+              color = MaterialTheme.colorScheme.primary
+            )
+          }
+        }
       }
 
       if (keyword.errorDetails.isNotBlank()) {
         Text(keyword.errorDetails, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
       }
 
+      HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
       Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
       ) {
         IconButton(onClick = onDelete) {
           Icon(Icons.Default.DeleteOutline, contentDescription = "Delete", tint = MaterialTheme.colorScheme.error)
         }
         if (keyword.draftId != null) {
-          FilledTonalButton(onClick = onOpenDraft) {
+          FilledTonalButton(
+            onClick = onOpenDraft,
+            shape = RoundedCornerShape(10.dp)
+          ) {
             Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Open Draft")
+            Text("Open Draft", maxLines = 1)
           }
         } else {
           Button(
             onClick = onGenerate,
+            shape = RoundedCornerShape(10.dp),
             enabled = keyword.status != "generating"
           ) {
             Icon(Icons.Default.AutoAwesome, contentDescription = null, modifier = Modifier.size(16.dp))
             Spacer(Modifier.width(6.dp))
-            Text(if (keyword.status == "generating") "Generating..." else "Generate")
+            Text(if (keyword.status == "generating") "Generating..." else "Generate Article", maxLines = 1)
           }
         }
       }
@@ -390,8 +440,8 @@ fun StatusBadge(status: String) {
     modifier = Modifier
       .clip(RoundedCornerShape(8.dp))
       .background(bgColor)
-      .padding(horizontal = 8.dp, vertical = 4.dp)
+      .padding(horizontal = 10.dp, vertical = 5.dp)
   ) {
-    Text(label, color = textColor, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+    Text(label, color = textColor, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 1)
   }
 }

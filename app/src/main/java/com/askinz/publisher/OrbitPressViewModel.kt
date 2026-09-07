@@ -53,7 +53,9 @@ data class UiState(
   val connectedAccountName: String? = null,
   val trends: List<PinterestTrendRecord> = emptyList(),
   val inspectionResults: List<WordPressPostInspection> = emptyList(),
-  val isNightMode: Boolean = false
+  val isNightMode: Boolean = false,
+  val themePreset: String = "cyber_orbit",
+  val isAmoled: Boolean = false
 )
 
 data class WordPressPostInspection(
@@ -112,6 +114,17 @@ class OrbitPressViewModel(application: Application) : AndroidViewModel(applicati
 
   fun toggleNightMode() {
     _uiState.update { it.copy(isNightMode = !it.isNightMode) }
+    persistWorkspace()
+  }
+
+  fun setThemePreset(presetId: String) {
+    _uiState.update { it.copy(themePreset = presetId) }
+    persistWorkspace()
+    notify("Theme updated.")
+  }
+
+  fun toggleAmoled() {
+    _uiState.update { it.copy(isAmoled = !it.isAmoled) }
     persistWorkspace()
   }
 
@@ -215,7 +228,9 @@ class OrbitPressViewModel(application: Application) : AndroidViewModel(applicati
           categories = categories,
           pinterestBoards = boards,
           isPinLockEnabled = storage.isPinLockEnabled(),
-          isNightMode = json.optString("theme") == "night"
+          isNightMode = json.optString("theme") == "night",
+          themePreset = json.optString("themePreset", "cyber_orbit"),
+          isAmoled = json.optBoolean("isAmoled", false)
         )
       }
     } catch (_: Exception) {}
@@ -227,6 +242,8 @@ class OrbitPressViewModel(application: Application) : AndroidViewModel(applicati
       val json = JSONObject()
         .put("activeSiteId", s.activeSiteId)
         .put("theme", if (s.isNightMode) "night" else "day")
+        .put("themePreset", s.themePreset)
+        .put("isAmoled", s.isAmoled)
 
       val pArr = JSONArray()
       s.siteProfiles.forEach { pArr.put(JSONObject().put("id", it.id).put("name", it.name)) }
