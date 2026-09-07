@@ -38,7 +38,7 @@ export function Sidebar() {
           </div>
           <div>
             <div className="font-display font-extrabold text-[18px] leading-none">{t("brand.name")}</div>
-            <div className="text-xs text-slate-500 dark:text-slate-400">Maktabi • v1.0</div>
+            <div className="text-xs text-slate-500 dark:text-slate-400">مكتبي - maktabi • v1.0</div>
           </div>
           <Sparkles size={16} className="ms-auto text-amber-500" />
         </Link>

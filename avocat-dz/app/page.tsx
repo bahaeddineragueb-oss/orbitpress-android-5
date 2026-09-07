@@ -46,7 +46,7 @@ export default function Landing() {
               <Link href="/download" className="px-6 py-3 rounded-xl border-2 border-[#0e7490] bg-white dark:bg-[#0f1b33] text-[#0e7490] font-extrabold inline-flex items-center gap-2"><MonitorDown size={18} /> {t("landing.hero.downloadPC")}</Link>
             </div>
             <div className="mt-4 p-3 rounded-xl bg-gradient-to-br from-slate-900 to-[#0e7490] text-white flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm"><HardDrive size={16} /> <b>Maktabi PC</b> — {lang === "ar" ? "يعمل بدون انترنت، بياناتك على جهازك" : lang === "fr" ? "fonctionne hors ligne, vos données sur votre appareil" : "works offline, your data on your device"}</div>
+              <div className="flex items-center gap-2 text-sm"><HardDrive size={16} /> <b>مكتبي - maktabi PC</b> — {lang === "ar" ? "يعمل بدون انترنت، بياناتك على جهازك" : lang === "fr" ? "fonctionne hors ligne, vos données sur votre appareil" : "works offline, your data on your device"}</div>
               <Link href="/download" className="text-xs px-3 py-1 rounded-full bg-white text-slate-900 font-bold">{t("landing.hero.freeDownload")}</Link>
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-6 text-sm text-slate-600 dark:text-slate-400">
@@ -108,7 +108,7 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="border-t dark:border-[#1e2e50] py-6 text-center text-sm text-slate-500">{t("brand.copyright")} • Maktabi — Avocat DZ Pro • Arabe / Français / English</footer>
+      <footer className="border-t dark:border-[#1e2e50] py-6 text-center text-sm text-slate-500">{t("brand.copyright")} • مكتبي - maktabi — Avocat DZ Pro • Arabe / Français / English</footer>
     </div>
   );
 }

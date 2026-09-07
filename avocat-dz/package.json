@@ -4,7 +4,7 @@
   "private": true,
   "description": "مكتبي - maktabi — نظام ثلاثي اللغات لتسيير مكاتب المحاماة الجزائرية | Gestion cabinets d'avocats DZ | Algerian Law Firm Management — Arabe / Français / English",
   "main": "electron/main.js",
-  "author": "Maktabi <support@maktabi.dz>",
+  "author": "مكتبي - maktabi <support@maktabi.dz>",
   "homepage": "https://github.com/bahaeddineragueb-oss/maktabi",
   "repository": {
     "type": "git",
@@ -67,7 +67,7 @@
   "build": {
     "appId": "dz.maktabi.avocat",
     "productName": "مكتبي - maktabi",
-    "copyright": "Copyright © 2026 Maktabi DZ",
+    "copyright": "Copyright © 2026 مكتبي - maktabi",
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -111,7 +111,7 @@
         }
       ],
       "icon": "build/icon.ico",
-      "publisherName": "Maktabi DZ"
+      "publisherName": "مكتبي - maktabi"
     },
     "nsis": {
       "oneClick": false,

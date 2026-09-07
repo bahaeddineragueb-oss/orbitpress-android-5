@@ -46,8 +46,8 @@ export default function SettingsPage(){
             <div className="font-bold text-sm">{t("settings.language.preview")} — {lang.toUpperCase()} ({t(`lang.${lang}`)})</div>
             <div className="text-sm text-slate-600 dark:text-slate-400 mt-1">
               {lang === "ar" && "بسم الله الرحمن الرحيم — نظام مكتبي - maktabi لتسيير مكاتب المحاماة في الجزائر."}
-              {lang === "fr" && "Au nom de Dieu — Maktabi, système de gestion des cabinets d'avocats en Algérie."}
-              {lang === "en" && "In the name of God — Maktabi, Algerian law firm management system."}
+              {lang === "fr" && "Au nom de Dieu — مكتبي - maktabi, système de gestion des cabinets d'avocats en Algérie."}
+              {lang === "en" && "In the name of God — مكتبي - maktabi, Algerian law firm management system."}
             </div>
           </div>
         </div>
@@ -118,8 +118,8 @@ export default function SettingsPage(){
             <div className="font-bold">{lang === "ar" ? `معاينة — هذا حجم الخط الحالي (${fontSize}px)` : lang === "fr" ? `Aperçu — taille actuelle (${fontSize}px)` : `Preview — current size (${fontSize}px)`}</div>
             <div className="text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
               {lang === "ar" && "بسم الله الرحمن الرحيم — نظام مكتبي - maktabi لتسيير مكاتب المحاماة في الجزائر. يمكنك تكبير النص لراحة القراءة أو تصغيره لعرض محتوى أكثر."}
-              {lang === "fr" && "Au nom de Dieu — Maktabi, système pour les cabinets d'avocats algériens. Agrandissez le texte pour un confort de lecture ou réduisez-le pour voir plus de contenu."}
-              {lang === "en" && "In the name of God — Maktabi, Algerian law firm management. Increase text for comfortable reading or decrease to see more content."}
+              {lang === "fr" && "Au nom de Dieu — مكتبي - maktabi, système pour les cabinets d'avocats algériens. Agrandissez le texte pour un confort de lecture ou réduisez-le pour voir plus de contenu."}
+              {lang === "en" && "In the name of God — مكتبي - maktabi, Algerian law firm management. Increase text for comfortable reading or decrease to see more content."}
             </div>
           </div>
           <div className="mt-3 text-[11px] text-emerald-600 font-bold">✓ {lang === "ar" ? "يُحفظ في المتصفح ويُطبّق عند كل فتح" : lang === "fr" ? "Enregistré et appliqué à chaque ouverture" : "Saved and applied on every launch"}</div>
