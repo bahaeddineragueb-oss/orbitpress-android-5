@@ -111,14 +111,14 @@
         }
       ],
       "icon": "build/icon.ico",
-      "publisherName": "مكتبي - maktabi"
+      "publisherName": "maktabi"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "مكتبي - maktabi",
+      "shortcutName": "maktabi",
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",

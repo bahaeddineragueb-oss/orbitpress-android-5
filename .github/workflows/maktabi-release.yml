@@ -37,10 +37,7 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Verify Next.js build
-        run: npm run build
-
-      - name: Build Windows installer (.exe)
+      - name: Build Windows portable (.exe)
         shell: bash
         run: |
           ELECTRON=true npm run build

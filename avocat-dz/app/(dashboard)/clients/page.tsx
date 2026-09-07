@@ -34,23 +34,23 @@ export default function ClientsPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><Users className="text-[#0e7490]" /> {t("nav.clients")}</h1>
-          <p className="text-sm text-slate-500">ملف كامل لكل عميل مع كل قضاياه، سجل التواصل والوثائق</p>
+          <p className="text-sm text-slate-500">{t("clients.desc")}</p>
         </div>
-        <button onClick={() => setShowForm(!showForm)} className="px-5 py-3 rounded-xl bg-[#0e7490] text-white font-bold inline-flex items-center gap-2"><Plus size={18} /> عميل جديد</button>
+        <button onClick={() => setShowForm(!showForm)} className="px-5 py-3 rounded-xl bg-[#0e7490] text-white font-bold inline-flex items-center gap-2"><Plus size={18} />{t("clients.new")}</button>
       </div>
 
       {showForm && (
         <div className="rounded-2xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50] p-5">
-          <h3 className="font-bold mb-4">إضافة عميل جديد</h3>
+          <h3 className="font-bold mb-4">{t("clients.add")}</h3>
           <div className="grid md:grid-cols-2 gap-4">
-            <input placeholder="الاسم الكامل *" value={form.fullName || ""} onChange={e => setForm({ ...form, fullName: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
-            <input placeholder="الهاتف *" value={form.phone || ""} onChange={e => setForm({ ...form, phone: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
-            <input placeholder="البريد (اختياري)" value={form.email || ""} onChange={e => setForm({ ...form, email: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
-            <input placeholder="العنوان" value={form.address || ""} onChange={e => setForm({ ...form, address: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
-            <input placeholder="المهنة" value={form.profession || ""} onChange={e => setForm({ ...form, profession: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            <input placeholder={`${t("clients.name")} *`} value={form.fullName || ""} onChange={e => setForm({ ...form, fullName: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            <input placeholder={`${t("clients.phone")} *`} value={form.phone || ""} onChange={e => setForm({ ...form, phone: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            <input placeholder={t("clients.email")} value={form.email || ""} onChange={e => setForm({ ...form, email: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            <input placeholder={t("clients.address")} value={form.address || ""} onChange={e => setForm({ ...form, address: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            <input placeholder="المهنة / Profession" value={form.profession || ""} onChange={e => setForm({ ...form, profession: e.target.value })} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <div className="flex gap-3">
-              <button onClick={addClient} className="flex-1 py-3 rounded-xl bg-[#0e7490] text-white font-bold">حفظ</button>
-              <button onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-xl border dark:border-[#1e2e50]">إلغاء</button>
+              <button onClick={addClient} className="flex-1 py-3 rounded-xl bg-[#0e7490] text-white font-bold">{t("common.save")}</button>
+              <button onClick={() => setShowForm(false)} className="flex-1 py-3 rounded-xl border dark:border-[#1e2e50]">{t("common.cancel")}</button>
             </div>
           </div>
         </div>
@@ -58,7 +58,7 @@ export default function ClientsPage() {
 
       <div className="relative max-w-xl">
         <Search size={18} className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input value={q} onChange={e => setQ(e.target.value)} placeholder="بحث: الاسم، الهاتف، العنوان..." className="w-full pr-10 pl-4 py-3 rounded-xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50]" />
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder={t("clients.search")} className="w-full pr-10 pl-4 py-3 rounded-xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50]" />
       </div>
 
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
