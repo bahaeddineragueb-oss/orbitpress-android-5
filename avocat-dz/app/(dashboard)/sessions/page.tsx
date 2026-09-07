@@ -1,9 +1,9 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { mockCases, mockHearings } from "@/lib/data";
 import { Hearing } from "@/lib/types";
 import { formatDateShort, uid } from "@/lib/utils";
-import { CalendarDays, Clock, MapPin, Plus, Search, Filter } from "lucide-react";
+import { CalendarDays, Clock, MapPin, Plus, Search, Filter, Bell, BellOff, Timer } from "lucide-react";
 import { CourtSelector } from "@/components/CourtSelector";
 
 export default function SessionsPage() {
@@ -13,26 +13,83 @@ export default function SessionsPage() {
   const [showForm, setShowForm] = useState(false);
   const [courtPick, setCourtPick] = useState<{ wilayaCode: string; wilaya: string; council: string; tribunal: string; section: string } | null>(null);
   const [form, setForm] = useState<Partial<Hearing>>({ court: "محكمة الرويبة", date: new Date().toISOString().slice(0,16), status: "قادمة" });
+  const [notifyBefore, setNotifyBefore] = useState<number>(60);
+  const [notifGranted, setNotifGranted] = useState(false);
+  const timerRef = useRef<any>(null);
 
   const filtered = useMemo(() => hearings.filter(h => {
     const c = mockCases.find(x=>x.id===h.caseId);
     return [h.court, h.room, c?.title, c?.fileNumber].join(" ").toLowerCase().includes(q.toLowerCase());
   }), [hearings, q]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission === "granted") setNotifGranted(true);
+      else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(p => setNotifGranted(p === "granted"));
+      }
+    }
+    timerRef.current = setInterval(() => {
+      const now = Date.now();
+      hearings.forEach(h => {
+        if (h.status !== "قادمة" || !h.notifyBefore || h.notified) return;
+        const diffMin = (new Date(h.date).getTime() - now) / 60000;
+        if (diffMin > 0 && diffMin <= h.notifyBefore) {
+          const c = mockCases.find(x => x.id === h.caseId);
+          const title = `⏰ جلسة بعد ${Math.round(diffMin)} دقيقة`;
+          const body = `${c?.title || "جلسة"} — ${h.court} ${h.room ? "• " + h.room : ""} — ${new Date(h.date).toLocaleString("ar-DZ", { hour: "2-digit", minute: "2-digit" })}`;
+          if (notifGranted && "Notification" in window) {
+            try { new Notification(title, { body, icon: "/icon.png" }); } catch {}
+          }
+          try { (window as any).electronAPI?.notify?.(title, body); } catch {}
+          setHearings(prev => prev.map(x => x.id === h.id ? { ...x, notified: true } : x));
+        }
+      });
+    }, 30000);
+    return () => clearInterval(timerRef.current);
+  }, [hearings, notifGranted]);
+
+  function timeLeft(dateStr: string) {
+    const diff = new Date(dateStr).getTime() - Date.now();
+    if (diff <= 0) return "الآن / منتهية";
+    const mins = Math.floor(diff / 60000);
+    if (mins < 60) return `بعد ${mins} دقيقة`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `بعد ${hrs} ساعة`;
+    const days = Math.floor(hrs / 24);
+    return `بعد ${days} يوم`;
+  }
+
   const addHearing = () => {
     if (!form.caseId) return alert("اختر القضية");
     if (!courtPick) return alert("اختر الولاية والمحكمة من قاعدة وزارة العدل");
-    const nh: Hearing = { id: uid(), caseId: form.caseId!, date: new Date(form.date!).toISOString(), court: courtPick.tribunal, room: form.room, judge: form.judge, status: (form.status as any) || "قادمة" };
-    // يمكن حفظ wilaya/council/section مع الجلسة إذا أردت
-    (nh as any).wilayaCode = courtPick.wilayaCode;
-    (nh as any).council = courtPick.council;
-    (nh as any).section = courtPick.section;
+    if (!form.date) return alert("حدد تاريخ وساعة الجلسة");
+    const nh: Hearing = {
+      id: uid(),
+      caseId: form.caseId!,
+      date: new Date(form.date!).toISOString(),
+      court: courtPick.tribunal,
+      room: form.room,
+      judge: form.judge,
+      status: (form.status as any) || "قادمة",
+      notifyBefore: notifyBefore || undefined,
+      wilayaCode: courtPick.wilayaCode,
+      council: courtPick.council,
+      section: courtPick.section,
+    };
     setHearings([nh, ...hearings]);
+    if (notifyBefore && notifGranted) {
+      const minsTo = (new Date(nh.date).getTime() - Date.now()) / 60000;
+      if (minsTo > 0 && minsTo < 120) {
+        setTimeout(() => {
+          try { new Notification("✓ تمت إضافة الجلسة مع تنبيه", { body: `${nh.court} — ${new Date(nh.date).toLocaleString("ar-DZ")}` }); } catch {}
+        }, 500);
+      }
+    }
     setShowForm(false);
     setCourtPick(null);
   };
 
-  // Calendar helpers - group by date
   const byDate = useMemo(() => {
     const map: Record<string, Hearing[]> = {};
     filtered.forEach(h => {
@@ -49,7 +106,7 @@ export default function SessionsPage() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <h1 className="font-display font-extrabold text-2xl flex items-center gap-2"><CalendarDays className="text-[#0e7490]" /> الجلسات والمواعيد</h1>
-          <p className="text-sm text-slate-500">تقويم يومي/أسبوعي/شهري — جلسات اليوم والقادمة مع القاعة والقاضي</p>
+          <p className="text-sm text-slate-500">تقويم يومي/أسبوعي/شهري — جلسات اليوم والقادمة مع القاعة والقاضي • الساعة + تنبيهات</p>
         </div>
         <div className="flex gap-2">
           <div className="flex rounded-xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50] overflow-hidden p-1">
@@ -62,20 +119,34 @@ export default function SessionsPage() {
 
       {showForm && (
         <div className="rounded-2xl border bg-white dark:bg-[#0f1b33] dark:border-[#1e2e50] p-5">
-          <h3 className="font-bold mb-4">إضافة جلسة — اختيار المحكمة من قاعدة وزارة العدل (لا كتابة)</h3>
+          <h3 className="font-bold mb-4">إضافة جلسة — التاريخ + الساعة + تنبيه + اختيار المحكمة من وزارة العدل</h3>
           <div className="grid md:grid-cols-2 gap-4">
             <select value={form.caseId || ""} onChange={e=>setForm({...form, caseId:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
               <option value="">— اختر القضية —</option>
               {mockCases.map(c=><option key={c.id} value={c.id}>{c.fileNumber} — {c.title}</option>)}
             </select>
-            <input type="datetime-local" value={form.date || ""} onChange={e=>setForm({...form, date:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            <div>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-400">التاريخ والساعة *</label>
+              <input type="datetime-local" value={form.date || ""} onChange={e=>setForm({...form, date:e.target.value})} className="mt-1 w-full px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
+            </div>
             <input placeholder="القاعة (مثال: قاعة 03)" value={form.room || ""} onChange={e=>setForm({...form, room:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <input placeholder="القاضي/الغرفة" value={form.judge || ""} onChange={e=>setForm({...form, judge:e.target.value})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]" />
             <select value={form.status} onChange={e=>setForm({...form, status:e.target.value as any})} className="px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
               <option>قادمة</option><option>تمت</option><option>مؤجلة</option><option>ملغاة</option>
             </select>
+            <div>
+              <label className="text-xs font-bold text-slate-600 dark:text-slate-400 flex items-center gap-1"><Bell size={12}/> التنبيه قبل الجلسة</label>
+              <select value={notifyBefore} onChange={e=>setNotifyBefore(Number(e.target.value))} className="mt-1 w-full px-4 py-3 rounded-xl border dark:bg-[#070e1f] dark:border-[#1e2e50]">
+                <option value={0}>بدون تنبيه</option>
+                <option value={15}>15 دقيقة قبل</option>
+                <option value={60}>1 ساعة قبل</option>
+                <option value={1440}>24 ساعة قبل</option>
+                <option value={2880}>48 ساعة قبل</option>
+              </select>
+              {!notifGranted && <div className="text-[11px] text-amber-600 mt-1">⚠️ فعّل التنبيهات في المتصفح ليصلك إشعار</div>}
+            </div>
             <div className="md:col-span-2">
-              <div className="text-sm font-bold mb-2 flex items-center gap-2">🏛️ الجهة القضائية — من قاعدة وزارة العدل (58 ولاية)</div>
+              <div className="text-sm font-bold mb-2 flex items-center gap-2">🏛️ الجهة القضائية — وزارة العدل (58 ولاية + المحكمة العليا + مجلس الدولة) — 13 قسم</div>
               <CourtSelector onChange={setCourtPick} value={courtPick || undefined} compact />
               {!courtPick && <div className="text-xs text-amber-600 mt-2">⚠️ يجب اختيار الولاية والمحكمة قبل الحفظ</div>}
             </div>
@@ -97,6 +168,7 @@ export default function SessionsPage() {
           {filtered.map(h=>{
             const c = mockCases.find(x=>x.id===h.caseId);
             const isToday = new Date(h.date).toDateString() === new Date().toDateString();
+            const left = h.status==="قادمة" ? timeLeft(h.date) : "";
             return (
               <div key={h.id} className={`p-5 flex flex-col md:flex-row md:items-center gap-4 ${isToday ? "bg-red-50/60 dark:bg-red-500/5" : ""}`}>
                 <div className={`w-full md:w-20 h-20 rounded-xl grid place-items-center text-white font-bold shrink-0 ${isToday?"bg-red-500":"bg-[#0e7490]"}`}>
@@ -104,14 +176,19 @@ export default function SessionsPage() {
                     <div className="text-xs">{new Date(h.date).toLocaleDateString("ar-DZ", {weekday:"short"})}</div>
                     <div className="text-2xl">{new Date(h.date).getDate()}</div>
                     <div className="text-[11px]">{new Date(h.date).toLocaleDateString("ar-DZ", {month:"short"})}</div>
+                    <div className="text-[10px] mt-1 bg-white/20 px-1 rounded">{new Date(h.date).toLocaleTimeString("ar-DZ",{hour:"2-digit",minute:"2-digit"})}</div>
                   </div>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-bold">{c?.title}</div>
-                  <div className="text-sm text-slate-500">{c?.fileNumber} • {c?.caseNumber}</div>
+                  <div className="font-bold flex items-center gap-2">
+                    {c?.title}
+                    {h.notifyBefore ? <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-violet-50 text-violet-700 border border-violet-200"><Bell size={10}/> تنبيه {h.notifyBefore===15?"15د":h.notifyBefore===60?"1س":h.notifyBefore===1440?"24س":"48س"}</span> : <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-500"><BellOff size={10}/> بدون تنبيه</span>}
+                    {left && <span className="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200"><Timer size={10}/> {left}</span>}
+                  </div>
+                  <div className="text-sm text-slate-500">{c?.fileNumber} • {c?.caseNumber} • {(h as any).section ? `قسم ${(h as any).section}` : ""} {(h as any).council ? `• ${(h as any).council}` : ""}</div>
                   <div className="mt-2 flex flex-wrap gap-3 text-sm">
                     <span className="inline-flex items-center gap-1"><MapPin size={14}/> {h.court} {h.room?`• ${h.room}`:""}</span>
-                    <span className="inline-flex items-center gap-1"><Clock size={14}/> {new Date(h.date).toLocaleString("ar-DZ", {hour:"2-digit", minute:"2-digit"})} </span>
+                    <span className="inline-flex items-center gap-1 font-bold"><Clock size={14}/> {new Date(h.date).toLocaleString("ar-DZ", {weekday:"short", hour:"2-digit", minute:"2-digit"})} — {new Date(h.date).toLocaleDateString("ar-DZ")}</span>
                     {h.judge && <span>• {h.judge}</span>}
                   </div>
                   {h.decision && <div className="mt-2 text-sm p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20">القرار: {h.decision}</div>}

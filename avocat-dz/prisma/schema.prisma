@@ -1,6 +1,6 @@
 // Prisma schema — Maktabi Real Database (PostgreSQL for Web, SQLite for PC)
-// المصدر: وزارة العدل الجزائرية + 10 ولايات جديدة (مرسوم 21-117)
-// 58 ولاية، 256 محكمة/فرع، 58 مجلس قضائي، 58 محكمة إدارية
+// المصدر: وزارة العدل الجزائرية + 10 ولايات جديدة (مرسوم 21-117) + الهيئات العليا
+// 58 ولاية، 256 محكمة/فرع، 58 مجلس قضائي، 58 محكمة إدارية + المحكمة العليا + مجلس الدولة + 13 قسم (مدني عقاري تجاري...)
 // للـ PC: استخدم prisma/schema.sqlite.prisma مع DATABASE_URL="file:./prisma/maktabi.db"
 // للـ Web/Production: استخدم هذا الملف مع PostgreSQL (Supabase/Neon/Render)
 
@@ -63,9 +63,20 @@ model AdminCourt {
 
 model CourtSection {
   id   String @id @default(cuid())
-  name String @unique // المدني، الجزائي...
+  name String @unique // المدني، العقاري، التجاري، الجزائي، الجنح، المخالفات، الأحداث، شؤون الأسرة، الاجتماعي، الاستعجالي، البحري، الإداري...
 
   @@map("court_sections")
+}
+
+// الهيئات القضائية العليا — وطنية (خارج الولايات)
+model NationalCourt {
+  id   String @id @default(cuid())
+  name String @unique // المحكمة العليا / مجلس الدولة
+  type String // supreme | council_of_state
+  location String @default("الجزائر العاصمة")
+  description String?
+
+  @@map("national_courts")
 }
 
 // ── إدارة المكتب (المحاماة) ──
@@ -126,7 +137,7 @@ model Hearing {
   id       String   @id @default(cuid())
   caseId   String
   kase     CourtCase @relation(fields: [caseId], references: [id], onDelete: Cascade)
-  date     DateTime
+  date     DateTime // مع الساعة — datetime-local
   court    String
   room     String?
   judge    String?
@@ -136,7 +147,9 @@ model Hearing {
   status   String
   wilayaCode String?
   councilName String?
-  section String?
+  section String? // مدني، عقاري، تجاري، جزائي، جنح، مخالفات، أحداث...
+  notifyBefore Int? // دقائق قبل التنبيه: 15/60/1440/2880
+  notified Boolean @default(false)
 
   @@map("hearings")
 }

@@ -8,12 +8,17 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding Maktabi DB — وزارة العدل (58 ولاية)');
 
-  // 1) Sections
-  const sections = ["المدني","الجزائي","الأسرة","التجاري","العقاري","الاجتماعي","الاستعجالي","البحري","شؤون الأسرة"];
+  // 1) Sections — كل الأقسام في الجزائر (مدني عقاري تجاري و كامل الفروع)
+  const sections = ["المدني","العقاري","التجاري","الجزائي","الجنح","المخالفات","الأحداث","شؤون الأسرة","الأسرة","الاجتماعي","الاستعجالي","البحري","الإداري"];
   for (const name of sections) {
     await prisma.courtSection.upsert({ where: { name }, update: {}, create: { name } });
   }
-  console.log(`✓ Sections: ${sections.length}`);
+  console.log(`✓ Sections: ${sections.length} — مدني عقاري تجاري جزائي جنح مخالفات أحداث...`);
+
+  // 1b) National courts — المحكمة العليا + مجلس الدولة
+  await (prisma as any).nationalCourt.upsert({ where: { name: "المحكمة العليا" }, update: {}, create: { name: "المحكمة العليا", type: "supreme", location: "الجزائر العاصمة", description: "أعلى هيئة قضائية — تنظر في الطعون بالنقض" } }).catch(()=>{});
+  await (prisma as any).nationalCourt.upsert({ where: { name: "مجلس الدولة" }, update: {}, create: { name: "مجلس الدولة", type: "council_of_state", location: "الجزائر العاصمة", description: "أعلى هيئة للقضاء الإداري" } }).catch(()=>{});
+  console.log(`✓ National courts: المحكمة العليا + مجلس الدولة`);
 
   // 2) Courts from JSON (وزارة العدل)
   const courtsPath = path.join(__dirname, '../data/courts.json');

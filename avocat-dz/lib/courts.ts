@@ -1,6 +1,6 @@
 // lib/courts.ts — قاعدة بيانات المحاكم الحقيقية (وزارة العدل)
-// المصدر: data/courts.json (58 ولاية، 256 محكمة) + prisma/maktabi.db (SQLite)
-// المحامي يختار فقط — لا كتابة يدوية
+// المصدر: data/courts.json (58 ولاية، 256 محكمة) + الهيئات العليا + prisma/maktabi.db (SQLite)
+// المحامي يختار فقط — لا كتابة يدوية + المحكمة العليا + مجلس الدولة + كل الأقسام
 
 import data from './courts-data.json';
 
@@ -15,7 +15,40 @@ export type WilayaCourts = {
   isNew: boolean;
 };
 
-export const courtsData: WilayaCourts[] = data as any;
+// الأقسام الكاملة في النظام القضائي الجزائري — مدني عقاري تجاري وكل الفروع
+export const ALL_SECTIONS = [
+  "المدني",
+  "العقاري",
+  "التجاري",
+  "الجزائي",
+  "الجنح",
+  "المخالفات",
+  "الأحداث",
+  "شؤون الأسرة",
+  "الأسرة",
+  "الاجتماعي",
+  "الاستعجالي",
+  "البحري",
+  "الإداري",
+] as const;
+
+// الهيئات القضائية العليا — خارج الولايات (وطنية)
+export const NATIONAL_COURTS: WilayaCourts = {
+  code: "00",
+  wilaya: "الهيئات العليا",
+  wilayaAr: "الهيئات القضائية العليا",
+  council: "الهيئات العليا",
+  tribunals: [
+    { name: "المحكمة العليا", isBranch: false, sections: [...ALL_SECTIONS] },
+    { name: "مجلس الدولة", isBranch: false, sections: [...ALL_SECTIONS] },
+  ],
+  adminCourt: null,
+  isNew: false,
+};
+
+const rawData: WilayaCourts[] = data as any;
+// دمج الولايات 58 + الهيئات العليا (المحكمة العليا + مجلس الدولة) = 59 جهة
+export const courtsData: WilayaCourts[] = [...rawData, NATIONAL_COURTS];
 
 // Helpers
 export function getAllWilayas(): WilayaCourts[] {
@@ -58,13 +91,19 @@ export function searchCourts(query: string) {
 
 // For DB file info
 export const DB_INFO = {
-  source: "وزارة العدل الجزائرية — https://www.mjustice.gov.dz/ar/المحاكم-و-المجالس/",
+  source: "وزارة العدل الجزائرية — https://www.mjustice.gov.dz/ar/المحاكم-و-المجالس/ + الهيئات العليا",
   date: "2026-09-07",
   wilayas: 58,
   councils: 58,
   tribunals: 256,
   adminCourts: 58,
+  supremeCourt: 1, // المحكمة العليا
+  councilOfState: 1, // مجلس الدولة
+  nationalBodies: 2,
+  totalCourts: 58 + 256 + 58 + 2, // مجالس + محاكم + إدارية + عليا
   fileJson: "data/courts.json (111KB)",
   fileDb: "prisma/maktabi.db (164KB SQLite)",
   isNewCount: 10,
+  sections: ALL_SECTIONS.length, // 13 قسم
+  sectionsList: ALL_SECTIONS.join(" • "),
 };

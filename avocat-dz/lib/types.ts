@@ -38,7 +38,7 @@ export type CourtCase = {
 export type Hearing = {
   id: string;
   caseId: string;
-  date: string; // ISO
+  date: string; // ISO — مع الساعة (datetime-local)
   court: string;
   room?: string;
   judge?: string;
@@ -46,6 +46,11 @@ export type Hearing = {
   decision?: string;
   nextDate?: string;
   status: "قادمة" | "تمت" | "مؤجلة" | "ملغاة";
+  notifyBefore?: number; // دقائق قبل الجلسة للتنبيه: 15, 60, 1440...
+  notified?: boolean;
+  wilayaCode?: string;
+  council?: string;
+  section?: string;
 };
 
 export type Deadline = {

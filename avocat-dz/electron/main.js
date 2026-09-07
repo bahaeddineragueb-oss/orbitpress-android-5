@@ -167,6 +167,19 @@ ipcMain.handle('file:openDocs', () => shell.openPath(getDocsPath()));
 ipcMain.handle('app:getPath', (e, name) => app.getPath(name));
 ipcMain.handle('app:getVersion', () => app.getVersion());
 
+// Notifications — تنبيهات الجلسات (الساعة)
+const { Notification } = require('electron');
+ipcMain.handle('notify', (e, { title, body }) => {
+  try {
+    if (Notification.isSupported()) {
+      const n = new Notification({ title: title || 'مكتبي — تنبيه جلسة', body: body || '', icon: path.join(__dirname, '../public/icon.png'), silent: false });
+      n.show();
+      n.on('click', () => { if (mainWindow) { if (mainWindow.isMinimized()) mainWindow.restore(); mainWindow.focus(); } });
+    }
+    return true;
+  } catch { return false; }
+});
+
 async function handleBackup() {
   const res = await dialog.showSaveDialog(mainWindow, { defaultPath: `maktabi-backup-${new Date().toISOString().slice(0,10)}.json`, filters: [{ name: 'JSON', extensions: ['json'] }] });
   if (!res.canceled && res.filePath) {
