@@ -122,12 +122,7 @@
       "installerIcon": "build/icon.ico",
       "uninstallerIcon": "build/icon.ico",
       "installerHeaderIcon": "build/icon.ico",
-      "multiLanguageInstaller": true,
-      "installerLanguages": [
-        "en_US",
-        "fr_FR",
-        "ar_AR"
-      ]
+      "multiLanguageInstaller": false
     },
     "portable": {
       "artifactName": "maktabi-Portable-${version}.exe"
