@@ -83,13 +83,13 @@ export default function CourtsPage(){
                 <div className="mt-6">
                   <h3 className="font-bold text-sm">المحاكم التابعة ({selected.tribunals.length})</h3>
                   <div className="mt-3 grid md:grid-cols-2 gap-2">
-                    {selected.tribunals.map(t => (
-                      <div key={t.name} className={`p-3 rounded-xl border flex items-center justify-between ${t.isBranch ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20":"bg-slate-50 dark:bg-white/5 dark:border-white/10"}`}>
+                    {selected.tribunals.map((t:any) => (
+                      <div key={(t as any).name} className={`p-3 rounded-xl border flex items-center justify-between ${(t as any).isBranch ? "bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20":"bg-slate-50 dark:bg-white/5 dark:border-white/10"}`}>
                         <div>
-                          <div className="font-bold text-sm">{t.name}</div>
-                          <div className="text-xs text-slate-500">{t.isBranch ? "فرع محكمة" : "محكمة ابتدائية"} • {t.sections.length} أقسام</div>
+                          <div className="font-bold text-sm">{(t as any).name}</div>
+                          <div className="text-xs text-slate-500">{(t as any).isBranch ? "فرع محكمة" : "محكمة ابتدائية"} • {((t as any).chambers || (t as any).sections || []).length} غرف</div>
                         </div>
-                        <span className={`text-[11px] px-2 py-1 rounded-full font-bold ${t.isBranch ? "bg-amber-500 text-white":"bg-[#0e7490] text-white"}`}>{t.isBranch ? "فرع":"محكمة"}</span>
+                        <span className={`text-[11px] px-2 py-1 rounded-full font-bold ${(t as any).isBranch ? "bg-amber-500 text-white":"bg-[#0e7490] text-white"}`}>{(t as any).isBranch ? "فرع":"محكمة"}</span>
                       </div>
                     ))}
                   </div>
@@ -105,12 +105,21 @@ export default function CourtsPage(){
                   </div>
                 )}
 
-                <div className="mt-4 p-3 rounded-xl bg-[#0e7490]/5 border border-[#0e7490]/20">
-                  <div className="font-bold text-sm flex items-center gap-2"><Check size={16} className="text-emerald-600"/> الأقسام المتاحة في هذه المحاكم</div>
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {selected.tribunals[0]?.sections.map(s => <span key={s} className="text-xs px-2 py-1 rounded-full bg-white dark:bg-[#070e1f] border dark:border-[#1e2e50]">{s}</span>)}
+                <div className="mt-4 grid md:grid-cols-2 gap-3">
+                  <div className="p-3 rounded-xl bg-[#0e7490]/5 border border-[#0e7490]/20">
+                    <div className="font-bold text-sm flex items-center gap-2"><Check size={16} className="text-emerald-600"/> غُرف المحكمة (8)</div>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {((selected.tribunals[0] as any)?.chambers || (selected.tribunals[0] as any)?.sections || []).map((s: string) => <span key={s} className="text-xs px-2 py-1 rounded-full bg-white dark:bg-[#070e1f] border dark:border-[#1e2e50]">{s}</span>)}
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-2">في المحكمة: غرفة مدنية/عقارية...</div>
                   </div>
-                  <div className="text-[11px] text-slate-500 mt-2">المحامي يختار القسم عند إنشاء القضية — نفس الأقسام في كل المحاكم الابتدائية</div>
+                  <div className="p-3 rounded-xl bg-violet-50 dark:bg-violet-500/10 border border-violet-200 dark:border-violet-500/20">
+                    <div className="font-bold text-sm flex items-center gap-2"><Check size={16} className="text-violet-600"/> أقسام المجلس (13)</div>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {((selected as any).councilDivisions || []).map((s: string) => <span key={s} className="text-xs px-2 py-1 rounded-full bg-white dark:bg-[#070e1f] border dark:border-[#1e2e50]">{s}</span>)}
+                    </div>
+                    <div className="text-[11px] text-slate-500 mt-2">في المجلس: قسم مدني + غرفة اتهام...</div>
+                  </div>
                 </div>
               </div>
 

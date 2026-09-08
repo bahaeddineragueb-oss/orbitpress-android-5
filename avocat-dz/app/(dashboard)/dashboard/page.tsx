@@ -1,6 +1,5 @@
 "use client";
 import { StatCard } from "@/components/StatCard";
-import { PCBanner } from "@/components/PCBanner";
 import { mockCases, mockClients, mockDeadlines, mockDocuments, mockFees, mockHearings, mockExpenses } from "@/lib/data";
 import { formatDZD, formatDateShort, daysUntil } from "@/lib/utils";
 import Link from "next/link";
@@ -43,7 +42,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      <PCBanner />
       {/* Welcome */}
       <div className="rounded-2xl bg-gradient-to-br from-[#0e7490] to-[#063544] text-white p-6 lg:p-8 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.15),transparent_50%)]" />
@@ -60,12 +58,12 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* KPIs */}
+      {/* KPIs — عملاء / قضايا / جلسات / خزينة — مثل برنامج المحلات */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="جلسات اليوم" value={stats.todaySessions} sub="في 3 محاكم مختلفة" icon={CalendarDays} color="cyan" trend="🔴 1 جلسة صباحاً 09:00" />
-        <StatCard title="آجال قريبة (10 أيام)" value={stats.deadlines} sub="استئناف + مذكرات" icon={AlarmClock} color="rose" trend="⚠️ 1 عاجل جداً" />
-        <StatCard title="ملفات نشطة" value={stats.active} sub={`من أصل ${mockCases.length} ملفات`} icon={Scale} color="violet" trend={`📁 ${stats.closed} مغلق/محكوم`} />
-        <StatCard title="أتعاب غير محصلة" value={formatDZD(stats.remaining)} sub={`${mockClients.length} عملاء`} icon={Wallet} color="amber" trend={`💰 المحصل: ${formatDZD(stats.paidFees)}`} />
+        <StatCard title="عملاء" value={mockClients.length} sub={`${mockClients.length} عميل مسجل`} icon={Users} color="violet" trend="👥 كل العملاء" />
+        <StatCard title="قضايا نشطة" value={stats.active} sub={`من أصل ${mockCases.length} ملفات`} icon={Scale} color="cyan" trend={`📁 ${stats.closed} مغلق/محكوم`} />
+        <StatCard title="جلسات اليوم" value={stats.todaySessions} sub="في 3 محاكم مختلفة" icon={CalendarDays} color="rose" trend="🔴 1 جلسة 09:00" />
+        <StatCard title="الخزينة — الصافي" value={formatDZD(stats.paidFees - stats.expenses)} sub={`المحصل ${formatDZD(stats.paidFees)}`} icon={Wallet} color="amber" trend={`⚠️ متبقي ${formatDZD(stats.remaining)}`} />
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">

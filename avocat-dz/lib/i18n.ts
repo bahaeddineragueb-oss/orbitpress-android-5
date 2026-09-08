@@ -26,10 +26,10 @@ export const translations: AllDict = {
 
     // nav
     "nav.dashboard": "لوحة التحكم",
-    "nav.clients": "العملاء",
-    "nav.cases": "القضايا والملفات",
+    "nav.clients": "عملاء",
+    "nav.cases": "قضايا",
     "nav.cases.short": "القضايا",
-    "nav.sessions": "الجلسات والمواعيد",
+    "nav.sessions": "جلسات",
     "nav.sessions.short": "الجلسات",
     "nav.deadlines": "الآجال والتنبيهات",
     "nav.documents": "الوثائق",
@@ -41,6 +41,7 @@ export const translations: AllDict = {
     "nav.reports": "التقارير",
     "nav.assistant": "المساعد الذكي",
     "nav.archive": "الأرشيف",
+    "nav.treasury": "الخزينة",
     "nav.download": "تحميل للـ PC",
     "nav.settings": "الإعدادات",
 
@@ -193,6 +194,7 @@ export const translations: AllDict = {
     "nav.reports": "Rapports",
     "nav.assistant": "Assistant IA",
     "nav.archive": "Archives",
+    "nav.treasury": "Trésorerie",
     "nav.download": "Télécharger PC",
     "nav.settings": "Paramètres",
 
@@ -334,6 +336,7 @@ export const translations: AllDict = {
     "nav.reports": "Reports",
     "nav.assistant": "AI Assistant",
     "nav.archive": "Archive",
+    "nav.treasury": "Treasury",
     "nav.download": "Download for PC",
     "nav.settings": "Settings",
 

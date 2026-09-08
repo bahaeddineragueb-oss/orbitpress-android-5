@@ -1,22 +1,36 @@
 // lib/courts.ts — قاعدة بيانات المحاكم الحقيقية (وزارة العدل)
 // المصدر: data/courts.json (58 ولاية، 256 محكمة) + الهيئات العليا + prisma/maktabi.db (SQLite)
 // المحامي يختار فقط — لا كتابة يدوية + المحكمة العليا + مجلس الدولة + كل الأقسام
+// التمييز: في المحكمة توجد غُرف (الغرفة المدنية...) وفي المجلس توجد أقسام (القسم المدني... + غرفة الاتهام)
 
 import data from './courts-data.json';
 
-export type Tribunal = { name: string; isBranch: boolean; sections: string[] };
+export type Tribunal = { name: string; isBranch: boolean; chambers: string[]; sections?: string[] };
 export type WilayaCourts = {
   code: string;
   wilaya: string;
   wilayaAr: string;
   council: string;
+  councilDivisions?: string[];
   tribunals: Tribunal[];
   adminCourt: string | null;
   isNew: boolean;
 };
 
-// الأقسام الكاملة في النظام القضائي الجزائري — مدني عقاري تجاري وكل الفروع
-export const ALL_SECTIONS = [
+// الغرف في المحكمة الابتدائية (Tribunal) — 8 غرف
+export const TRIBUNAL_CHAMBERS = [
+  "المدني",
+  "العقاري",
+  "التجاري",
+  "الجزائي",
+  "شؤون الأسرة",
+  "الاجتماعي",
+  "الاستعجالي",
+  "البحري",
+] as const;
+
+// الأقسام/الغرف في المجلس القضائي (Conseil) — 13 قسم/غرفة + غرفة الاتهام
+export const COUNCIL_DIVISIONS = [
   "المدني",
   "العقاري",
   "التجاري",
@@ -25,12 +39,15 @@ export const ALL_SECTIONS = [
   "المخالفات",
   "الأحداث",
   "شؤون الأسرة",
-  "الأسرة",
   "الاجتماعي",
   "الاستعجالي",
   "البحري",
   "الإداري",
+  "غرفة الاتهام",
 ] as const;
+
+// للتوافق — كل الأقسام
+export const ALL_SECTIONS = [...COUNCIL_DIVISIONS] as const;
 
 // الهيئات القضائية العليا — خارج الولايات (وطنية)
 export const NATIONAL_COURTS: WilayaCourts = {
@@ -38,9 +55,10 @@ export const NATIONAL_COURTS: WilayaCourts = {
   wilaya: "الهيئات العليا",
   wilayaAr: "الهيئات القضائية العليا",
   council: "الهيئات العليا",
+  councilDivisions: [...COUNCIL_DIVISIONS],
   tribunals: [
-    { name: "المحكمة العليا", isBranch: false, sections: [...ALL_SECTIONS] },
-    { name: "مجلس الدولة", isBranch: false, sections: [...ALL_SECTIONS] },
+    { name: "المحكمة العليا", isBranch: false, chambers: [...COUNCIL_DIVISIONS] },
+    { name: "مجلس الدولة", isBranch: false, chambers: [...COUNCIL_DIVISIONS] },
   ],
   adminCourt: null,
   isNew: false,
@@ -53,12 +71,13 @@ export const SPECIALIZED_COMMERCIAL_COURTS: WilayaCourts = {
   wilaya: "المحاكم التجارية المتخصصة",
   wilayaAr: "المحاكم التجارية المتخصصة",
   council: "المحاكم التجارية المتخصصة",
+  councilDivisions: ["التجاري", "البحري", "المدني", "الاستعجالي"],
   tribunals: [
-    { name: "المحكمة التجارية المتخصصة بالجزائر", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
-    { name: "المحكمة التجارية المتخصصة بوهران", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
-    { name: "المحكمة التجارية المتخصصة بعنابة", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
-    { name: "المحكمة التجارية المتخصصة بقسنطينة", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
-    { name: "المحكمة التجارية المتخصصة بورقلة", isBranch: false, sections: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بالجزائر", isBranch: false, chambers: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بوهران", isBranch: false, chambers: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بعنابة", isBranch: false, chambers: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بقسنطينة", isBranch: false, chambers: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
+    { name: "المحكمة التجارية المتخصصة بورقلة", isBranch: false, chambers: ["التجاري", "البحري", "المدني", "الاستعجالي"] },
   ],
   adminCourt: null,
   isNew: false,
@@ -125,4 +144,8 @@ export const DB_INFO = {
   isNewCount: 10,
   sections: ALL_SECTIONS.length, // 13 قسم
   sectionsList: ALL_SECTIONS.join(" • "),
+  chambers: TRIBUNAL_CHAMBERS.length, // 8 غرف
+  chambersList: TRIBUNAL_CHAMBERS.join(" • "),
+  divisions: COUNCIL_DIVISIONS.length, // 13
+  divisionsList: COUNCIL_DIVISIONS.join(" • "),
 };

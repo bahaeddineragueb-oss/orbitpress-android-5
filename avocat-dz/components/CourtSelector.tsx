@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState, useEffect } from "react";
-import { courtsData } from "@/lib/courts";
+import { courtsData, TRIBUNAL_CHAMBERS, COUNCIL_DIVISIONS } from "@/lib/courts";
 
 type Props = {
   value?: { wilayaCode?: string; council?: string; tribunal?: string; section?: string };
@@ -8,8 +8,9 @@ type Props = {
   compact?: boolean;
 };
 
-// كل الأقسام في النظام القضائي الجزائري — مدني عقاري تجاري وكل الفروع
-const SECTIONS = ["المدني","العقاري","التجاري","الجزائي","الجنح","المخالفات","الأحداث","شؤون الأسرة","الأسرة","الاجتماعي","الاستعجالي","البحري","الإداري"];
+// الغرف في المحكمة والأقسام في المجلس — حسب النظام الجزائري
+const TRIBUNAL_SECTIONS = TRIBUNAL_CHAMBERS as unknown as string[];
+const COUNCIL_SECTIONS = COUNCIL_DIVISIONS as unknown as string[];
 
 export function CourtSelector({ value, onChange, compact }: Props) {
   const [wilayaCode, setWilayaCode] = useState(value?.wilayaCode || "16");
@@ -30,7 +31,8 @@ export function CourtSelector({ value, onChange, compact }: Props) {
       setTribunal(next);
       // reset section to first available for specialized
       const tribObj = (wilaya.tribunals as any).find((t: any) => t.name === next);
-      const availableSections: string[] = tribObj?.sections || SECTIONS as any;
+      const isTrib = !isNational && !isSpecialized && wilaya.tribunals.some((t:any)=>t.name===next);
+      const availableSections: string[] = (tribObj?.chambers || tribObj?.sections) || (isTrib ? TRIBUNAL_SECTIONS : COUNCIL_SECTIONS);
       const nextSection = availableSections.includes(section) ? section : availableSections[0];
       setSection(nextSection);
       onChange({
@@ -62,11 +64,12 @@ export function CourtSelector({ value, onChange, compact }: Props) {
   // Build tribunal options: normal tribunals + المحكمة الإدارية as selectable + Supreme/Council + Specialized
   const tribunalOptions = (isNational || isSpecialized)
     ? wilaya.tribunals
-    : [...wilaya.tribunals, ...(wilaya.adminCourt ? [{ name: wilaya.adminCourt, isBranch: false, sections: SECTIONS as unknown as string[] }] : [])];
+    : [...wilaya.tribunals, ...(wilaya.adminCourt ? [{ name: wilaya.adminCourt, isBranch: false, chambers: COUNCIL_SECTIONS }] : [])];
 
-  // Sections per tribunal for specialized
+  // Sections per tribunal: غرف المحكمة vs أقسام المجلس
   const currentTrib = (wilaya.tribunals as any).find((t: any) => t.name === tribunal);
-  const sectionOptions: string[] = (isSpecialized && currentTrib?.sections) ? currentTrib.sections : [...SECTIONS] as string[];
+  const isCurrentTribunal = !isNational && !isSpecialized && wilaya.tribunals.some((t:any)=>t.name===tribunal);
+  const sectionOptions: string[] = (currentTrib?.chambers || currentTrib?.sections) ? (currentTrib.chambers || currentTrib.sections) : (isCurrentTribunal ? [...TRIBUNAL_SECTIONS] : [...COUNCIL_SECTIONS]);
 
   return (
     <div className={`grid gap-3 ${compact ? "grid-cols-1" : "grid-cols-1 md:grid-cols-2"}`}>
@@ -118,9 +121,9 @@ export function CourtSelector({ value, onChange, compact }: Props) {
         </div>
       </div>
 
-      {/* Section */}
+      {/* Section — غرفة في المحكمة / قسم في المجلس */}
       <div className={compact ? "" : "md:col-span-2"}>
-        <label className="text-xs font-bold text-slate-600 dark:text-slate-400">القسم / الغرفة</label>
+        <label className="text-xs font-bold text-slate-600 dark:text-slate-400">{isCurrentTribunal ? "الغرفة — في المحكمة" : "القسم — في المجلس"}</label>
         <select
           value={section}
           onChange={e => setSection(e.target.value)}
@@ -133,13 +136,13 @@ export function CourtSelector({ value, onChange, compact }: Props) {
 
       {/* Preview */}
       <div className={`p-3 rounded-xl bg-[#0e7490]/5 border border-[#0e7490]/20 text-xs leading-relaxed ${compact ? "" : "md:col-span-2"}`}>
-        <b>الاختيار:</b> {isNational ? "الهيئات العليا" : isSpecialized ? "المحاكم التجارية المتخصصة" : wilaya.wilayaAr} → {wilaya.council} → {tribunal} → قسم {section}
+        <b>الاختيار:</b> {isNational ? "الهيئات العليا" : isSpecialized ? "المحاكم التجارية المتخصصة" : wilaya.wilayaAr} → {wilaya.council} → {tribunal} → {isCurrentTribunal ? "غرفة" : "قسم"} {section}
         {!isNational && !isSpecialized && wilaya.adminCourt && tribunal !== wilaya.adminCourt && <span className="block text-[11px] text-slate-600 dark:text-slate-400">المحكمة الإدارية: {wilaya.adminCourt} (يمكن اختيارها مباشرة من القائمة أعلاه)</span>}
         {tribunal === "المحكمة العليا" && <span className="block text-[11px] text-amber-700 font-bold">⚖️ المحكمة العليا — أعلى هيئة قضائية (نقض الأحكام)</span>}
         {tribunal === "مجلس الدولة" && <span className="block text-[11px] text-violet-700 font-bold">🏛️ مجلس الدولة — القضاء الإداري الأعلى</span>}
         {tribunal === wilaya.adminCourt && <span className="block text-[11px] text-violet-700 font-bold">⚖️ محكمة إدارية — منازعات الإدارة</span>}
         {isSpecialized && <span className="block text-[11px] text-emerald-700 font-bold">💼 محكمة تجارية متخصصة — منازعات تجارية وبحرية (مرسوم 22-148)</span>}
-        <span className="block text-[11px] text-emerald-700 font-bold">✓ من قاعدة بيانات وزارة العدل (58 ولاية + الهيئات العليا + التجارية المتخصصة) — {sectionOptions.length} قسم</span>
+        <span className="block text-[11px] text-emerald-700 font-bold">✓ من قاعدة بيانات وزارة العدل (58 ولاية + الهيئات العليا + التجارية المتخصصة) — {sectionOptions.length} {isCurrentTribunal ? "غرف" : "أقسام"}</span>
       </div>
     </div>
   );

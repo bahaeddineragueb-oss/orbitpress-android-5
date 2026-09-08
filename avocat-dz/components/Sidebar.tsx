@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Scale, CalendarDays, AlarmClock, Files, FileText, Wallet, Receipt, Building2, BarChart3, Bot, Archive, Settings, Gavel, Sparkles, MonitorDown } from "lucide-react";
+import { LayoutDashboard, Users, Scale, CalendarDays, Wallet, Settings, Gavel, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -15,16 +15,7 @@ export function Sidebar() {
     { href: "/clients", key: "nav.clients", icon: Users },
     { href: "/cases", key: "nav.cases", icon: Scale },
     { href: "/sessions", key: "nav.sessions", icon: CalendarDays },
-    { href: "/deadlines", key: "nav.deadlines", icon: AlarmClock, badge: "4" },
-    { href: "/documents", key: "nav.documents", icon: Files },
-    { href: "/templates", key: "nav.templates", icon: FileText },
-    { href: "/fees", key: "nav.fees", icon: Wallet },
-    { href: "/expenses", key: "nav.expenses", icon: Receipt },
-    { href: "/courts", key: "nav.courts", icon: Building2 },
-    { href: "/reports", key: "nav.reports", icon: BarChart3 },
-    { href: "/assistant", key: "nav.assistant", icon: Bot },
-    { href: "/archive", key: "nav.archive", icon: Archive },
-    { href: "/download", key: "nav.download", icon: MonitorDown },
+    { href: "/treasury", key: "nav.treasury", icon: Wallet },
   ];
 
   const isRTL = lang === "ar";
@@ -77,9 +68,6 @@ export function Sidebar() {
 
       <div className="p-3 border-t dark:border-[#1e2e50] space-y-2">
         <LanguageSwitcher compact />
-        <Link href="/download" className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-br from-[#0e7490] to-[#063544] text-white font-bold shadow">
-          <MonitorDown size={18} /> {t("nav.download")}
-        </Link>
         <Link href="/settings" className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300">
           <Settings size={18} /> {t("nav.settings")}
         </Link>

@@ -5,7 +5,7 @@ import { Topbar } from "@/components/Topbar";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Users, Scale, CalendarDays, AlarmClock, Files, FileText, Wallet, Receipt, Building2, BarChart3, Bot, Archive, Settings, Gavel, MonitorDown } from "lucide-react";
+import { LayoutDashboard, Users, Scale, CalendarDays, Wallet, Settings, Gavel } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useI18n } from "@/components/LanguageProvider";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -21,15 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { href: "/clients", key: "nav.clients", icon: Users },
     { href: "/cases", key: "nav.cases", icon: Scale },
     { href: "/sessions", key: "nav.sessions", icon: CalendarDays },
-    { href: "/deadlines", key: "nav.deadlines", icon: AlarmClock },
-    { href: "/documents", key: "nav.documents", icon: Files },
-    { href: "/templates", key: "nav.templates", icon: FileText },
-    { href: "/fees", key: "nav.fees", icon: Wallet },
-    { href: "/expenses", key: "nav.expenses", icon: Receipt },
-    { href: "/courts", key: "nav.courts", icon: Building2 },
-    { href: "/reports", key: "nav.reports", icon: BarChart3 },
-    { href: "/assistant", key: "nav.assistant", icon: Bot },
-    { href: "/archive", key: "nav.archive", icon: Archive },
+    { href: "/treasury", key: "nav.treasury", icon: Wallet },
   ];
 
   return (
@@ -54,7 +46,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   </Link>
                 );
               })}
-              <Link href="/download" onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5"><MonitorDown size={18} /> {t("nav.download")}</Link>
               <Link href="/settings" onClick={() => setOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5"><Settings size={18} /> {t("nav.settings")}</Link>
               <div className="mt-4"><LanguageSwitcher /></div>
             </nav>
