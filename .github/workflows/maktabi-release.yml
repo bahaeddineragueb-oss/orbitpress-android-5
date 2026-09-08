@@ -37,11 +37,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Windows portable (.exe)
+      - name: Build Windows installer + portable (.exe) — كامل
         shell: bash
         run: |
           ELECTRON=true npm run build
-          npx electron-builder --win portable --x64 --publish never
+          npx electron-builder --win --x64 --publish never
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
