@@ -56,11 +56,6 @@ export function Sidebar() {
             >
               <Icon size={18} className={cn(active ? "text-white" : "text-slate-500")} />
               <span className="font-medium">{t(item.key)}</span>
-              {item.badge && (
-                <span className={cn("ms-auto text-xs px-2 py-0.5 rounded-full font-bold", active ? "bg-white text-[#0e7490]" : "bg-red-500 text-white")}>
-                  {item.badge}
-                </span>
-              )}
             </Link>
           );
         })}
